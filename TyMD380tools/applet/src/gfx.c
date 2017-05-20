@@ -44,8 +44,8 @@ void swapFGBG() {
 	}
 }
 void swapBG() {
+	uint16_t fg_color = 0, bg_color = 0;
 	if (global_addl_config.alt_text) {
-		uint16_t fg_color = 0, bg_color = 0;
 		Menu_GetColours(SEL_FLAG_NONE, &fg_color, &bg_color);
 		bg_color = rgb16torgb(bg_color);
 		fg_color = rgb16torgb(fg_color);
@@ -162,12 +162,14 @@ void print_date_hook(void)
         return;
     }
 
-	uint16_t fg_color = 0, bg_color = 0;
-	Menu_GetColours(SEL_FLAG_NONE, &fg_color, &bg_color);
-	bg_color = rgb16torgb(bg_color);
-	fg_color = rgb16torgb(fg_color);
-	gfx_set_bg_color(bg_color);
-	gfx_set_fg_color(fg_color);
+	if (global_addl_config.alt_text) {
+		uint16_t fg_color = 0, bg_color = 0;
+		Menu_GetColours(SEL_FLAG_NONE, &fg_color, &bg_color);
+		bg_color = rgb16torgb(bg_color);
+		fg_color = rgb16torgb(fg_color);
+		gfx_set_bg_color(bg_color);
+		gfx_set_fg_color(fg_color);
+	}
 
 #ifdef CONFIG_GRAPHICS
     wchar_t wide[40];

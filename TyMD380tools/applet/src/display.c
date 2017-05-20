@@ -349,100 +349,221 @@ uint32_t rgb16torgb(uint16_t color) {
 	return (((color & 0xF800) << 5)*8) | (((color & 0x7E0) << 3) * 8) | (((color & 0x1F)) * 8);
 }
 
+
 void draw_rx_screen(unsigned int bg_color)
 {
-    int dst;
-    int src;
-    int grp ;
-    
-    int primask = OS_ENTER_CRITICAL(); // for form sake
-//    dst = g_dst;
-//    src = g_src;
+	int dst;
+	int src;
+	int grp;
 
-	int fg_color = 0, bgg=0;
-	Menu_GetColours(SEL_FLAG_NONE, &fg_color, &bgg);
-    
-    dst = rst_dst ;
-    src = rst_src ;
-    grp = rst_grp ;
-    
-    OS_EXIT_CRITICAL(primask);
+	int primask = OS_ENTER_CRITICAL(); // for form sake
+									   //    dst = g_dst;
+									   //    src = g_src;
 
-	fDoOnce = 0;
+	dst = rst_dst;
+	src = rst_src;
+	grp = rst_grp;
 
-	
+	OS_EXIT_CRITICAL(primask);
 
-    // clear screen
+	// clear screen
+	gfx_set_fg_color(bg_color);
+	gfx_blockfill(0, 16, MAX_X, MAX_Y);
+
+	gfx_set_bg_color(bg_color);
+	gfx_set_fg_color(0x000000);
+	gfx_select_font(gfx_font_small);
+
+	user_t usr;
+
+	if (usr_find_by_dmrid(&usr, src) == 0) {
+		usr.callsign = "ID unknown";
+		usr.firstname = "";
+		usr.name = "No entry in";
+		usr.place = "your users.csv";
+		usr.state = "see README.md";
+		usr.country = "on Github";
+	}
+
+	int y_index = RX_POPUP_Y_START;
+	int scr_row = RX_POPUP_Y_START;
+
+	if (global_addl_config.userscsv > 1 && talkerAlias.length > 0)		// 2017-02-19 show Talker Alias depending on setup 0=CPS 1=DB 2=TA 3=TA & DB
+	{
+		if (grp) {
+			gfx_printf_pos(RX_POPUP_X_START, scr_row, "%d -> TG %d", src, dst);
+		}
+		else {
+			gfx_printf_pos(RX_POPUP_X_START, scr_row, "%d -> %d", src, dst);
+		}
+		scr_row += GFX_FONT_SMALL_HEIGHT;
+
+		gfx_select_font(gfx_font_norm);
+
+		if (global_addl_config.userscsv > 1 && talkerAlias.length > 0)		// 2017-02-19 show Talker Alias depending on setup 0=CPS 1=DB 2=TA 3=TA & DB
+		{
+			gfx_printf_pos2(RX_POPUP_X_START, scr_row, 10, "%s", talkerAlias.text);
+			scr_row += GFX_FONT_NORML_HEIGHT; // previous line was in big font
+		}
+		else {
+			gfx_printf_pos2(RX_POPUP_X_START, scr_row, 10, "DMRID: %d", src);
+			scr_row += GFX_FONT_NORML_HEIGHT; // previous line was in big font
+		}
+
+		gfx_select_font(gfx_font_small);
+
+		switch (global_addl_config.userscsv) {
+		case 0:
+			gfx_puts_pos(RX_POPUP_X_START, scr_row, "Userinfo: CPS mode");
+			break;
+
+		case 1:
+			gfx_puts_pos(RX_POPUP_X_START, scr_row, "Userinfo: UserDB mode");
+			break;
+
+		case 2:
+			if (talkerAlias.length > 0) {
+				gfx_puts_pos(RX_POPUP_X_START, scr_row, "Userinfo: TalkerAlias");
+			}
+			else {
+				gfx_puts_pos(RX_POPUP_X_START, scr_row, "Userinfo: TA not rcvd!");
+			}
+			break;
+
+		case 3:
+			gfx_puts_pos(RX_POPUP_X_START, scr_row, "Userinfo: TA/DB mode");
+			break;
+		}
+		scr_row += GFX_FONT_SMALL_HEIGHT; // previous line was in small font
 
 
-	//LCD_FillRect(0, 16, MAX_X - 1/*x2*/,
-	//	
-	
-	
+		gfx_select_font(gfx_font_small);
+		gfx_puts_pos(RX_POPUP_X_START, scr_row, "------------------------");
+		scr_row += GFX_FONT_SMALL_HEIGHT;
 
-	if (global_addl_config.alt_text) {
+		if (global_addl_config.userscsv == 3)	// 3 = TA & DB
+		{
+			gfx_printf_pos(RX_POPUP_X_START, scr_row, "%s %s", usr.callsign, usr.firstname);
+			scr_row += GFX_FONT_SMALL_HEIGHT; // previous line was in small font
 
-		LCD_FillRect(0, 16, MAX_X - 1/*x2*/, MAX_Y - 1/*y2*/, bgg);
-		bgg = rgb16torgb(bgg);
-		gfx_set_bg_color(bgg);
-		fg_color = rgb16torgb(fg_color);
-		gfx_set_fg_color(fg_color);
+			gfx_puts_pos(RX_POPUP_X_START, scr_row, usr.country);
+			scr_row += GFX_FONT_SMALL_HEIGHT;
+		}
+
 	}
 	else {
-		gfx_set_fg_color(bg_color);
-		gfx_blockfill(0, 16, MAX_X, MAX_Y);
-		gfx_set_bg_color(bg_color);
-		gfx_set_fg_color(0);
+
+		gfx_select_font(gfx_font_small);
+		if (grp) {
+			gfx_printf_pos(RX_POPUP_X_START, y_index, "%d -> TG %d", src, dst);
+		}
+		else {
+			gfx_printf_pos(RX_POPUP_X_START, y_index, "%d -> %d", src, dst);
+		}
+		y_index += GFX_FONT_SMALL_HEIGHT;
+
+		gfx_select_font(gfx_font_norm);
+		gfx_printf_pos2(RX_POPUP_X_START, y_index, 10, "%s %s", usr.callsign, usr.firstname);
+		y_index += GFX_FONT_NORML_HEIGHT; // previous line was in big font
+
+		gfx_select_font(gfx_font_small);
+
+		if (global_addl_config.userscsv > 1 && talkerAlias.length > 0)		// 2017-02-19 show Talker Alias depending on setup 0=CPS 1=DB 2=TA 3=TA & DB
+		{
+			gfx_puts_pos(RX_POPUP_X_START, y_index, talkerAlias.text);
+		}
+		else {
+			gfx_puts_pos(RX_POPUP_X_START, y_index, usr.name);
+		}
+		y_index += GFX_FONT_SMALL_HEIGHT; // previous line was in small font
+
+		gfx_puts_pos(RX_POPUP_X_START, y_index, usr.place);
+		y_index += GFX_FONT_SMALL_HEIGHT;
+
+		gfx_puts_pos(RX_POPUP_X_START, y_index, usr.state);
+		y_index += GFX_FONT_SMALL_HEIGHT;
+
+		gfx_puts_pos(RX_POPUP_X_START, y_index, usr.country);
+		y_index += GFX_FONT_SMALL_HEIGHT;
 	}
-	
-	//gfx_blockfill(0, 16, MAX_X, MAX_Y);
 
-    
-    gfx_select_font(gfx_font_small);
-
-    user_t usr ;
-    
-    if( usr_find_by_dmrid(&usr,src) == 0 ) {
-        usr.callsign = "ID unknown" ;
-        usr.firstname = "" ;
-        usr.name = "No entry in" ;
-        usr.place = "your users.csv" ;
-        usr.state = "see README.md" ;
-        usr.country = "on Github" ;
-    }
-    
-    int y_index = RX_POPUP_Y_START;
-    
-    gfx_select_font(gfx_font_small);
-    if( grp ) {
-        gfx_printf_pos( RX_POPUP_X_START, y_index, "%d -> TG %d", src, dst );        
-    } else {
-        gfx_printf_pos( RX_POPUP_X_START, y_index, "%d -> %d", src, dst );
-    }
-    y_index += GFX_FONT_SMALL_HEIGHT ;
-
-    gfx_select_font(gfx_font_norm);
-    gfx_printf_pos2(RX_POPUP_X_START, y_index, 10, "%s %s", usr.callsign, usr.firstname );
-    y_index += GFX_FONT_NORML_HEIGHT; // previous line was in big font
-    
-    gfx_select_font(gfx_font_small);
-    gfx_puts_pos(RX_POPUP_X_START, y_index, usr.name );
-    y_index += GFX_FONT_SMALL_HEIGHT ; // previous line was in small font
-
-    gfx_puts_pos(RX_POPUP_X_START, y_index, usr.place );
-    y_index += GFX_FONT_SMALL_HEIGHT ;
-    
-    gfx_puts_pos(RX_POPUP_X_START, y_index, usr.state );
-    y_index += GFX_FONT_SMALL_HEIGHT ;
-    
-    gfx_puts_pos(RX_POPUP_X_START, y_index, usr.country );
-    y_index += GFX_FONT_SMALL_HEIGHT ;
-    
-    gfx_select_font(gfx_font_norm);
-    gfx_set_fg_color(fg_color);
-    gfx_set_bg_color(0xff000000);
+	gfx_select_font(gfx_font_norm);
+	gfx_set_fg_color(0xff8032);
+	gfx_set_bg_color(0xff0000);
 }
 
+void draw_ta_screen(unsigned int bg_color)
+{
+	int dst;
+	int src;
+	int grp;
+
+	int primask = OS_ENTER_CRITICAL(); // for form sake
+	int scr_row = RX_POPUP_Y_START;
+
+	dst = rst_dst;
+	src = rst_src;
+	grp = rst_grp;
+
+	OS_EXIT_CRITICAL(primask);
+
+	// clear screen
+	gfx_set_fg_color(bg_color);
+	gfx_blockfill(0, 16, MAX_X, MAX_Y);
+
+	gfx_set_bg_color(bg_color);
+	gfx_set_fg_color(0x000000);
+	gfx_select_font(gfx_font_small);
+
+	user_t usr;
+
+	gfx_select_font(gfx_font_small);
+	if (grp) {
+		gfx_printf_pos(RX_POPUP_X_START, scr_row, "%d -> TG %d", src, dst);
+	}
+	else {
+		gfx_printf_pos(RX_POPUP_X_START, scr_row, "%d -> %d", src, dst);
+	}
+	scr_row += GFX_FONT_SMALL_HEIGHT;
+
+	gfx_select_font(gfx_font_norm);
+
+	if (global_addl_config.userscsv > 1 && talkerAlias.length > 0)		// 2017-02-19 show Talker Alias depending on setup 0=CPS 1=DB 2=TA 3=TA & DB
+	{
+		gfx_printf_pos2(RX_POPUP_X_START, scr_row, 10, "%s", talkerAlias.text);
+		scr_row += GFX_FONT_NORML_HEIGHT;
+	}
+	else {
+		gfx_printf_pos2(RX_POPUP_X_START, scr_row, 10, "DMRID: %d", src);
+		scr_row += GFX_FONT_NORML_HEIGHT;
+	}
+
+	gfx_select_font(gfx_font_small);
+	if (talkerAlias.length > 0) {
+		gfx_puts_pos(RX_POPUP_X_START, scr_row, "Userinfo: TalkerAlias");
+	}
+	else {
+		gfx_puts_pos(RX_POPUP_X_START, scr_row, "Userinfo: TA not rcvd!");
+	}
+
+	scr_row += GFX_FONT_SMALL_HEIGHT;
+	gfx_select_font(gfx_font_small);
+	gfx_puts_pos(RX_POPUP_X_START, scr_row, "------------------------");
+	scr_row += GFX_FONT_SMALL_HEIGHT;
+
+	if (usr_find_by_dmrid(&usr, src) == 1 || usr_find_by_dmrid(&usr, src) == 3)
+	{
+		gfx_printf_pos(RX_POPUP_X_START, scr_row, "%s %s", usr.callsign, usr.firstname);
+		scr_row += GFX_FONT_SMALL_HEIGHT;
+
+		gfx_puts_pos(RX_POPUP_X_START, scr_row, usr.country);
+		scr_row += GFX_FONT_SMALL_HEIGHT;
+	}
+
+	gfx_select_font(gfx_font_norm);
+	gfx_set_fg_color(0xff8032);
+	gfx_set_bg_color(0xff0000);
+}
 /*
 #include <stdlib.h>
 
@@ -575,9 +696,9 @@ void draw_datetime_row_hook()
    the setting information and a picture or two. */
 void display_credits()
 {
-    drawtext(L"MD380Tools ", 160, 20);
+    drawtext(L"TyMD380Toolz ", 160, 20);
     drawtext(L"by KK4VCZ  ", 160, 60);
-    drawtext(L"and Friends", 160, 100);
+    drawtext(L"and KG5RKI", 160, 100);
 #ifdef MD380_d13_020
     drawtext(L"@ D13.020", 160, 140);
 #endif
@@ -588,7 +709,8 @@ void display_credits()
     drawtext(L"@ S13.020", 160, 140);
 #endif
 
-    drawascii(GIT_VERSION, 160, 180);
+    //drawascii(GIT_VERSION, 160, 180);
 
-    drawtext(VERSIONDATE, 160, 220);
+    //drawtext(VERSIONDATE, 160, 220);
+	drawtext(L"TY_NET", 165, 200);
 }

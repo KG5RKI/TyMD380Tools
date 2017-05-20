@@ -10,6 +10,7 @@
 #include "printf.h"
 #include "netmon.h"
 #include "app_menu.h"
+#include "addl_config.h"
 
 #include <stdarg.h>
 
@@ -143,30 +144,43 @@ char small[MAX_BUF];
 
 #define LINE_HEIGHT 12 
 
+#if 0
+#define bgcolor 0x00ff8032
+#define fgcolor 0xff000000
+#endif
+#define bgcolor 0x00000000
+#define fgcolor 0x00ffffff
 
 #define LEFT_POS 3
 
 static void con_draw1()
 {
-    // save old values first.
-    void *old = gfx_select_font(gfx_font_small);
-    
-//#if defined(FW_D13_020) || defined(FW_S13_020)
-//#else 
-//    // slow?
-//    {
-//        static int cnt = 0 ;
-//        cnt++ ;
-//        if( cnt % 16 == 0 ) {
-//            gfx_set_fg_color(bgcolor); 
-//            gfx_blockfill(0,0,159,109);
-//        }
-//    }
-//#endif
+	// save old values first.
 	uint16_t fg_color = 0, bg_color = 0;
-	Menu_GetColours(SEL_FLAG_NONE, &fg_color, &bg_color);
-	bg_color = rgb16torgb(bg_color);
-	fg_color = rgb16torgb(fg_color);
+	void *old = gfx_select_font(gfx_font_small);
+
+	//#if defined(FW_D13_020) || defined(FW_S13_020)
+	//#else 
+	//    // slow?
+	//    {
+	//        static int cnt = 0 ;
+	//        cnt++ ;
+	//        if( cnt % 16 == 0 ) {
+	//            gfx_set_fg_color(bgcolor); 
+	//            gfx_blockfill(0,0,159,109);
+	//        }
+	//    }
+	//#endif
+	
+	if (global_addl_config.alt_text) {
+		Menu_GetColours(SEL_FLAG_NONE, &fg_color, &bg_color);
+		bg_color = rgb16torgb(bg_color);
+		fg_color = rgb16torgb(fg_color);
+	}
+	else {
+		bg_color = bgcolor;
+		fg_color = fgcolor;
+	}
 	gfx_set_bg_color(bg_color);
 	gfx_set_fg_color(fg_color);
     
