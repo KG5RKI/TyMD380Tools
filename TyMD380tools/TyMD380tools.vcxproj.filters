@@ -1,0 +1,258 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Makefile" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="applet\src\addl_config.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\aes.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\ambe.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\app_menu.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\beep.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\color_picker.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\console.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\debug.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\dispflip.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\dispinit.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\display.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\dmesg.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\dmr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\etsi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\font_8_8.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\gfx.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\i2c.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\irq_handlers.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\keyb.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\lastheard.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\lcd_driver.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\mbox.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\menu.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\narrator.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\netmon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\os.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\printf.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\radiostate.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\rtc_timer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\sms.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\spiflash.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\stm32f4xx_it.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\syslog.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\system_stm32f4xx.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\timer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\usb.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\usersdb.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\util.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="applet\src\addl_config.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\ambe.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\app_menu.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\beep.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\codeplug.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\console.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\debug.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\display.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\dmesg.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\dmr.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\etsi.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\gfx.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\gps.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\irq_handlers.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\keyb.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\lastheard.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\lcd_driver.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\mbox.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\md380.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\menu.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\narrator.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\netmon.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\os.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\printf.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\radio_config.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\radiostate.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\sms.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\spiflash.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\syslog.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\timer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\tooldfu.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\unclear.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\usersdb.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\util.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\version.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\inc\stm32f4xx_conf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\inc\stm32f4xx_it.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,223 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|ARM">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM">
+      <Configuration>Release</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{1EFFD341-BFCB-4D69-81A1-5A250C4E7DED}</ProjectGuid>
+    <Keyword>MakeFileProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <NMakeBuildCommandLine>make flash</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>make clean</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>make flash</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <ExecutablePath>C:\Program Files %28x86%29\GNU Tools ARM Embedded\5.4 2016q3\arm-none-eabi\bin;C:\cygwin64\bin;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>C:\Program Files %28x86%29\GNU Tools ARM Embedded\5.4 2016q3\arm-none-eabi\include;C:\Program Files %28x86%29\GNU Tools ARM Embedded\5.4 2016q3\lib\gcc\arm-none-eabi\5.4.1\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <NMakeBuildCommandLine>make flash</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>make clean</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>make flash</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <ExecutablePath>C:\Program Files %28x86%29\GNU Tools ARM Embedded\5.4 2016q3\arm-none-eabi\bin;C:\cygwin64\bin;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>C:\Program Files %28x86%29\GNU Tools ARM Embedded\5.4 2016q3\arm-none-eabi\include;C:\Program Files %28x86%29\GNU Tools ARM Embedded\5.4 2016q3\lib\gcc\arm-none-eabi\5.4.1\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <NMakeBuildCommandLine>make flash</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>make clean</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>make flash</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <NMakeBuildCommandLine>make flash</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>make clean</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>make flash</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <ExecutablePath>C:\Windows\System32;$(ExecutablePath)</ExecutablePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <NMakeBuildCommandLine>"C:\cygwin\bin\make.exe" flash</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>"C:\cygwin\bin\make.exe" clean</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>"C:\cygwin\bin\make.exe" flash_13</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>CONFIG_SPIFLASH;CONFIG_GRAPHICS;CONFIG_SPIF5000;CONFIG_AMBE;CONFIG_AES;CONFIG_MORSE_OUTPUT;CONFIG_DIMMED_LIGHT;CONFIG_APP_MENU;FW_D13_020;WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <ExecutablePath>C:\cygwin64\bin;C:\Windows\System32;$(ExecutablePath)</ExecutablePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <NMakeBuildCommandLine>make flash</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>make clean</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>make flash</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Makefile" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="applet\src\addl_config.c" />
+    <ClCompile Include="applet\src\aes.c" />
+    <ClCompile Include="applet\src\ambe.c" />
+    <ClCompile Include="applet\src\app_menu.c" />
+    <ClCompile Include="applet\src\beep.c" />
+    <ClCompile Include="applet\src\color_picker.c" />
+    <ClCompile Include="applet\src\console.c" />
+    <ClCompile Include="applet\src\debug.c" />
+    <ClCompile Include="applet\src\dispflip.c" />
+    <ClCompile Include="applet\src\dispinit.c" />
+    <ClCompile Include="applet\src\display.c" />
+    <ClCompile Include="applet\src\dmesg.c" />
+    <ClCompile Include="applet\src\dmr.c" />
+    <ClCompile Include="applet\src\etsi.c" />
+    <ClCompile Include="applet\src\font_8_8.c" />
+    <ClCompile Include="applet\src\gfx.c" />
+    <ClCompile Include="applet\src\i2c.c" />
+    <ClCompile Include="applet\src\irq_handlers.c" />
+    <ClCompile Include="applet\src\keyb.c" />
+    <ClCompile Include="applet\src\lastheard.c" />
+    <ClCompile Include="applet\src\lcd_driver.c" />
+    <ClCompile Include="applet\src\main.c" />
+    <ClCompile Include="applet\src\mbox.c" />
+    <ClCompile Include="applet\src\menu.c" />
+    <ClCompile Include="applet\src\narrator.c" />
+    <ClCompile Include="applet\src\netmon.c" />
+    <ClCompile Include="applet\src\os.c" />
+    <ClCompile Include="applet\src\printf.c" />
+    <ClCompile Include="applet\src\radiostate.c" />
+    <ClCompile Include="applet\src\rtc_timer.c" />
+    <ClCompile Include="applet\src\sms.c" />
+    <ClCompile Include="applet\src\spiflash.c" />
+    <ClCompile Include="applet\src\stm32f4xx_it.c" />
+    <ClCompile Include="applet\src\syslog.c" />
+    <ClCompile Include="applet\src\system_stm32f4xx.c" />
+    <ClCompile Include="applet\src\timer.c" />
+    <ClCompile Include="applet\src\usb.c" />
+    <ClCompile Include="applet\src\usersdb.c" />
+    <ClCompile Include="applet\src\util.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="applet\config.h" />
+    <ClInclude Include="applet\inc\stm32f4xx_conf.h" />
+    <ClInclude Include="applet\inc\stm32f4xx_it.h" />
+    <ClInclude Include="applet\src\addl_config.h" />
+    <ClInclude Include="applet\src\ambe.h" />
+    <ClInclude Include="applet\src\app_menu.h" />
+    <ClInclude Include="applet\src\beep.h" />
+    <ClInclude Include="applet\src\codeplug.h" />
+    <ClInclude Include="applet\src\console.h" />
+    <ClInclude Include="applet\src\debug.h" />
+    <ClInclude Include="applet\src\display.h" />
+    <ClInclude Include="applet\src\dmesg.h" />
+    <ClInclude Include="applet\src\dmr.h" />
+    <ClInclude Include="applet\src\etsi.h" />
+    <ClInclude Include="applet\src\gfx.h" />
+    <ClInclude Include="applet\src\gps.h" />
+    <ClInclude Include="applet\src\irq_handlers.h" />
+    <ClInclude Include="applet\src\keyb.h" />
+    <ClInclude Include="applet\src\lastheard.h" />
+    <ClInclude Include="applet\src\lcd_driver.h" />
+    <ClInclude Include="applet\src\mbox.h" />
+    <ClInclude Include="applet\src\md380.h" />
+    <ClInclude Include="applet\src\menu.h" />
+    <ClInclude Include="applet\src\narrator.h" />
+    <ClInclude Include="applet\src\netmon.h" />
+    <ClInclude Include="applet\src\os.h" />
+    <ClInclude Include="applet\src\printf.h" />
+    <ClInclude Include="applet\src\radiostate.h" />
+    <ClInclude Include="applet\src\radio_config.h" />
+    <ClInclude Include="applet\src\sms.h" />
+    <ClInclude Include="applet\src\spiflash.h" />
+    <ClInclude Include="applet\src\syslog.h" />
+    <ClInclude Include="applet\src\timer.h" />
+    <ClInclude Include="applet\src\tooldfu.h" />
+    <ClInclude Include="applet\src\unclear.h" />
+    <ClInclude Include="applet\src\usersdb.h" />
+    <ClInclude Include="applet\src\util.h" />
+    <ClInclude Include="applet\src\version.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

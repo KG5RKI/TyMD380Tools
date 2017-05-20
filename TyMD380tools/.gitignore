@@ -1,0 +1,87 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# C extensions
+*.so
+*.o
+*.a
+
+*.tmp
+*.lst
+*.map
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+#lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*,cover
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# Firmware stuff.
+*~
+*.img.sym
+*.img
+*.bin
+*.elf
+version.h
+
+# Output from Radare2 / disassembly converted into HTML
+/annotations/d13.020/listing.txt
+/annotations/d13.020/listing.htm
+
+# user/repeater lists
+/db/users.csv
+/db/repeaters.csv
+/db/custom.csv
+/db/stripped.csv
+/db/users.json
+/db/bmgroups.json
+/db/repeaters.json
+
+# firmware downloads
+firmware/dl
