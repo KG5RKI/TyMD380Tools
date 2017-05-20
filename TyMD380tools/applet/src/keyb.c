@@ -133,8 +133,8 @@ void handle_hotkey( int keycode )
             break ;
         case 1 :
             //sms_test();
-			c5000_spi0_writereg( 0x0F, 0xE8);
-			bp_send_beep(BEEP_TEST_3);
+			//c5000_spi0_writereg( 0x0F, 0xE8);
+			//bp_send_beep(BEEP_TEST_3);
             break ;
 		case 2 :
 			slog_redraw();
@@ -164,7 +164,6 @@ void handle_hotkey( int keycode )
             syslog_dump_dmesg();
             break ;
 		case 13 : //end call
-        
             //bp_send_beep(BEEP_TEST_1);
 			if(nm_screen){
 				//channel_num = 0;
@@ -265,6 +264,10 @@ void evaluate_sidekey( int button_function) // This is where new functions for s
       //                   called from task 'biglist_pollsubsys_maybe', when the
       //                   shared keyboard/LCD interface is configured to poll the keyboard,
       //                   not to 'drive the display'. See the monster-disassembly.
+#    if (CONFIG_APP_MENU)
+	  Menu_Open(NULL/*default instance*/, NULL/*main items*/, "TkGrp"/*cpJumpToItem*/, APPMENU_EDIT_OVERWRT);
+	  backlight_timer = md380_radio_config.backlight_time * 500;
+#    endif
       break;
 #  if( CONFIG_MORSE_OUTPUT )    // optional feature - see config.h 
     case 0x52 : // starts the 'Morse narrator' via programmable button ("on request")

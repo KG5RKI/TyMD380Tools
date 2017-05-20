@@ -84,7 +84,17 @@ typedef void (*void_func_ptr)(void);
 #define SPKR_SWITCH_OFF GPIOB->BSRRL=(1<<PINPOS_B_SPK_C) /* speaker off*/
 #define IS_SPKR_SWITCH_ON ((GPIOB->ODR&(1<<PINPOS_B_SPK_C))==0) /*check spkr switch*/
 
+
+uint8_t boot_flags = 0; // 0 : none of the 'essential' functions has been called yet
+
 volatile uint32_t IRQ_dwSysTickCounter = 0; // Incremented each 1.5 ms. Rolls over from FFFFFFFF to 0 after 74 days
+
+uint16_t keypress_timer_ms = 0; // measures key-down time in MILLISECONDS 
+uint8_t  keypress_ascii = 0;    // code of the currently pressed key, 0 = none .
+								// intended to detect certain 'very long pressed keys' anywhere,
+								// e.g.in app_menu.c : CheckLongKeypressToActivateMorse() .
+
+
 #if( CONFIG_DIMMED_LIGHT )
  static uint8_t may_turn_on_backlight = 0; // ok to turn on the backlight ? 0=no, 1=yes
 #endif // CONFIG_DIMMED_LIGHT ?
