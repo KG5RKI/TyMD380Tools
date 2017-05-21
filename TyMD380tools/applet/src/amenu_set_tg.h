@@ -9,6 +9,7 @@
 //   from the codeplug / SPI-Flash or whatever .
 // Details in amenu_set_tg.c .
 
+extern int     ad_hoc_call_type;
 extern int     ad_hoc_talkgroup;  // "wanted" talkgroup, set by user / alternative menu
 extern uint8_t ad_hoc_tg_channel; // current channel number when the above TG had been entered .
                                   // 0 : "don't want to modify the TG on ANY channel" .

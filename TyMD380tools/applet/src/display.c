@@ -350,15 +350,17 @@ uint32_t rgb16torgb(uint16_t color) {
 }
 
 
+#define RX_POPUP_Y_START 22 // 24
+#define RX_POPUP_X_START 4  // 10
+
 void draw_rx_screen(unsigned int bg_color)
 {
 	int dst;
 	int src;
 	int grp;
-
+	int nameLen;
+	//char *timeSlot[3];
 	int primask = OS_ENTER_CRITICAL(); // for form sake
-									   //    dst = g_dst;
-									   //    src = g_src;
 
 	dst = rst_dst;
 	src = rst_src;
@@ -380,116 +382,121 @@ void draw_rx_screen(unsigned int bg_color)
 		usr.callsign = "ID unknown";
 		usr.firstname = "";
 		usr.name = "No entry in";
-		usr.place = "your users.csv";
+		usr.place = "your user.bin";
 		usr.state = "see README.md";
 		usr.country = "on Github";
 	}
 
+	gfx_select_font(gfx_font_small);
+
+	// int ts1 = 1;
+	int ts2 = 0;
+
 	int y_index = RX_POPUP_Y_START;
-	int scr_row = RX_POPUP_Y_START;
 
-	if (global_addl_config.userscsv > 1 && talkerAlias.length > 0)		// 2017-02-19 show Talker Alias depending on setup 0=CPS 1=DB 2=TA 3=TA & DB
-	{
-		if (grp) {
-			gfx_printf_pos(RX_POPUP_X_START, scr_row, "%d -> TG %d", src, dst);
+	if (grp) {
+		gfx_printf_pos(RX_POPUP_X_START, y_index, "%d->TG %d %s", src, dst, (ts2 == 1 ? "TS2" : "TS1"));
+	}
+	else {
+		gfx_printf_pos(RX_POPUP_X_START, y_index, "%d->%d %s", src, dst, (ts2 == 1 ? "TS2" : "TS1"));
+	}
+	y_index += GFX_FONT_SMALL_HEIGHT;
+
+	gfx_select_font(gfx_font_norm); // switch to large font
+	gfx_printf_pos2(RX_POPUP_X_START, y_index, 10, "%s %s", usr.callsign, usr.firstname);
+	y_index += GFX_FONT_NORML_HEIGHT;
+
+	if (global_addl_config.userscsv > 1 && talkerAlias.length > 0) {		// 2017-02-19 show Talker Alias depending on setup 0=CPS 1=DB 2=TA 3=TA & DB
+																			// TA or TA/DB mode
+		if (talkerAlias.length > 16) {
+			gfx_select_font(gfx_font_small);
+			gfx_printf_pos2(RX_POPUP_X_START, y_index, 10, "%s", talkerAlias.text);
+			y_index += GFX_FONT_SMALL_HEIGHT;
 		}
 		else {
-			gfx_printf_pos(RX_POPUP_X_START, scr_row, "%d -> %d", src, dst);
-		}
-		scr_row += GFX_FONT_SMALL_HEIGHT;
-
-		gfx_select_font(gfx_font_norm);
-
-		if (global_addl_config.userscsv > 1 && talkerAlias.length > 0)		// 2017-02-19 show Talker Alias depending on setup 0=CPS 1=DB 2=TA 3=TA & DB
-		{
-			gfx_printf_pos2(RX_POPUP_X_START, scr_row, 10, "%s", talkerAlias.text);
-			scr_row += GFX_FONT_NORML_HEIGHT; // previous line was in big font
-		}
-		else {
-			gfx_printf_pos2(RX_POPUP_X_START, scr_row, 10, "DMRID: %d", src);
-			scr_row += GFX_FONT_NORML_HEIGHT; // previous line was in big font
-		}
-
-		gfx_select_font(gfx_font_small);
-
-		switch (global_addl_config.userscsv) {
-		case 0:
-			gfx_puts_pos(RX_POPUP_X_START, scr_row, "Userinfo: CPS mode");
-			break;
-
-		case 1:
-			gfx_puts_pos(RX_POPUP_X_START, scr_row, "Userinfo: UserDB mode");
-			break;
-
-		case 2:
-			if (talkerAlias.length > 0) {
-				gfx_puts_pos(RX_POPUP_X_START, scr_row, "Userinfo: TalkerAlias");
+			if (talkerAlias.length < 1) {
+				gfx_printf_pos2(RX_POPUP_X_START, y_index, 10, "DMRID: %d", src);
 			}
 			else {
-				gfx_puts_pos(RX_POPUP_X_START, scr_row, "Userinfo: TA not rcvd!");
+				gfx_puts_pos(RX_POPUP_X_START, y_index, talkerAlias.text);
+				gfx_printf_pos2(RX_POPUP_X_START, y_index, 10, "%s", talkerAlias.text);
 			}
-			break;
-
-		case 3:
-			gfx_puts_pos(RX_POPUP_X_START, scr_row, "Userinfo: TA/DB mode");
-			break;
-		}
-		scr_row += GFX_FONT_SMALL_HEIGHT; // previous line was in small font
-
-
-		gfx_select_font(gfx_font_small);
-		gfx_puts_pos(RX_POPUP_X_START, scr_row, "------------------------");
-		scr_row += GFX_FONT_SMALL_HEIGHT;
-
-		if (global_addl_config.userscsv == 3)	// 3 = TA & DB
-		{
-			gfx_printf_pos(RX_POPUP_X_START, scr_row, "%s %s", usr.callsign, usr.firstname);
-			scr_row += GFX_FONT_SMALL_HEIGHT; // previous line was in small font
-
-			gfx_puts_pos(RX_POPUP_X_START, scr_row, usr.country);
-			scr_row += GFX_FONT_SMALL_HEIGHT;
+			y_index += GFX_FONT_NORML_HEIGHT;
 		}
 
 	}
 	else {
-
-		gfx_select_font(gfx_font_small);
-		if (grp) {
-			gfx_printf_pos(RX_POPUP_X_START, y_index, "%d -> TG %d", src, dst);
-		}
-		else {
-			gfx_printf_pos(RX_POPUP_X_START, y_index, "%d -> %d", src, dst);
-		}
-		y_index += GFX_FONT_SMALL_HEIGHT;
-
-		gfx_select_font(gfx_font_norm);
-		gfx_printf_pos2(RX_POPUP_X_START, y_index, 10, "%s %s", usr.callsign, usr.firstname);
-		y_index += GFX_FONT_NORML_HEIGHT; // previous line was in big font
-
-		gfx_select_font(gfx_font_small);
-
-		if (global_addl_config.userscsv > 1 && talkerAlias.length > 0)		// 2017-02-19 show Talker Alias depending on setup 0=CPS 1=DB 2=TA 3=TA & DB
-		{
-			gfx_puts_pos(RX_POPUP_X_START, y_index, talkerAlias.text);
-		}
-		else {
+		// user.bin or codeplug or talkerAlias length=0
+		nameLen = strlen(usr.name);
+		if (nameLen > 16) {  // print in smaller font
+			gfx_select_font(gfx_font_small);
 			gfx_puts_pos(RX_POPUP_X_START, y_index, usr.name);
+			y_index += GFX_FONT_SMALL_HEIGHT; // previous line was in small font
 		}
-		y_index += GFX_FONT_SMALL_HEIGHT; // previous line was in small font
+		else {  // print in larger font if it will fit
+			gfx_puts_pos(RX_POPUP_X_START, y_index, usr.name);
+			y_index += GFX_FONT_NORML_HEIGHT;
+		}
+	}
 
-		gfx_puts_pos(RX_POPUP_X_START, y_index, usr.place);
-		y_index += GFX_FONT_SMALL_HEIGHT;
+	y_index += 3;
+	if (global_addl_config.userscsv > 1) {
+		gfx_set_fg_color(0x00FF00);
+	}
+	else {
+		gfx_set_fg_color(0x0000FF);
+	}
+	gfx_blockfill(1, y_index, 156, y_index);
+	gfx_set_fg_color(0x000000);
+	y_index += 2;
 
-		gfx_puts_pos(RX_POPUP_X_START, y_index, usr.state);
-		y_index += GFX_FONT_SMALL_HEIGHT;
+	gfx_select_font(gfx_font_small);
 
-		gfx_puts_pos(RX_POPUP_X_START, y_index, usr.country);
+	switch (global_addl_config.userscsv) {
+	case 0:
+		gfx_puts_pos(RX_POPUP_X_START, y_index, "Userinfo: CPS mode");
 		y_index += GFX_FONT_SMALL_HEIGHT;
+		break;
+
+		// not implemented. I don't want to waste space for this line in user.bin mode	
+		//case 1 :
+		//	gfx_puts_pos(RX_POPUP_X_START, y_index, "Userinfo: UserDB mode");
+		//    break;
+
+	case 2:
+		if (talkerAlias.length > 0) {
+			gfx_puts_pos(RX_POPUP_X_START, y_index, "Userinfo: TalkerAlias");
+			y_index += GFX_FONT_SMALL_HEIGHT;
+			//    } else {
+			//        gfx_puts_pos(RX_POPUP_X_START, y_index, "Userinfo: TA not rcvd!");
+		}
+		break;
+
+		// not implemented due to same reason above
+		//case 3:
+		//	gfx_puts_pos(RX_POPUP_X_START, y_index, "Userinfo: TA/DB mode");
+		//    break;
+	}
+	switch (global_addl_config.userscsv) {
+	case 1:
+	case 3:
+
+		if (src != 0) {
+			gfx_select_font(gfx_font_small);
+			gfx_puts_pos(RX_POPUP_X_START, y_index, usr.place);
+			y_index += GFX_FONT_SMALL_HEIGHT;
+
+			gfx_puts_pos(RX_POPUP_X_START, y_index, usr.state);
+			y_index += GFX_FONT_SMALL_HEIGHT;
+
+			gfx_puts_pos(RX_POPUP_X_START, y_index, usr.country);
+			y_index += GFX_FONT_SMALL_HEIGHT;
+		}
 	}
 
 	gfx_select_font(gfx_font_norm);
 	gfx_set_fg_color(0xff8032);
-	gfx_set_bg_color(0xff0000);
+	gfx_set_bg_color(0xff000000);
 }
 
 void draw_ta_screen(unsigned int bg_color)
@@ -499,7 +506,6 @@ void draw_ta_screen(unsigned int bg_color)
 	int grp;
 
 	int primask = OS_ENTER_CRITICAL(); // for form sake
-	int scr_row = RX_POPUP_Y_START;
 
 	dst = rst_dst;
 	src = rst_src;
@@ -517,52 +523,45 @@ void draw_ta_screen(unsigned int bg_color)
 
 	user_t usr;
 
+	int y_index = RX_POPUP_Y_START;
+
 	gfx_select_font(gfx_font_small);
 	if (grp) {
-		gfx_printf_pos(RX_POPUP_X_START, scr_row, "%d -> TG %d", src, dst);
+		gfx_printf_pos(RX_POPUP_X_START, y_index, "%d -> TG %d", src, dst);
 	}
 	else {
-		gfx_printf_pos(RX_POPUP_X_START, scr_row, "%d -> %d", src, dst);
+		gfx_printf_pos(RX_POPUP_X_START, y_index, "%d -> %d", src, dst);
 	}
-	scr_row += GFX_FONT_SMALL_HEIGHT;
-
-	gfx_select_font(gfx_font_norm);
+	y_index += GFX_FONT_SMALL_HEIGHT;
 
 	if (global_addl_config.userscsv > 1 && talkerAlias.length > 0)		// 2017-02-19 show Talker Alias depending on setup 0=CPS 1=DB 2=TA 3=TA & DB
 	{
-		gfx_printf_pos2(RX_POPUP_X_START, scr_row, 10, "%s", talkerAlias.text);
-		scr_row += GFX_FONT_NORML_HEIGHT;
+		gfx_select_font(gfx_font_norm);
+		gfx_printf_pos2(RX_POPUP_X_START, y_index, 10, "%s", talkerAlias.text);
 	}
-	else {
-		gfx_printf_pos2(RX_POPUP_X_START, scr_row, 10, "DMRID: %d", src);
-		scr_row += GFX_FONT_NORML_HEIGHT;
-	}
+
+	y_index += GFX_FONT_NORML_HEIGHT; // previous line was in big font
 
 	gfx_select_font(gfx_font_small);
-	if (talkerAlias.length > 0) {
-		gfx_puts_pos(RX_POPUP_X_START, scr_row, "Userinfo: TalkerAlias");
-	}
-	else {
-		gfx_puts_pos(RX_POPUP_X_START, scr_row, "Userinfo: TA not rcvd!");
-	}
 
-	scr_row += GFX_FONT_SMALL_HEIGHT;
-	gfx_select_font(gfx_font_small);
-	gfx_puts_pos(RX_POPUP_X_START, scr_row, "------------------------");
-	scr_row += GFX_FONT_SMALL_HEIGHT;
-
-	if (usr_find_by_dmrid(&usr, src) == 1 || usr_find_by_dmrid(&usr, src) == 3)
+	if (usr_find_by_dmrid(&usr, src) == 0)
 	{
-		gfx_printf_pos(RX_POPUP_X_START, scr_row, "%s %s", usr.callsign, usr.firstname);
-		scr_row += GFX_FONT_SMALL_HEIGHT;
-
-		gfx_puts_pos(RX_POPUP_X_START, scr_row, usr.country);
-		scr_row += GFX_FONT_SMALL_HEIGHT;
+		gfx_puts_pos(RX_POPUP_X_START, y_index, "No userdb info");
 	}
+	else {
+		gfx_printf_pos(RX_POPUP_X_START, y_index, "%s %s", usr.callsign, usr.firstname);
+	}
+	y_index += GFX_FONT_SMALL_HEIGHT; // previous line was in small font
+
+	y_index += GFX_FONT_SMALL_HEIGHT;
+	y_index += GFX_FONT_SMALL_HEIGHT;
+
+	gfx_puts_pos(RX_POPUP_X_START, y_index, usr.country);
+	y_index += GFX_FONT_SMALL_HEIGHT;
 
 	gfx_select_font(gfx_font_norm);
 	gfx_set_fg_color(0xff8032);
-	gfx_set_bg_color(0xff0000);
+	gfx_set_bg_color(0xff000000);
 }
 /*
 #include <stdlib.h>

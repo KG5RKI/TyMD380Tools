@@ -280,7 +280,7 @@ const am_stringtable_t am_stringtab_narrator_modes[] =
 void Menu_OnKey(uint8_t key) // called on keypress from some interrupt handler
 {
 	//avoid resetting screen if menu isn't open
-	if (!Menu_IsVisible() && key=='B') {
+	if (!Menu_IsVisible() && key == 'B') {
 		return;
 	}
 	if (!is_netmon_visible()) {
@@ -864,29 +864,29 @@ int Menu_DrawIfVisible(int caller)
 			}
 		}
 		else
-			if ((pMenu->visible == APPMENU_VISIBLE) || (c == 'B' || c=='#'))
+			if ((pMenu->visible == APPMENU_VISIBLE) || (c == 'B' || c == '#'))
 			{
 				switch (c) // using ASCII characters for simplicity
 				{
 				case 'M':  // green "Menu" key : kind of ENTER
 					Menu_OnEnterKey(pMenu);
 					break; // end case < green "Menu", aka "Confirm"-key >
-				
+
 				case 'B':
-					 // already in the app menu: treat the RED KEY like "BACK",
-					{   // "Exit", "Escape", or "Delete" ?
-						if (((pMenu->edit_mode == APPMENU_EDIT_OVERWRT)
-							|| (pMenu->edit_mode == APPMENU_EDIT_INSERT))
-							&& (pMenu->edit_length > 0))
-						{
-							Menu_ProcessEditKey(pMenu, c);
-						}
-						else
-						{
-							Menu_OnExitKey(pMenu);
-						}
+					// already in the app menu: treat the RED KEY like "BACK",
+				{   // "Exit", "Escape", or "Delete" ?
+					if (((pMenu->edit_mode == APPMENU_EDIT_OVERWRT)
+						|| (pMenu->edit_mode == APPMENU_EDIT_INSERT))
+						&& (pMenu->edit_length > 0))
+					{
+						Menu_ProcessEditKey(pMenu, c);
 					}
-					break;
+					else
+					{
+						Menu_OnExitKey(pMenu);
+					}
+				}
+				break;
 				case 'U':  // cursor UP : navigate towards the FIRST item ...
 					switch (pMenu->edit_mode) // ... or increment value when editing
 					{
@@ -939,7 +939,7 @@ int Menu_DrawIfVisible(int caller)
 				default:  // Other keys .. editing or treat as a hotkey ?
 
 					if (c == '#' && pMenu->visible == APPMENU_OFF && !is_netmon_visible()) { // red "Back"-key : 
-						   // red_led_timer  = 20;    // <- poor man's debugging 
+																							 // red_led_timer  = 20;    // <- poor man's debugging 
 						{
 							Menu_Open(pMenu, NULL, NULL, APPMENU_EDIT_OFF);  // so open the default menu (items)
 							StartStopwatch(&pMenu->morse_stopwatch);

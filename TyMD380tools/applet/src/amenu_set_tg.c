@@ -23,7 +23,7 @@
 
 int     ad_hoc_talkgroup = 0; // "temporarily wanted" talkgroup, entered by user in the alternative menu
 uint8_t ad_hoc_tg_channel= 0; // current channel number when the above TG had been set
-
+int     ad_hoc_call_type = 0;
 //---------------------------------------------------------------------------
 int am_cbk_SetTalkgroup(app_menu_t *pMenu, menu_item_t *pItem, int event, int param )
   // Callback function, invoked from the "app menu" framework
@@ -60,6 +60,7 @@ int am_cbk_SetTalkgroup(app_menu_t *pMenu, menu_item_t *pItem, int event, int pa
            // the alternative menu (by setting channel_num = 0 to redraw the idle screen
            // even when tuned to a BUSY FM CHANNEL), also store the "wanted" TG here:
            ad_hoc_talkgroup = pMenu->iEditValue;
+		   ad_hoc_call_type = CONTACT_GROUP;
            // The above TG shall only be used as long as we're on the same channel.
            // When QSYing via rotary knob, the TG for the new channel shall be taken
            // from the codeplug again. So remember the channel FOR WHICH THE TG WAS SET:
@@ -92,8 +93,8 @@ void CheckTalkgroupAfterChannelSwitch(void) // [in] ad_hoc_tg_channel,ad_hoc_tal
         contact.id_l =  ad_hoc_talkgroup & 0xFF ;
         contact.id_m = (ad_hoc_talkgroup>>8) & 0xFF ;
         contact.id_h = (ad_hoc_talkgroup>>16) & 0xFF ;
-        contact.type = CONTACT_GROUP; // now the "contact" is a "talkgroup", not a "user"(-ID) !
-        snprintfw( contact.name, 16, "TG %d*", ad_hoc_talkgroup ); // (trick from PR #708)
+        contact.type = ad_hoc_call_type; // now the "contact" is a "talkgroup", not a "user"(-ID) !
+        snprintfw( contact.name, 16, "%s %d*",(ad_hoc_call_type==CONTACT_GROUP?"TG":"P"), ad_hoc_talkgroup ); // (trick from PR #708)
       }
    }
   else // channel_num != 0,  but *NOT* on the channel for which the "ad-hoc talkgroup" was entered,

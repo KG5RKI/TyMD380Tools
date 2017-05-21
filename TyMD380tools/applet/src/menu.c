@@ -1764,6 +1764,7 @@ void create_menu_entry_set_tg_screen_store(void)
 
 	ad_hoc_tg_channel = channel_num;
 	ad_hoc_talkgroup = new_tx_id;
+	ad_hoc_call_type = CONTACT_GROUP;
 
     wchar_t *p = (void*)contact.name; // write entered tg to the contact name 
                              // so that it is dislayed on the monitor1 screen
@@ -1816,6 +1817,7 @@ void create_menu_entry_set_priv_screen_store(void)
 
 	ad_hoc_tg_channel = channel_num;
 	ad_hoc_talkgroup = new_tx_id;
+	ad_hoc_call_type = CONTACT_USER;
 
     wchar_t *p = (void*)contact.name; // write entered tg to the contact name 
                              // so that it is dislayed on the monitor1 screen

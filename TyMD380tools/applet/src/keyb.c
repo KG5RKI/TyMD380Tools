@@ -122,7 +122,6 @@ extern void gui_control( int r0 );
 
 void handle_hotkey( int keycode )
 {
-    PRINT("handle hotkey: %d\n", keycode );
     
     reset_backlight();
     
@@ -178,7 +177,7 @@ void handle_hotkey( int keycode )
             break ;
 		case 7 :
 			if(nm_screen){
-				bp_send_beep(BEEP_TEST_1);
+				//bp_send_beep(BEEP_TEST_1);
 				switch_to_screen(0);
 				//channel_num = 0;
 			}else if(!Menu_IsVisible()){
@@ -256,7 +255,7 @@ void evaluate_sidekey( int button_function) // This is where new functions for s
       reset_backlight();
       break;
     case 0x51 :    // "Set Talkgroup"
-      create_menu_entry_set_tg_screen(); 
+      //create_menu_entry_set_tg_screen(); 
       // Creating the menu entry seems ok here, 
       // but it's impossible (or at least unsafe) to ENTER / invoke the menu from here.
       // Call stack: kb_handler_hook() -> handle_sidekey() -> evaluate_sidekey()
@@ -296,7 +295,7 @@ void trace_keyb(int sw)
     uint8_t kp = kb_keypressed ;
     
     if( old_kp != kp ) {
-        PRINT("kp: %d %02x -> %02x (%04x) (%d)\n", sw, old_kp, kp, kb_row_col_pressed, kb_keycode );
+        //LOGB("kp: %d %02x -> %02x (%04x) (%d)\n", sw, old_kp, kp, kb_row_col_pressed, kb_keycode );
         old_kp = kp ;
     }
 }
@@ -348,9 +347,45 @@ inline int is_intercepted_keycode( int kc )
             return 0 ;
     }    
 }
+
+inline int is_intercepted_keycode2(int kc)
+{
+	switch (kc) {
+	
+	case 20:
+	case 21:
+	case 13: //end call
+		return 1;
+	default:
+		return 0;
+	}
+}
 #endif
 
 extern void kb_handler();
+
+static int nextKey = -1;
+
+void kb_handle(int key) {
+	int kp = kb_keypressed;
+	int kc = key;
+
+	if (is_intercept_allowed()) {
+		if (is_intercepted_keycode2(kc)) {
+			//if ((kp & 2) == 2) {
+				//kb_keypressed = 8;
+				handle_hotkey(kc);
+				return;
+			//}
+		}
+	}
+
+	if (key == 11 || key == 12) {
+		kb_keycode = key;
+		kb_keypressed = 2;
+	}
+
+}
 
 void kb_handler_hook()
 {
@@ -361,9 +396,25 @@ void kb_handler_hook()
     kb_handler();
 
     trace_keyb(1);
+
+	//Menu_OnKey(KeyRowColToASCII(kb_row_col_pressed));
+
+	
+
+	if (nextKey > 0) {
+		kb_keypressed = 2;
+		kb_keycode = nextKey;
+		nextKey = -1;
+	}
     
     int kp = kb_keypressed ;
     int kc = kb_keycode ;
+
+	if (kc == 20 || kc == 21) {
+		kb_keypressed = 8;
+		return;
+	}
+
     // allow calling of menu during qso.
     // not working correctly.
     if( global_addl_config.experimental ) {
@@ -393,6 +444,9 @@ void kb_handler_hook()
     }
 
 #  if( CONFIG_APP_MENU )  // prevent opening "green key menu" as long as our "alternative menu" is open
+
+	
+
     if( Menu_IsVisible() )  
      { 
        if( (kp & 2) == 2 ) 
