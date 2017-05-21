@@ -168,9 +168,9 @@ void handle_hotkey( int keycode )
 			if(nm_screen){
 				//channel_num = 0;
 				switch_to_screen(0);
-				if(Menu_IsVisible()){
-					channel_num = 0;
-				}
+				//if(Menu_IsVisible()){
+				//	channel_num = 0;
+				//}
 			}else if(!Menu_IsVisible()){
 				switch_to_screen(9);
 				switch_to_screen(0);

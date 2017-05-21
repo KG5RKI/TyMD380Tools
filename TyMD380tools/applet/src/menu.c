@@ -24,7 +24,9 @@
 #include "util.h"
 #include "printf.h"
 #include "keyb.h"
+#include "app_menu.h"     // 'simple' alternative menu activated by red BACK-button
 #include "codeplug.h"
+#include "amenu_set_tg.h"
 #include "narrator.h" // optional: tells channel, zone, menu in Morse code.
 //#include "app_menu.h" // optional 'application' menu, activated by red BACK-button.
             // whichever was opened FIRST (via red or green button) 
@@ -1758,12 +1760,19 @@ void create_menu_entry_set_tg_screen_store(void)
     contact.id_h = (new_tx_id>>16) & 0xFF ;
     contact.type = CONTACT_GROUP ;
 
+	
+
+	ad_hoc_tg_channel = channel_num;
+	ad_hoc_talkgroup = new_tx_id;
+
     wchar_t *p = (void*)contact.name; // write entered tg to the contact name 
                              // so that it is dislayed on the monitor1 screen
     snprintfw( p, 16, "TG %d*", new_tx_id ); // (#708)
 
     extern void draw_zone_channel(); // TODO.
     draw_zone_channel();
+
+	CheckTalkgroupAfterChannelSwitch(); // ad_hoc_talkgroup -> contact.xyz
 
     md380_menu_id = md380_menu_id - 1; // exit menu to the proper level (#708) 
     md380_menu_depth = md380_menu_depth - 1;
@@ -1805,12 +1814,17 @@ void create_menu_entry_set_priv_screen_store(void)
     contact.id_h = (new_tx_id>>16) & 0xFF ;
     contact.type = CONTACT_USER;
 
+	ad_hoc_tg_channel = channel_num;
+	ad_hoc_talkgroup = new_tx_id;
+
     wchar_t *p = (void*)contact.name; // write entered tg to the contact name 
                              // so that it is dislayed on the monitor1 screen
     snprintfw( p, 16, "P: %d*", new_tx_id ); // (#708)
 
     extern void draw_zone_channel(); // TODO.
     draw_zone_channel();
+
+	CheckTalkgroupAfterChannelSwitch(); // ad_hoc_talkgroup -> contact.xyz
 
     md380_menu_id = md380_menu_id - 1; // exit menu to the proper level (#708) 
     md380_menu_depth = md380_menu_depth - 1;

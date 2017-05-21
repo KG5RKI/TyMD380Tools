@@ -279,7 +279,13 @@ const am_stringtable_t am_stringtab_narrator_modes[] =
 //---------------------------------------------------------------------------
 void Menu_OnKey(uint8_t key) // called on keypress from some interrupt handler
 {
-	am_key = key;
+	//avoid resetting screen if menu isn't open
+	if (!Menu_IsVisible() && key=='B') {
+		return;
+	}
+	if (!is_netmon_visible()) {
+		am_key = key;
+	}
 }
 
 //---------------------------------------------------------------------------
@@ -865,16 +871,7 @@ int Menu_DrawIfVisible(int caller)
 				case 'M':  // green "Menu" key : kind of ENTER
 					Menu_OnEnterKey(pMenu);
 					break; // end case < green "Menu", aka "Confirm"-key >
-				case '#':  // red "Back"-key : 
-						   // red_led_timer  = 20;    // <- poor man's debugging 
-					if (pMenu->visible == APPMENU_OFF && !is_netmon_visible()) // not visible yet..
-					{
-						Menu_Open(pMenu, NULL, NULL, APPMENU_EDIT_OFF);  // so open the default menu (items)
-						StartStopwatch(&pMenu->morse_stopwatch);
-						// Reporting the first item in Morse code later (when morse_stopwatch expires): 
-						pMenu->morse_request = AMENU_MORSE_REQUEST_ITEM_TEXT | AMENU_MORSE_REQUEST_ITEM_VALUE;
-					}
-					break;
+				
 				case 'B':
 					 // already in the app menu: treat the RED KEY like "BACK",
 					{   // "Exit", "Escape", or "Delete" ?
@@ -940,6 +937,17 @@ int Menu_DrawIfVisible(int caller)
 					pMenu->redraw = TRUE;
 					break;
 				default:  // Other keys .. editing or treat as a hotkey ?
+
+					if (c == '#' && pMenu->visible == APPMENU_OFF && !is_netmon_visible()) { // red "Back"-key : 
+						   // red_led_timer  = 20;    // <- poor man's debugging 
+						{
+							Menu_Open(pMenu, NULL, NULL, APPMENU_EDIT_OFF);  // so open the default menu (items)
+							StartStopwatch(&pMenu->morse_stopwatch);
+							// Reporting the first item in Morse code later (when morse_stopwatch expires): 
+							pMenu->morse_request = AMENU_MORSE_REQUEST_ITEM_TEXT | AMENU_MORSE_REQUEST_ITEM_VALUE;
+						}
+					}
+
 					if (pMenu->edit_mode != APPMENU_EDIT_OFF)
 					{
 						Menu_ProcessEditKey(pMenu, c);

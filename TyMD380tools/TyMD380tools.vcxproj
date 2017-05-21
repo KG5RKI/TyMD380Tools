@@ -116,7 +116,7 @@
     <ExecutablePath>C:\Windows\System32;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
-    <NMakeBuildCommandLine>"C:\cygwin\bin\make.exe" flash_S13</NMakeBuildCommandLine>
+    <NMakeBuildCommandLine>"C:\cygwin\bin\make.exe" flash</NMakeBuildCommandLine>
     <NMakeCleanCommandLine>"C:\cygwin\bin\make.exe" clean</NMakeCleanCommandLine>
     <NMakeReBuildCommandLine>"C:\cygwin\bin\make.exe" flash_S13</NMakeReBuildCommandLine>
     <NMakePreprocessorDefinitions>CONFIG_SPIFLASH;CONFIG_GRAPHICS;CONFIG_SPIF5000;CONFIG_AMBE;CONFIG_AES;CONFIG_MORSE_OUTPUT;CONFIG_DIMMED_LIGHT;CONFIG_APP_MENU;FW_D13_020;WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>

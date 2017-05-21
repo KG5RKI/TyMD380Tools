@@ -138,6 +138,18 @@
     <ClCompile Include="applet\src\util.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="applet\src\amenu_codeplug.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\amenu_hexmon.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\amenu_set_tg.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\amenu_utils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="applet\src\addl_config.h">
@@ -253,6 +265,15 @@
     </ClInclude>
     <ClInclude Include="applet\config.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\amenu_codeplug.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\amenu_hexmon.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\amenu_set_tg.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
