@@ -33,6 +33,18 @@ inline int is_tracing()
     return (global_addl_config.debug != 0) || (global_addl_config.netmon != 0) ;
 }
 
+
+//Filter out stupid callsign that shows up for dv4mini
+void updateSrcDst(int src, int dst)
+{
+	if (src != 3112528) {
+		rst_src = src;
+	}
+	if (dst != 3112528) {
+		rst_dst = dst;
+	}
+}
+
 void rst_voice_lc_header(lc_t *lc)
 {
     int src = get_adr( lc->src );
@@ -42,8 +54,7 @@ void rst_voice_lc_header(lc_t *lc)
     int groupcall = flco == 0;
 
     if( !rst_voice_active || rst_src != src || rst_dst != dst) {
-        rst_src = src ;
-        rst_dst = dst ;
+		updateSrcDst(src, dst);
         rst_flco = flco ;
 
         PRINT("\n* Call from %d to %s%d started.\n", src, groupcall ? "group ":"", dst);
@@ -75,8 +86,7 @@ void rst_term_with_lc(lc_t *lc)
     int groupcall = flco == 0;
     
     if( rst_voice_active ) {
-        rst_src = src ;
-        rst_dst = dst ;
+		updateSrcDst(src, dst);
         PRINT("\n* Call from %d to %s%d ended.\n", src, groupcall ? "group ":"", dst);
         
         PRINT("ce " );

@@ -171,6 +171,7 @@ void draw_micbargraph()
             relative_peak_cb = intCentibel(max_level) - fullscale_offset;
             centibel_val = relative_peak_cb;
 
+			CheckTalkgroupAfterChannelSwitch();
 
 			if (lastframe % 5 == 1) 
 			{ // reduce drawing
@@ -229,7 +230,7 @@ void draw_micbargraph()
 					gfx_set_bg_color(bg_color);
 					
 				//vertical
-				}else if(global_addl_config.micbargraph>=2 ){
+				}else if(global_addl_config.micbargraph>=2 && global_addl_config.micbargraph != 4){
 					
 					//gfx_blockfill(143, 22, 148, 120);
 					
@@ -284,7 +285,7 @@ void draw_micbargraph()
 				}
 				
 				//Draw LH user info on screen during TX
-				if((fDoOnce == 0 || fDoOnce == 15) && global_addl_config.micbargraph==3){
+				if((fDoOnce == 0 || fDoOnce == 15) && (global_addl_config.micbargraph==3 || global_addl_config.micbargraph == 4)){
 					//gfx_select_font(gfx_font_small);
 					{
 						
@@ -342,6 +343,8 @@ void draw_micbargraph()
         rx_active = 0;
         red = 0;
         green = 0;
+
+		CheckTalkgroupAfterChannelSwitch();
     }
 }
 
@@ -355,7 +358,7 @@ uint32_t rgb16torgb(uint16_t color) {
 
 void draw_rx_screen(unsigned int bg_color)
 {
-	int dst;
+	static int dst;
 	int src;
 	int grp;
 	int nameLen;

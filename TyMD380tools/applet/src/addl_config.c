@@ -76,7 +76,7 @@ int cfg_load()
     
     // range limit
     R(global_addl_config.userscsv,3);			// 2017-02-19	0-disable 1-userscsv 2-talkeralias 3-both
-    R(global_addl_config.micbargraph,3);
+    R(global_addl_config.micbargraph,4);
     R(global_addl_config.debug,1);
     R(global_addl_config.rbeep,1);
     R(global_addl_config.promtg,1);

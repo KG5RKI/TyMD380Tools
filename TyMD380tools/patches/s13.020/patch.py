@@ -40,6 +40,14 @@ if __name__ == '__main__':
     patcher.nopout((0x804b9fc + 0x2))
 	
 	
+    patcher.nopout((0x0802062e))
+    patcher.nopout((0x0802062e + 0x2))
+    patcher.nopout((0x0802062e + 0x4))
+    patcher.nopout((0x0802062e + 0x6))
+    patcher.nopout((0x0802062e + 0x8))
+    patcher.nopout((0x0802062e + 0xA))
+	
+	
     patcher.nopout((0x8020006))
     patcher.nopout((0x8020006 + 0x2))
     # Marks the version as "md380tools"

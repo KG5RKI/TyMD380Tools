@@ -27,6 +27,7 @@
 #include "app_menu.h"     // 'simple' alternative menu activated by red BACK-button
 #include "codeplug.h"
 #include "amenu_set_tg.h"
+#include "radiostate.h"
 #include "narrator.h" // optional: tells channel, zone, menu in Morse code.
 //#include "app_menu.h" // optional 'application' menu, activated by red BACK-button.
             // whichever was opened FIRST (via red or green button) 
@@ -72,6 +73,7 @@ const static wchar_t wt_micbargraph[]       = L"Mic bargraph";
 
 const static wchar_t wt_micbargraph_vert[]       = L"Vertical";
 const static wchar_t wt_micbargraph_vert_lh[]    = L"Vertical + LH";
+const static wchar_t wt_micbargraph_lh[]         = L"LH Only";
 const static wchar_t wt_micbargraph_horz[]       = L"Horizontal";
 
 const static wchar_t wt_backlight[]         = L"Backlight Tmr";
@@ -431,6 +433,15 @@ void create_menu_entry_micbargraph_vert_lh_screen(void)
     cfg_save();
 }
 
+void create_menu_entry_micbargraph_lh_screen(void)
+{
+	mn_create_single_timed_ack(wt_micbargraph, wt_micbargraph_lh);
+
+	global_addl_config.micbargraph = 4;
+
+	cfg_save();
+}
+
 void create_menu_entry_micbargraph_horz_screen(void)
 {
     mn_create_single_timed_ack(wt_micbargraph,wt_micbargraph_horz);
@@ -575,7 +586,7 @@ void mn_cp_override_off(void)
 {
     mn_create_single_timed_ack(wt_cp_override, wt_splash_manual);
 
-    global_addl_config.boot_demo = 0;
+    //global_addl_config.boot_demo = 0;
 
     global_addl_config.cp_override &= ~CPO_BL1 ;
     global_addl_config.cp_override &= ~CPO_BL2 ;
@@ -592,7 +603,7 @@ void mn_cp_override_call_dmrid(void)
 {
     mn_create_single_timed_ack(wt_cp_override, wt_splash_callid);
 
-    global_addl_config.boot_demo = 0;
+    //global_addl_config.boot_demo = 0;
     
     global_addl_config.cp_override |= CPO_BL1 ;
     global_addl_config.cp_override |= CPO_BL2 ;
@@ -854,6 +865,9 @@ void create_menu_entry_micbargraph_screen(void)
     mn_submenu_add(wt_micbargraph_horz, create_menu_entry_micbargraph_horz_screen);
     mn_submenu_add(wt_micbargraph_vert, create_menu_entry_micbargraph_vert_screen);
 	mn_submenu_add(wt_micbargraph_vert_lh, create_menu_entry_micbargraph_vert_lh_screen);
+	mn_submenu_add(wt_micbargraph_lh, create_menu_entry_micbargraph_lh_screen);
+
+	
 	
     
     mn_submenu_finalize();
@@ -1858,9 +1872,10 @@ void create_menu_entry_set_tg_screen(void)
    }
 
    // load current tg into edit buffer (#708) :
-   current_tg = (int) contact.id_h ;
-   current_tg = (current_tg<<8) + (int) contact.id_m;
-   current_tg = (current_tg<<8) + (int) contact.id_l;
+   //current_tg = (int) contact.id_h ;
+   //current_tg = (current_tg<<8) + (int) contact.id_m;
+   //current_tg = (current_tg<<8) + (int) contact.id_l;
+   current_tg = rst_dst;
 
    nchars = uli2w(current_tg, md380_menu_edit_buf);
 #if 0
@@ -1900,7 +1915,7 @@ void create_menu_entry_set_priv_screen(void)
    md380_menu_0x2001d3c1 = md380_menu_0x200011e4;
    mn_editbuffer_poi = md380_menu_edit_buf;
 
-   // clear return buffer //  see 0x08012a98
+
    // TODO: is wchar_t (16 bits))
    for (i = 0; i < 0x11; i++) {
       p = (uint8_t *) mn_editbuffer_poi;
@@ -1909,19 +1924,17 @@ void create_menu_entry_set_priv_screen(void)
    }
 
    // load current tg into edit buffer (#708) :
-   //current_tg = (int) contact.id_h ;
-   //current_tg = (current_tg<<8) + (int) contact.id_m;
-   //current_tg = (current_tg<<8) + (int) contact.id_l;
+   current_tg = (int)rst_src;
 
-   //nchars = uli2w(current_tg, md380_menu_edit_buf);
-   nchars = 0;
+   nchars = uli2w(current_tg, md380_menu_edit_buf);
+   //nchars = 0;
 #if 0
     printf("\ncreate_menu_entry_set_tg_screen %x %d \n", md380_menu_edit_buf, nchars);
     printhex2((char *) md380_menu_edit_buf, 14);
     printf("\n");
 #endif
 
-    md380_menu_0x2001d3ed = 8; // max char
+    md380_menu_0x2001d3ed = 16; // max char
     md380_menu_0x2001d3ee = nchars; //  startpos cursor
     md380_menu_0x2001d3ef = nchars; //  startpos cursor
     md380_menu_0x2001d3f0 = 3; // 3 = numerical input

@@ -1176,7 +1176,7 @@ static void PollKeysForScroll(void)
 			kb_handle(KeyRowColToVal(key));
 			autorepeat_countdown = 500/*ms*/ / 12;
 		}
-
+		CheckTalkgroupAfterChannelSwitch();
 	}
 	else // keyboard focus not on Tytera's ('green') menu...
 	{   // so is it "our" key now ?  Not necessarily !

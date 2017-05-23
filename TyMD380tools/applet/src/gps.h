@@ -58,6 +58,30 @@ extern gps_t gps_data ;
 // q_status_5[3] flags?
 // q_struct_1[0] flags?
 
+/*
+bit 2 : 1=N, 0=S
+bit 3 : 1=E, 0=W
+bit 4 : Fix
+bits(5:11): Speed in knots/2
+bits(12:18): Latitude. Degrees
+bits(19:24): Latitude. Minutes integer part
+bits(25:38): Latitude. Minutes decimal part
+bits(39:46): Longitude. Degrees
+bits(47:52): Longitude. Minutes integer part
+bits(53:66): Longitude. Minutes decimal part
+bits(67:80): Altitude in meters, only least 8bits used (bug)
+bits(81:96): Garbage?
+
+(0-based indexing convention)
+Bit offset  Length  Field
+--------------------------------------------
+10          8       Latitude Degree
+18          6       Latitude Minute
+24          14      Latitude Minute Decimal
+38          8       Longitude Degree
+46          6       Longitude Minute
+52          14      Longitude Minute Decimal
+*/
 
 
 #ifdef __cplusplus

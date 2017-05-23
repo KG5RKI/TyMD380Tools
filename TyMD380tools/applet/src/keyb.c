@@ -30,6 +30,7 @@
 # include "app_menu.h" // optional 'application' menu, activated by red BACK-button
 #endif
 #include <stdint.h>
+#include "amenu_set_tg.h"
 
 uint8_t kb_backlight=0; // flag to disable backlight via sidekey.
 // Other keyboard-related variables belong to the original firmware,
@@ -108,6 +109,11 @@ void copy_dst_to_contact()
     extern void draw_zone_channel(); // TODO.
     
     draw_zone_channel();
+
+	ad_hoc_talkgroup = dst;
+	ad_hoc_call_type = CONTACT_GROUP;
+	ad_hoc_tg_channel = channel_num;
+	CheckTalkgroupAfterChannelSwitch();
 #else
 #endif
 }
