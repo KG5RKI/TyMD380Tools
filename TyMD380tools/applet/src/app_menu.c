@@ -804,9 +804,11 @@ int Menu_DrawIfVisible(int caller)
 	if (Menu_old_channel_num != channel_num) // defeat the trouble in amenu_set_tg :
 	{
 		Menu_old_channel_num = channel_num; // Tytera may have overwritten struct contact..
-		CheckTalkgroupAfterChannelSwitch(); // so switch to the AD-HOC talkgroup again ?
+		//CheckTalkgroupAfterChannelSwitch(); // so switch to the AD-HOC talkgroup again ?
 	}
 
+	CheckTalkgroupAfterChannelSwitch();
+	
 	// The following really doesn't belong here, but Menu_DrawIfVisible()
 	// returns early from half a dozen of "hooked gfx stuff", and since
 	// the Netmon screens (text console) can be viewed from this menu,
@@ -815,6 +817,7 @@ int Menu_DrawIfVisible(int caller)
 	if ((caller == AM_CALLER_F_4315_HOOK)
 		&& (global_addl_config.netmon != 0))
 	{
+		
 		netmon_update(); // replaces the call from f_4315_hook(), whatever that is
 	}
 

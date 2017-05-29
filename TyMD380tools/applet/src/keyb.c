@@ -128,7 +128,8 @@ extern void gui_control( int r0 );
 
 void handle_hotkey( int keycode )
 {
-    
+	char lat[23] = { 0 };
+	char lng[23] = { 0 };
     reset_backlight();
     
     switch( keycode ) {
@@ -139,7 +140,37 @@ void handle_hotkey( int keycode )
         case 1 :
             //sms_test();
 			//c5000_spi0_writereg( 0x0F, 0xE8);
-			//bp_send_beep(BEEP_TEST_3);
+			bp_send_beep(BEEP_TEST_3);
+
+			//con_printf("%S\r\n", (wchar_t*)0x2001E1A0);
+			;
+			int i = 0;
+
+			
+
+#if defined(FW_S13_020)
+
+			//typedef void stuff(void);
+			//stuff* f = (stuff*)0x8016850;
+			//f();
+
+			char *c = (char*)0x2001E1A0;
+#else
+			char *c = (char*)0x2001E1A0;
+#endif
+			for (; *c != 0 && *c != 0xFF; c += 2) {
+				syslog_printf("%c", *c);
+				lat[i] = *c;
+			}
+			c += 2;
+			i = 0;
+			syslog_printf("\n");
+			for (; *c != 0 && *c != 0xFF; c += 2) {
+				syslog_printf("%c", *c);
+				lng[i] = *c;
+			}
+			syslog_printf("\n\n");
+
             break ;
 		case 2 :
 			slog_redraw();
@@ -157,6 +188,7 @@ void handle_hotkey( int keycode )
 			lastheard_clear();
 			slog_clear();
 			clog_clear();
+			slog_redraw();
 			nm_started = 0;	// reset nm_start flag used for some display handling
 			nm_started5 = 0;	// reset nm_start flag used for some display handling
 			nm_started6 = 0;	// reset nm_start flag used for some display handling

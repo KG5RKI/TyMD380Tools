@@ -83,6 +83,8 @@ Bit offset  Length  Field
 52          14      Longitude Minute Decimal
 */
 
+//on S13, buffer is at 0x2001E1A0
+
 
 #ifdef __cplusplus
 }
