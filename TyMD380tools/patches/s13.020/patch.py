@@ -14,7 +14,12 @@ monitormodeprivate = True
 if __name__ == '__main__':
     print("Creating patches from unwrapped.img.")
     patcher = Patcher("unwrapped.img")
-
+	
+	#test
+    #patcher.sethword(0x08016850, 0x4770)
+    patcher.nopout((0x080137D0))
+    patcher.nopout((0x080137D0 + 0x2))
+	
     # bypass vocoder copy protection on S013.020
     patcher.nopout((0x8034a60))
     patcher.nopout((0x8034a60 + 0x2))

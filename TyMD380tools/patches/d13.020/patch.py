@@ -14,6 +14,10 @@ monitormodeprivate = True
 if __name__ == '__main__':
     print("Creating patches from unwrapped.img.")
     patcher = Patcher("unwrapped.img")
+	
+	#test gps
+    #patcher.nopout((0x800C278 + 0))
+    #patcher.nopout((0x800C278 + 2))
 
     # bypass vocoder copy protection on D013.020
 
@@ -50,47 +54,51 @@ if __name__ == '__main__':
 	
 	#test
 	
-    patcher.nopout((0x0802D580))
-    patcher.nopout((0x0802D580 + 0x2))
-    patcher.nopout((0x0802D59A))
-    patcher.nopout((0x0802D59A + 0x2))
+	#remove password for program radio
+	patcher.nopout((0x080136E0))
+    patcher.nopout((0x080136E0 + 0x2))
 	
-    patcher.nopout((0x0802D6D2))
-    patcher.nopout((0x0802D6D2 + 0x2))
+    #patcher.nopout((0x0802D580))
+    #patcher.nopout((0x0802D580 + 0x2))
+    #patcher.nopout((0x0802D59A))
+    #patcher.nopout((0x0802D59A + 0x2))
 	
-    patcher.nopout((0x0802D6D8))
-    patcher.nopout((0x0802D6D8 + 0x2))
+    #patcher.nopout((0x0802D6D2))
+    #patcher.nopout((0x0802D6D2 + 0x2))
 	
-    patcher.nopout((0x0802D6E0))
-    patcher.nopout((0x0802D6E0 + 0x2))
+    #patcher.nopout((0x0802D6D8))
+    #patcher.nopout((0x0802D6D8 + 0x2))
 	
-    patcher.nopout((0x0802D6F2))
-    patcher.nopout((0x0802D6F2 + 0x2))
+    #patcher.nopout((0x0802D6E0))
+    #patcher.nopout((0x0802D6E0 + 0x2))
 	
-    patcher.nopout((0x0802D70E))
-    patcher.nopout((0x0802D70E + 0x2))
+    #patcher.nopout((0x0802D6F2))
+    #patcher.nopout((0x0802D6F2 + 0x2))
 	
-    patcher.nopout((0x0802D7B2))
-    patcher.nopout((0x0802D7B2 + 0x2))
+    #patcher.nopout((0x0802D70E))
+    #patcher.nopout((0x0802D70E + 0x2))
 	
-    patcher.nopout((0x0802D7C6))
-    patcher.nopout((0x0802D7C6 + 0x2))
+    #patcher.nopout((0x0802D7B2))
+    #patcher.nopout((0x0802D7B2 + 0x2))
+	
+    #patcher.nopout((0x0802D7C6))
+    #patcher.nopout((0x0802D7C6 + 0x2))
 	
 	
-    patcher.nopout((0x0802D6BE))
-    patcher.nopout((0x0802D6BE + 0x2))
+    #patcher.nopout((0x0802D6BE))
+    #patcher.nopout((0x0802D6BE + 0x2))
 	
-    patcher.nopout((0x0802D6B2))
-    patcher.nopout((0x0802D6B2 + 0x2))
+    #patcher.nopout((0x0802D6B2))
+    #patcher.nopout((0x0802D6B2 + 0x2))
 	
-    patcher.nopout((0x0802D6A6))
-    patcher.nopout((0x0802D6A6 + 0x2))
+    #patcher.nopout((0x0802D6A6))
+    #patcher.nopout((0x0802D6A6 + 0x2))
 	
-    patcher.nopout((0x0802D69A))
-    patcher.nopout((0x0802D69A + 0x2))
+    #patcher.nopout((0x0802D69A))
+    #patcher.nopout((0x0802D69A + 0x2))
 	
-    patcher.nopout((0x0802D682))
-    patcher.nopout((0x0802D682 + 0x2))
+    #patcher.nopout((0x0802D682))
+    #patcher.nopout((0x0802D682 + 0x2))
 	
 	# remove volume screen
     patcher.nopout((0x0801FED2))

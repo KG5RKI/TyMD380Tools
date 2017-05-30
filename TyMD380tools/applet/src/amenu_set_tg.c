@@ -79,12 +79,20 @@ void CheckTalkgroupAfterChannelSwitch(void) // [in] ad_hoc_tg_channel,ad_hoc_tal
   // Called from somewhere (display task?) after a channel-switch,
   // including the transition of channel_num = 0 -> channel_num from channel knob.
 {
+
+	extern wchar_t channel_name[];
+	syslog_printf("cn:%S\n", channel_name);
+
   // red_led_timer = 5; // detected a transition in channel_num ? very short pulse with the red LED !
   if( channel_num==0 )  // still on the "dummy channel" to force redrawing the 'idle' screen ?
    { // Don't modify anything here. Tytera is just going to overwrite the "wanted" talkgroup !
    }
-  else if( channel_num == ad_hoc_tg_channel )
-   { // When on THIS channel, should we be on the 'ad-hoc entered' talkgroup ? 
+  else if (channel_num == ad_hoc_tg_channel)
+  { // When on THIS channel, should we be on the 'ad-hoc entered' talkgroup ? 
+
+	  
+
+
      if( ad_hoc_talkgroup <= 0 ) // ... no 'wanted' talkgroup so don't modify 'contact' 
       {
       }
@@ -106,6 +114,32 @@ void CheckTalkgroupAfterChannelSwitch(void) // [in] ad_hoc_tg_channel,ad_hoc_tal
      //    Intuitively switch to A DIFFERENT channel and back, to invoke the "original" TG.
      ad_hoc_tg_channel = 0; // FORGET the *channel* with the ad-hoc TG, but not the ad-hoc TG itself,
      // so we can quickly recall it via app-menu in "up-down"-edit mode.
+
+	 wchar_t *cn_override_group_prefix = L"TG-";
+	 //If channel name begins with "TG-" override talkgroup # with ID from name
+
+	 int tgOverride = 0;
+
+	 syslog_printf("Checkin %S\n", channel_name);
+	 if (memcmp(channel_name, cn_override_group_prefix, 6) == 0)
+	 {
+		 wchar_t *bf = &channel_name[3];
+		 while (*bf != 0) {
+			 tgOverride *= 10;
+			 tgOverride += (*bf++) - '0';
+		 }
+
+		 if (tgOverride > 0xffffff) {
+			 syslog_printf("No Override, invalid\n");
+			 return;
+		 }
+		 contact.id_l = tgOverride & 0xFF;
+		 contact.id_m = (tgOverride >> 8) & 0xFF;
+		 contact.id_h = (tgOverride >> 16) & 0xFF;
+		 contact.type = CONTACT_GROUP;
+		 syslog_printf("Override TG- to %d\n", tgOverride);
+		 snprintfw(contact.name, 16, "%s %d*", (contact.type == CONTACT_GROUP ? "TG" : "P"), tgOverride); // (trick from PR #708)
+	 }
    }
 } // end CheckTalkgroupAfterChannelSwitch()
 

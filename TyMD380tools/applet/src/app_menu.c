@@ -950,6 +950,10 @@ int Menu_DrawIfVisible(int caller)
 							pMenu->morse_request = AMENU_MORSE_REQUEST_ITEM_TEXT | AMENU_MORSE_REQUEST_ITEM_VALUE;
 						}
 					}
+					else if (c == '#' && pMenu->visible == APPMENU_VISIBLE && !is_netmon_visible()) {
+						Menu_Close(pMenu);
+						Menu_Open(pMenu, NULL/*main items*/, "TkGrp"/*cpJumpToItem*/, APPMENU_EDIT_OVERWRT);
+					}
 
 					if (pMenu->edit_mode != APPMENU_EDIT_OFF)
 					{

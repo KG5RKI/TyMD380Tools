@@ -24,6 +24,7 @@
 #include "unclear.h"
 #include "app_menu.h" // optional 'application' menu, activated by red BACK-button
 #include "lcd_driver.h"
+#include "codeplug.h"
 
 char eye_paltab[] = {
     0xd7, 0xd8, 0xd6, 0x00, 0x88, 0x8a, 0x85, 0x00, 0xe1, 0xe2, 0xe0, 0x00, 0xff, 0xff, 0xff, 0x00,
@@ -365,6 +366,8 @@ void draw_rx_screen(unsigned int bg_color)
 	//char *timeSlot[3];
 	int primask = OS_ENTER_CRITICAL(); // for form sake
 
+	channel_info_t *ci = &current_channel_info;
+
 	dst = rst_dst;
 	src = rst_src;
 	grp = rst_grp;
@@ -392,8 +395,8 @@ void draw_rx_screen(unsigned int bg_color)
 
 	gfx_select_font(gfx_font_small);
 
-	// int ts1 = 1;
-	int ts2 = 0;
+	int ts1 = (ci->cc_slot_flags >> 2) & 0x1;
+	int ts2 = (ci->cc_slot_flags >> 3) & 0x1;
 
 	int y_index = RX_POPUP_Y_START;
 
