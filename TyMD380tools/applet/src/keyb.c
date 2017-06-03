@@ -214,6 +214,10 @@ void handle_hotkey( int keycode )
 			}
             break ;
 		case 7 :
+			//Let 7 disable ad-hoc tg mode;
+			if (!nm_screen && !Menu_IsVisible()) {
+				ad_hoc_tg_channel = 0;
+			}
 			if(nm_screen){
 				//bp_send_beep(BEEP_TEST_1);
 				switch_to_screen(0);
@@ -222,6 +226,7 @@ void handle_hotkey( int keycode )
 				switch_to_screen(9);
 				switch_to_screen(0);
 			}
+			
 			break;
         case 8 :
             //bp_send_beep(BEEP_TEST_2);
