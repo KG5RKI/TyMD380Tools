@@ -53,11 +53,11 @@ if __name__ == '__main__':
     # Color Code check
 	
 	#test
-	
-	#remove password for program radio
-	patcher.nopout((0x080136E0))
+    
+    #remove password for program radio
+    patcher.nopout((0x080136E0))
     patcher.nopout((0x080136E0 + 0x2))
-	
+    
     #patcher.nopout((0x0802D580))
     #patcher.nopout((0x0802D580 + 0x2))
     #patcher.nopout((0x0802D59A))

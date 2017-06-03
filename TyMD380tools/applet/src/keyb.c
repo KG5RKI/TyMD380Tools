@@ -315,10 +315,17 @@ void evaluate_sidekey( int button_function) // This is where new functions for s
       break;
 #  endif
 
-    case 0x54 : // repeats the last 'Morse anouncement' (short, not the full story)
+    case 0x54 : // toggle promiscuous mode
       global_addl_config.promtg = (global_addl_config.promtg==0? 1: 0);
       cfg_save();
       break;
+
+	case 0x55: // adhoc private call
+		ad_hoc_talkgroup = rst_src;
+		ad_hoc_tg_channel = channel_num;
+		ad_hoc_call_type = CONTACT_USER;
+		CheckTalkgroupAfterChannelSwitch();
+		break;
 
     default:
       return;

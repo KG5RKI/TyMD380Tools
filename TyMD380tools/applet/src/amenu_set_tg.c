@@ -81,7 +81,6 @@ void CheckTalkgroupAfterChannelSwitch(void) // [in] ad_hoc_tg_channel,ad_hoc_tal
 {
 
 	extern wchar_t channel_name[];
-	syslog_printf("cn:%S\n", channel_name);
 
   // red_led_timer = 5; // detected a transition in channel_num ? very short pulse with the red LED !
   if( channel_num==0 )  // still on the "dummy channel" to force redrawing the 'idle' screen ?
@@ -120,7 +119,6 @@ void CheckTalkgroupAfterChannelSwitch(void) // [in] ad_hoc_tg_channel,ad_hoc_tal
 
 	 int tgOverride = 0;
 
-	 syslog_printf("Checkin %S\n", channel_name);
 	 if (memcmp(channel_name, cn_override_group_prefix, 6) == 0)
 	 {
 		 wchar_t *bf = &channel_name[3];
@@ -130,14 +128,13 @@ void CheckTalkgroupAfterChannelSwitch(void) // [in] ad_hoc_tg_channel,ad_hoc_tal
 		 }
 
 		 if (tgOverride > 0xffffff) {
-			 syslog_printf("No Override, invalid\n");
+			 //syslog_printf("No Override, invalid\n");
 			 return;
 		 }
 		 contact.id_l = tgOverride & 0xFF;
 		 contact.id_m = (tgOverride >> 8) & 0xFF;
 		 contact.id_h = (tgOverride >> 16) & 0xFF;
 		 contact.type = CONTACT_GROUP;
-		 syslog_printf("Override TG- to %d\n", tgOverride);
 		 snprintfw(contact.name, 16, "%s %d*", (contact.type == CONTACT_GROUP ? "TG" : "P"), tgOverride); // (trick from PR #708)
 	 }
    }

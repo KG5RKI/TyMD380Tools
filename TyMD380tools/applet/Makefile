@@ -63,7 +63,9 @@ SRCS += amenu_hexmon.o
 SRCS += amenu_utils.o
 SRCS += amenu_set_tg.o
 SRCS += amenu_codeplug.o
+SRCS += amenu_ccsrch.o
 SRCS += timer.o
+
 
 ifdef INC_DISPFLIP
 SRCS +=  dispflip.o  # display flip is included @ d13.020

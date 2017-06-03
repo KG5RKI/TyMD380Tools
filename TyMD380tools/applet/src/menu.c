@@ -151,7 +151,9 @@ const static wchar_t wt_button_alt_text[]   = L"Alt. Text Color";
 const static wchar_t wt_button_narrator[]   = L"Morse Narrator";
 const static wchar_t wt_button_cw_repeat[]  = L"Morse Repeat";
 #endif
-const static wchar_t wt_button_toggle_prom[]  = L"Toggle Promiscuous";
+const static wchar_t wt_button_toggle_prom[] = L"Toggle Promiscuous";
+const static wchar_t wt_button_adhoc_priv[]  = L"Priv Call LH";
+
 const static uint8_t button_functions[]     = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a,
                                                0x0b, 0x0c, 0x0d, 0x0e, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1e,
                                                0x1f, 0x26, 0x50, 0x51
@@ -160,6 +162,7 @@ const static uint8_t button_functions[]     = {0x00, 0x01, 0x02, 0x03, 0x04, 0x0
                                               ,0x53 // repeats the last 'Morse announcement'  "  "  "
 #                                            endif
 											  ,0x54 // toggle promisc
+											  ,0x55
                                               };
 
 uint8_t button_selected = 0;
@@ -1204,6 +1207,7 @@ void nm_button_set_tg()  { set_sidebutton_function(wt_button_set_tg);  }
  void nm_button_cw_repeat(){ set_sidebutton_function(wt_button_cw_repeat); }
 #endif
 void nm_button_toggle_prom(){ set_sidebutton_function(wt_button_toggle_prom); }
+void nm_button_adhoc_priv() { set_sidebutton_function(wt_button_adhoc_priv); }
 
 void select_sidebutton_function_screen(void)
 {
@@ -1261,6 +1265,8 @@ void select_sidebutton_function_screen(void)
    mn_submenu_add(wt_button_cw_repeat,nm_button_cw_repeat);
 # endif
    mn_submenu_add(wt_button_toggle_prom,nm_button_toggle_prom);
+   mn_submenu_add(wt_button_adhoc_priv, nm_button_adhoc_priv);
+   
 
 
    mn_submenu_finalize();

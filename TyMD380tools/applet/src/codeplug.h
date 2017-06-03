@@ -44,6 +44,8 @@ extern "C" {
 	// with the ZONE NUMBER at byte-offset #3. There's a copy of this in RAM:
 #if defined(FW_D13_020)
 # define CODEPLUG_RAM_ADDR_ZONE_NUMBER_STRUCT 0x2001E57C /* used in amenu_codeplug.c */
+#elif defined(FW_S13_020)
+# define CODEPLUG_RAM_ADDR_ZONE_NUMBER_STRUCT 0x2001E64C
 #endif // for firmware D13.020 only !
 	typedef struct
 	{ // Saved  as a FIVE-byte-thing in SPI-Flash @ 0x2F000, see 0x8022ece in D13.020;

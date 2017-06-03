@@ -1103,8 +1103,8 @@ if __name__ == '__main__':
 ###
 ###    # display hooks is in d13.020 included
 ###    ## display flip workaround see issue #178 not necessary on 0X3.020
-###    merger.hookbl(0x08031fde,sapplet.getadr("display_init_hook_1"),0);
-###    merger.hookbl(0x0803200e,sapplet.getadr("display_init_hook_2"),0);
+    merger.hookbl(0x08031fde,sapplet.getadr("display_init_hook_1"),0);
+    merger.hookbl(0x0803200e,sapplet.getadr("display_init_hook_2"),0);
 
     
     # DL4YHF : We don't know here if the PWM'ed backlight, and thus

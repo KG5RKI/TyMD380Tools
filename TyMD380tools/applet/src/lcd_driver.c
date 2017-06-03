@@ -694,15 +694,16 @@ int LCD_DrawString(lcd_context_t *pContext, char *cp)
 	return x;
 } // end LCD_DrawString()
 
+char sz127[0x500];
   //---------------------------------------------------------------------------
 int LCD_Printf(lcd_context_t *pContext, char *fmt, ...)
 // Almost the same as LCD_DrawString,
 // but with all goodies supported by tinyprintf .
 {
-	char sz127[128];
+	
 	va_list va;
 	va_start(va, fmt);
-	va_snprintf(sz127, 127, fmt, va);
+	va_snprintf(sz127, 0x500-1, fmt, va);
 	va_end(va);
 	return LCD_DrawString(pContext, sz127);
 } // end LCD_Printf()

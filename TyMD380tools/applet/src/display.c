@@ -25,6 +25,8 @@
 #include "app_menu.h" // optional 'application' menu, activated by red BACK-button
 #include "lcd_driver.h"
 #include "codeplug.h"
+#include "amenu_set_tg.h"
+
 
 char eye_paltab[] = {
     0xd7, 0xd8, 0xd6, 0x00, 0x88, 0x8a, 0x85, 0x00, 0xe1, 0xe2, 0xe0, 0x00, 0xff, 0xff, 0xff, 0x00,
@@ -339,6 +341,7 @@ void draw_micbargraph()
         //gfx_set_fg_color(0xff8032);
         //gfx_set_bg_color(bg_color);
         //gfx_blockfill(9, 54, 151, 70);
+		channel_num = 0;
 		//LCD_FillRect(0, 16, MAX_X - 1/*x2*/,
 		//	MAX_Y - 1/*y2*/, 0);
         rx_active = 0;
@@ -672,6 +675,29 @@ void draw_alt_statusline()
     gfx_select_font(gfx_font_norm);
 }
 
+void draw_adhoc_statusline()
+{
+	int dst;
+	int src;
+	int grp;
+	int fFound = 0;
+
+	gfx_set_fg_color(0);
+	gfx_set_bg_color(0xff8032);
+	gfx_select_font(gfx_font_small);
+
+	user_t usr;
+	if (usr_find_by_dmrid(&usr, ad_hoc_talkgroup) == 0) {
+		gfx_printf_pos2(RX_POPUP_X_START + 20, 55, 120, "AdHoc: %s - %d", (ad_hoc_call_type == CONTACT_GROUP ? "TG" : "Priv"), ad_hoc_talkgroup);
+	}
+	else {
+		gfx_printf_pos2(RX_POPUP_X_START + 20, 55, 120, "AdHoc: %s - %s", (ad_hoc_call_type == CONTACT_GROUP ? "TG" : "Priv"), usr.callsign);
+	}
+	gfx_set_fg_color(0);
+	gfx_set_bg_color(0xff000000);
+	gfx_select_font(gfx_font_norm);
+}
+
 void draw_datetime_row_hook()
 {
 # if (CONFIG_APP_MENU)
@@ -687,6 +713,10 @@ void draw_datetime_row_hook()
     if( is_netmon_visible() ) {
         return ;
     }
+	if (ad_hoc_tg_channel)
+	{
+		draw_adhoc_statusline();
+	}
     if( is_statusline_visible() || global_addl_config.datef == 6 ) {
         draw_alt_statusline();
         return ; 
