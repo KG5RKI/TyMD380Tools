@@ -31,6 +31,7 @@
 #endif
 #include <stdint.h>
 #include "amenu_set_tg.h"
+#include "spiflash.h"
 
 uint8_t kb_backlight=0; // flag to disable backlight via sidekey.
 // Other keyboard-related variables belong to the original firmware,
@@ -140,11 +141,10 @@ void handle_hotkey( int keycode )
         case 1 :
             //sms_test();
 			//c5000_spi0_writereg( 0x0F, 0xE8);
-			bp_send_beep(BEEP_TEST_3);
+			bp_send_beep(BEEP_TEST_1);
 
 			//con_printf("%S\r\n", (wchar_t*)0x2001E1A0);
-			;
-			int i = 0;
+			/*int i = 0;
 
 			
 
@@ -169,7 +169,12 @@ void handle_hotkey( int keycode )
 				syslog_printf("%c", *c);
 				lng[i] = *c;
 			}
-			syslog_printf("\n\n");
+			syslog_printf("\n\n");*/
+
+			/*char nVal = 0xC1, oVal=0;
+			md380_spiflash_read(&oVal, 0x7987, 1);
+			syslog_printf("Val: %02X\r\n", oVal);
+			md380_spiflash_write(&nVal, 0x7987, 1);*/
 
             break ;
 		case 2 :

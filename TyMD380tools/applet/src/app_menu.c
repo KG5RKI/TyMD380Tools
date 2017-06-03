@@ -59,6 +59,7 @@
 #include "amenu_set_tg.h" // helper to set a new talkgroup ad-hoc (and keep it!) 
 #include "amenu_hexmon.h" // hex-monitor to watch RAM-, internal Flash-, and SPI-flash contents 
 #include "amenu_ccsrch.h" // color code search for current freq and timeslot
+#include "amenu_contacts.h"
 
 #if( ! CONFIG_MORSE_OUTPUT )
 #  error "No 'app menu' without Morse output !" 
@@ -135,12 +136,16 @@ const menu_item_t am_Main[] =
 	{ "TkGrp",            DTYPE_INTEGER, APPMENU_OPT_EDITABLE,0,
 	NULL/*pvValue*/,0/*min*/,0x00FFFFFF/*max:24 bit*/, NULL,am_cbk_SetTalkgroup },
 
-	{ "[1]CC Srch", DTYPE_NONE, APPMENU_OPT_NONE, 0,
-	NULL,0,0,                  NULL, am_cbk_CCSrch },
+	{ "[1]Contacts", DTYPE_NONE, APPMENU_OPT_NONE, 0,
+	NULL,0,0,                  NULL, am_cbk_ContactsList },
 
 	{ "[2]Setup",       DTYPE_SUBMENU, APPMENU_OPT_NONE,0,
 	// |__ hotkey to get here quickly (press RED BUTTON followed by this key)
 	(void*)am_Setup,0,0,           NULL,         NULL },
+
+	{ "CC Srch", DTYPE_NONE, APPMENU_OPT_NONE, 0,
+	NULL,0,0,                  NULL, am_cbk_CCSrch },
+	
 	/*{ "Netmon",           DTYPE_NONE, APPMENU_OPT_NONE,0,
 	NULL,0,0,                  NULL,     am_cbk_NetMon },*/
 	{ "Exit",             DTYPE_NONE, APPMENU_OPT_BACK,0,
@@ -955,9 +960,10 @@ int Menu_DrawIfVisible(int caller)
 							pMenu->morse_request = AMENU_MORSE_REQUEST_ITEM_TEXT | AMENU_MORSE_REQUEST_ITEM_VALUE;
 						}
 					}
-					else if (c == '#' && pMenu->visible == APPMENU_VISIBLE && !is_netmon_visible()) {
+					else if (c == '#' && pMenu->visible == APPMENU_VISIBLE && pMenu->pItems == am_Main && !is_netmon_visible()) {
 						Menu_Close(pMenu);
 						Menu_Open(pMenu, NULL/*main items*/, "TkGrp"/*cpJumpToItem*/, APPMENU_EDIT_OVERWRT);
+						
 					}
 
 					if (pMenu->edit_mode != APPMENU_EDIT_OFF)
@@ -1439,11 +1445,11 @@ void Menu_OnIncDecEdit(app_menu_t *pMenu, int delta)
 	i64 = (int64_t)pMenu->iEditValue + (int64_t)delta;
 	if (i64 < pMenu->iMinValue)
 	{
-		i64 = pMenu->iMinValue;
+		i64 = pMenu->iMaxValue;
 	}
 	if (i64 > pMenu->iMaxValue)
 	{
-		i64 = pMenu->iMaxValue;
+		i64 = pMenu->iMinValue;
 	}
 	i = (int)i64;
 	if (pMenu->iEditValue != i)

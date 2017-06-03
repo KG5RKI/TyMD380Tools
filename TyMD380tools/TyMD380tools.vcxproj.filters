@@ -150,6 +150,12 @@
     <ClCompile Include="applet\src\amenu_utils.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="applet\src\amenu_ccsrch.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="applet\src\amenu_contacts.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="applet\src\addl_config.h">
@@ -273,6 +279,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="applet\src\amenu_set_tg.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\amenu_ccsrch.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\amenu_contacts.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

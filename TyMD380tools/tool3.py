@@ -344,6 +344,8 @@ def dmesg(dfu):
 def parse_calibration(dfu):
     dfu.md380_custom(0xA2,0x05);
     data = str(bytearray(dfu.upload(0,512)))
+    with open('callibration.bin','wb') as f:
+        f.write(data)
     freqs = dfu.parse_calibration_data(data)
     print(json.dumps(freqs,indent=4))
 

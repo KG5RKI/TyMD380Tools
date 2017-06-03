@@ -116,7 +116,7 @@
     <ExecutablePath>C:\Windows\System32;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
-    <NMakeBuildCommandLine>"C:\cygwin\bin\make.exe" flash_S13</NMakeBuildCommandLine>
+    <NMakeBuildCommandLine>"C:\cygwin\bin\make.exe" flash</NMakeBuildCommandLine>
     <NMakeCleanCommandLine>"C:\cygwin\bin\make.exe" clean</NMakeCleanCommandLine>
     <NMakeReBuildCommandLine>"C:\cygwin\bin\make.exe" flash_S13</NMakeReBuildCommandLine>
     <NMakePreprocessorDefinitions>CONFIG_SPIFLASH;CONFIG_GRAPHICS;CONFIG_SPIF5000;CONFIG_AMBE;CONFIG_AES;CONFIG_MORSE_OUTPUT;CONFIG_DIMMED_LIGHT;CONFIG_APP_MENU;FW_D13_020;WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
@@ -140,7 +140,9 @@
     <ClCompile Include="applet\src\addl_config.c" />
     <ClCompile Include="applet\src\aes.c" />
     <ClCompile Include="applet\src\ambe.c" />
+    <ClCompile Include="applet\src\amenu_ccsrch.c" />
     <ClCompile Include="applet\src\amenu_codeplug.c" />
+    <ClCompile Include="applet\src\amenu_contacts.c" />
     <ClCompile Include="applet\src\amenu_hexmon.c" />
     <ClCompile Include="applet\src\amenu_set_tg.c" />
     <ClCompile Include="applet\src\amenu_utils.c" />
@@ -187,7 +189,9 @@
     <ClInclude Include="applet\inc\stm32f4xx_it.h" />
     <ClInclude Include="applet\src\addl_config.h" />
     <ClInclude Include="applet\src\ambe.h" />
+    <ClInclude Include="applet\src\amenu_ccsrch.h" />
     <ClInclude Include="applet\src\amenu_codeplug.h" />
+    <ClInclude Include="applet\src\amenu_contacts.h" />
     <ClInclude Include="applet\src\amenu_hexmon.h" />
     <ClInclude Include="applet\src\amenu_set_tg.h" />
     <ClInclude Include="applet\src\app_menu.h" />

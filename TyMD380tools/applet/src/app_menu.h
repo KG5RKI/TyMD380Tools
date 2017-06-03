@@ -253,6 +253,7 @@ BOOL ScrollList_AutoScroll(scroll_list_control_t *pSL);
 
 // Application-menu "API" (and interface to the keyboard handler, etc), in app_menu.c :
 void Menu_Open(app_menu_t *pMenu, menu_item_t *pItems, char *cpJumpToItem, int edit_mode);
+BOOL Menu_EnterSubmenu(app_menu_t *pMenu, menu_item_t *pItems);
 void Menu_OnKey(uint8_t key); // called on keypress from some interrupt handler .
 int  Menu_IsVisible(void);     // 1=currently visible (open), 0=not open; don't intercept keys
 int  Menu_GetItemIndex(void);  // used by the Morse narrator (narrator.c) to detect "changes"
