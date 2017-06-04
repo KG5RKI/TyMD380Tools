@@ -23,9 +23,14 @@
 channel_t selChan;
 channel_easy selChanE;
 int selIndex = 0;
+int numChannels = 0;
+
+#define CHANNEL_LIST_EXTRA_OPTIONS 1
 
 int ParseChannel(channel_t* chan, channel_easy* chanE);
 int am_cbk_Channel_AddToZone(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
+void ChannelList_WriteByIndex(int index, channel_t *tChannel);
+int am_cbk_Channel_CloneToZone(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
 
 menu_item_t am_Channel_Edit[] = // setup menu, nesting level 1 ...
 {
@@ -53,7 +58,10 @@ menu_item_t am_Channel_Edit[] = // setup menu, nesting level 1 ...
 	{ "GroupList",      DTYPE_UNS8, APPMENU_OPT_NONE,0,
 	&selChanE.GroupListIndex ,0,0,          NULL,         NULL },
 
-	{ "Add To Zone",      DTYPE_NONE, APPMENU_OPT_BACK,0,
+	{ "Clone CH",      DTYPE_NONE, APPMENU_OPT_BACK,0,
+	NULL,0,0,                  NULL, am_cbk_Channel_CloneToZone },
+
+	{ "Set CH",      DTYPE_NONE, APPMENU_OPT_BACK,0,
 	NULL,0,0,                  NULL, am_cbk_Channel_AddToZone },
 
 	{ "Back",       DTYPE_NONE, APPMENU_OPT_BACK,0,
@@ -64,12 +72,34 @@ menu_item_t am_Channel_Edit[] = // setup menu, nesting level 1 ...
 
 }; // end am_Setup[]
 
+
+
+int am_cbk_Channel_CloneToZone(app_menu_t *pMenu, menu_item_t *pItem, int event, int param)
+{ // Simple example for a 'user screen' opened from the application menu
+	if (event == APPMENU_EVT_ENTER) // pressed ENTER (to launch the colour test) ?
+	{
+		if (numChannels >= CODEPLUG_MAX_DIGITAL_CONTACT_ENTIES)
+			return AM_RESULT_OK;
+		syslog_printf("Got chanindex: %d\r\n", numChannels + 1);
+		ChannelList_WriteByIndex(numChannels, &selChan);
+		
+		overwriteChannel(numChannels +1); // only draw the colour test pattern ONCE...
+		numChannels++;
+		return AM_RESULT_OK; // screen now 'occupied' by the colour test screen
+	}
+	return AM_RESULT_NONE; // "proceed as if there was NO callback function"
+} // end am_cbk_ColorTest()
+
 int am_cbk_Channel_AddToZone(app_menu_t *pMenu, menu_item_t *pItem, int event, int param)
 { // Simple example for a 'user screen' opened from the application menu
 	if (event == APPMENU_EVT_ENTER) // pressed ENTER (to launch the colour test) ?
 	{
+		
 		syslog_printf("Got chanindex: %d\r\n", selIndex + 1);
-		overwriteChannel(selIndex+1); // only draw the colour test pattern ONCE...
+		//ChannelList_WriteByIndex(selIndex, &selChan);
+
+		overwriteChannel(selIndex + 1); // only draw the colour test pattern ONCE...
+		numChannels++;
 		return AM_RESULT_OK; // screen now 'occupied' by the colour test screen
 	}
 	return AM_RESULT_NONE; // "proceed as if there was NO callback function"
@@ -148,6 +178,17 @@ BOOL ChannelList_ReadNameByIndex(int index,
 	return 0;
 } // end ZoneList_ReadNameByIndex()
 
+void ChannelList_WriteByIndex(int index,
+	channel_t *tChannel)
+{
+	if (index >= 0 && index < CODEPLUG_MAX_CHANNELS)
+	{
+		md380_spiflash_write(tChannel, (index * CODEPLUG_SIZEOF_CHANNEL_ENTRY)
+			+ CODEPLUG_SPIFLASH_ADDR_CHANNEL,
+			CODEPLUG_SIZEOF_CHANNEL_ENTRY);
+	}
+} // end ZoneList_ReadNameByIndex()
+
 
   //---------------------------------------------------------------------------
 static void ChannelList_OnEnter(app_menu_t *pMenu, menu_item_t *pItem)
@@ -178,6 +219,7 @@ static void ChannelList_OnEnter(app_menu_t *pMenu, menu_item_t *pItem)
 		++b;
 	}
 	pSL->num_items = i;
+	numChannels = i;
 	//ContactsList_Recache(pMenu);
 	
 
