@@ -10,6 +10,39 @@
 extern "C" {
 #endif
 
+#define CODEPLUG_SPIFLASH_ADDR_CHANNEL 0x0001EE00   
+#define CODEPLUG_SIZEOF_CHANNEL_ENTRY 64
+#define CODEPLUG_MAX_CHANNELS   1000
+
+	typedef struct
+	{
+		uint8_t settings[32];
+		wchar_t name[16];
+	} channel_t;
+
+	typedef struct
+	{
+		uint8_t digits[8];
+		char text[16];
+	} frequency_t;
+
+	typedef struct
+	{
+		uint8_t CC;
+		uint8_t Slot;
+		uint16_t ContactIndex;
+		uint8_t TOT;
+		uint8_t TOTReKeyDelay;
+		uint8_t EmergencyIndex;
+		uint8_t ScanListIndex;
+		uint8_t GroupListIndex;
+
+		frequency_t rxFreq;
+		frequency_t txFreq;
+
+		char name[16];
+	} channel_easy;
+
 	// A few address offsets inside SPI-flash, occupied by the codeplug.
 	// First used by the 'alternative' menu, see amenu_codeplug.c .
 	// The codeplug seems to live in the first 256 kByte of the SPI-Flash.

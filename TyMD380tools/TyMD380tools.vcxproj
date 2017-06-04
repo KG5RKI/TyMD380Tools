@@ -141,6 +141,7 @@
     <ClCompile Include="applet\src\aes.c" />
     <ClCompile Include="applet\src\ambe.c" />
     <ClCompile Include="applet\src\amenu_ccsrch.c" />
+    <ClCompile Include="applet\src\amenu_channels.c" />
     <ClCompile Include="applet\src\amenu_codeplug.c" />
     <ClCompile Include="applet\src\amenu_contacts.c" />
     <ClCompile Include="applet\src\amenu_hexmon.c" />
@@ -190,6 +191,7 @@
     <ClInclude Include="applet\src\addl_config.h" />
     <ClInclude Include="applet\src\ambe.h" />
     <ClInclude Include="applet\src\amenu_ccsrch.h" />
+    <ClInclude Include="applet\src\amenu_channels.h" />
     <ClInclude Include="applet\src\amenu_codeplug.h" />
     <ClInclude Include="applet\src\amenu_contacts.h" />
     <ClInclude Include="applet\src\amenu_hexmon.h" />

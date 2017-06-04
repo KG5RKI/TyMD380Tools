@@ -32,7 +32,7 @@ BOOL Menu_IsFormatStringDelimiter( char c )
   // Notes:
   //  - the trailing zero is also considered a 'delimiter' here !
   //  - space is NOT a delimiter because it may be used in separator labels. 
-{ return (c<' ' || c==',' || c==';' || c=='}' || c==']' );
+{ return (c<' ' || c==',' || c==';' || c=='}' || c==']' || c == '-');
 }
 
 //---------------------------------------------------------------------------
@@ -112,7 +112,7 @@ char *Menu_GetParamsFromItemText( char *pszText, int *piNumBase, int *piFixedDig
    }
   if( (pszText!=NULL) && (*pszText == '[') ) // begin of a headline / hotkey indicator ?
    { ++pszText; 
-     if( *pszText>='0' && *pszText<='9' ) // Digit -> Hotkey !
+     if( (*pszText>='0' && *pszText<='9') || *pszText=='-') // Digit -> Hotkey !
       { if( cppHotkey != NULL )
          { *cppHotkey = pszText;
          }

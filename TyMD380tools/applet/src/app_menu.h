@@ -222,7 +222,7 @@ typedef struct tAppMenuItem
 	// with param = 1, it means "finished, write back the result", e.g. pMenu->iEditValue
 	// with param = 0, it means "aborted, discard whatever was entered".
 # define APPMENU_EVT_KEY        7 // keyboard event (only sent to callbacks that occupied the screen)
-} menu_item_t;
+} menu_item_t, *pmenu_item_t;
 
 
 typedef int(*am_callback_t)(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);

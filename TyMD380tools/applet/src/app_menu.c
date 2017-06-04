@@ -60,6 +60,7 @@
 #include "amenu_hexmon.h" // hex-monitor to watch RAM-, internal Flash-, and SPI-flash contents 
 #include "amenu_ccsrch.h" // color code search for current freq and timeslot
 #include "amenu_contacts.h"
+#include "amenu_channels.h"
 
 #if( ! CONFIG_MORSE_OUTPUT )
 #  error "No 'app menu' without Morse output !" 
@@ -136,14 +137,16 @@ const menu_item_t am_Main[] =
 	{ "TkGrp",            DTYPE_INTEGER, APPMENU_OPT_EDITABLE,0,
 	NULL/*pvValue*/,0/*min*/,0x00FFFFFF/*max:24 bit*/, NULL,am_cbk_SetTalkgroup },
 
-	{ "[1]Contacts", DTYPE_NONE, APPMENU_OPT_NONE, 0,
+	{ "[1 Config]Contacts", DTYPE_NONE, APPMENU_OPT_NONE, 0,
 	NULL,0,0,                  NULL, am_cbk_ContactsList },
+	{ "Channels", DTYPE_NONE, APPMENU_OPT_NONE, 0,
+	NULL,0,0,                  NULL, am_cbk_ChannelList },
 
-	{ "[2]Setup",       DTYPE_SUBMENU, APPMENU_OPT_NONE,0,
+	{ "[2 Utils]Setup",       DTYPE_SUBMENU, APPMENU_OPT_NONE,0,
 	// |__ hotkey to get here quickly (press RED BUTTON followed by this key)
 	(void*)am_Setup,0,0,           NULL,         NULL },
 
-	{ "CC Srch", DTYPE_NONE, APPMENU_OPT_NONE, 0,
+	{ "CC Scan", DTYPE_NONE, APPMENU_OPT_NONE, 0,
 	NULL,0,0,                  NULL, am_cbk_CCSrch },
 	
 	/*{ "Netmon",           DTYPE_NONE, APPMENU_OPT_NONE,0,
@@ -779,7 +782,9 @@ int Menu_DrawSeparatorWithHotkey(app_menu_t *pMenu, int y, char *cpHotkey)
 	{
 		x = LCD_DrawCharAt(*cpHotkey++, x, y, bg_color/*!*/, fg_color/*!*/, LCD_OPT_FONT_8x8);
 	}
-	x = LCD_DrawCharAt(0x10, x, y, fg_color/*!*/, bg_color/*!*/, LCD_OPT_FONT_8x8);
+	if (*cpHotkey != '-') {
+		x = LCD_DrawCharAt(0x10, x, y, fg_color/*!*/, bg_color/*!*/, LCD_OPT_FONT_8x8);
+	}
 
 	// Fill the rest of the line with CP437's 'horizontal line character' .
 	while (x<(LCD_SCREEN_WIDTH - 1))
