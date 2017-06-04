@@ -89,6 +89,12 @@ extern "C" {
 		uint8_t unknown2_ff;   // in an RT3 with D13.020, also 0xFF here
 	} zone_number_t;
 
+	typedef struct
+	{
+		wchar_t name[16];
+		uint16_t channels[16];
+	} zone_t;
+
 	// contact_t.type
 #define CONTACT_GROUP 0xC1
 #define CONTACT_USER 0xC2

@@ -18,13 +18,14 @@
 #include "spiflash.h" // md380_spiflash_read()
 #include "codeplug.h" // codeplug memory addresses, struct- and array-sizes
 #include "amenu_channels.h" // header for THIS module (to check prototypes,etc)
+#include "amenu_codeplug.h"
 
 channel_t selChan;
 channel_easy selChanE;
 int selIndex = 0;
 
 int ParseChannel(channel_t* chan, channel_easy* chanE);
-
+int am_cbk_Channel_AddToZone(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
 
 menu_item_t am_Channel_Edit[] = // setup menu, nesting level 1 ...
 {
@@ -52,6 +53,9 @@ menu_item_t am_Channel_Edit[] = // setup menu, nesting level 1 ...
 	{ "GroupList",      DTYPE_UNS8, APPMENU_OPT_NONE,0,
 	&selChanE.GroupListIndex ,0,0,          NULL,         NULL },
 
+	{ "Add To Zone",      DTYPE_NONE, APPMENU_OPT_BACK,0,
+	NULL,0,0,                  NULL, am_cbk_Channel_AddToZone },
+
 	{ "Back",       DTYPE_NONE, APPMENU_OPT_BACK,0,
 	NULL,0,0,                  NULL,  am_cbk_ChannelList },
 
@@ -60,7 +64,16 @@ menu_item_t am_Channel_Edit[] = // setup menu, nesting level 1 ...
 
 }; // end am_Setup[]
 
-
+int am_cbk_Channel_AddToZone(app_menu_t *pMenu, menu_item_t *pItem, int event, int param)
+{ // Simple example for a 'user screen' opened from the application menu
+	if (event == APPMENU_EVT_ENTER) // pressed ENTER (to launch the colour test) ?
+	{
+		syslog_printf("Got chanindex: %d\r\n", selIndex + 1);
+		overwriteChannel(selIndex+1); // only draw the colour test pattern ONCE...
+		return AM_RESULT_OK; // screen now 'occupied' by the colour test screen
+	}
+	return AM_RESULT_NONE; // "proceed as if there was NO callback function"
+} // end am_cbk_ColorTest()
 
 
 uint8_t getCC(channel_t* ch)

@@ -149,8 +149,9 @@ const menu_item_t am_Main[] =
 	{ "CC Scan", DTYPE_NONE, APPMENU_OPT_NONE, 0,
 	NULL,0,0,                  NULL, am_cbk_CCSrch },
 	
-	/*{ "Netmon",           DTYPE_NONE, APPMENU_OPT_NONE,0,
-	NULL,0,0,                  NULL,     am_cbk_NetMon },*/
+	//{ "Netmon",           DTYPE_NONE, APPMENU_OPT_NONE,0,
+	//NULL,0,0,                  NULL,     am_cbk_NetMon },
+
 	{ "Exit",             DTYPE_NONE, APPMENU_OPT_BACK,0,
 	NULL,0,0,                  NULL,         NULL },
 

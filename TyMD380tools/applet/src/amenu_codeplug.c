@@ -28,22 +28,77 @@ BOOL ZoneList_ReadNameByIndex(int index,             // [in] zero-based zone ind
 						 //                FALSE when failed or not implemented for a certain firmware.
 {
 	wchar_t wc16Temp[20]; // don't use global variables here.. so roll our zone-list-reader
-	if (index >= 0 && index<CODEPLUG_MAX_ZONE_LIST_ENTRIES)
+	if (index == 0) {
+		strcpy(psz20ZoneName, "Add Zone");
+		return TRUE;
+	}
+	else {
+
+		if (index-1 >= 0 && index-1 < CODEPLUG_MAX_ZONE_LIST_ENTRIES)
+		{
+			md380_spiflash_read(wc16Temp, (index-1) * CODEPLUG_SIZEOF_ZONE_LIST_ENTRY
+				+ CODEPLUG_SPIFLASH_ADDR_ZONE_LIST,
+				16 * sizeof(wchar_t));
+			wc16Temp[16] = 0;  // convert from wasteful 'wide' string into a good old "C"-string:
+			wide_to_C_string(wc16Temp, psz20ZoneName, 16 + 1);
+			// unused entries in the codeplug appeared 'zeroed' (filled with 0x00),
+			// thus 0x00 in the first character seems to mark the end of the list:
+			return wc16Temp[0] != 0;
+		}
+		else
+		{
+			psz20ZoneName[0] = '\0';
+			return FALSE;
+		}
+	}
+} // end ZoneList_ReadNameByIndex()
+
+BOOL ZoneList_ReadByIndex(int index,             // [in] zero-based zone index
+	zone_t *zone) // [out] zone name as a C string
+						 // Return value : TRUE when successfully read a zone name for this index,
+						 //                FALSE when failed or not implemented for a certain firmware.
+{
+	
+		if (index >= 0 && index < CODEPLUG_MAX_ZONE_LIST_ENTRIES)
+		{
+			md380_spiflash_read(zone, (index) * CODEPLUG_SIZEOF_ZONE_LIST_ENTRY
+				+ CODEPLUG_SPIFLASH_ADDR_ZONE_LIST,
+				CODEPLUG_SIZEOF_ZONE_LIST_ENTRY);
+			
+			// unused entries in the codeplug appeared 'zeroed' (filled with 0x00),
+			// thus 0x00 in the first character seems to mark the end of the list:
+			return TRUE;
+		}
+		else
+		{
+			return FALSE;
+		}
+	
+} // end ZoneList_ReadNameByIndex()
+
+BOOL ZoneList_WriteByIndex(int index,             // [in] zero-based zone index
+	zone_t *zone) // [out] zone name as a C string
+				  // Return value : TRUE when successfully read a zone name for this index,
+				  //                FALSE when failed or not implemented for a certain firmware.
+{
+	
+	if (index >= 0 && index < CODEPLUG_MAX_ZONE_LIST_ENTRIES)
 	{
-		md380_spiflash_read(wc16Temp, index * CODEPLUG_SIZEOF_ZONE_LIST_ENTRY
+		md380_spiflash_write(zone, (index)* CODEPLUG_SIZEOF_ZONE_LIST_ENTRY
 			+ CODEPLUG_SPIFLASH_ADDR_ZONE_LIST,
-			16 * sizeof(wchar_t));
-		wc16Temp[16] = 0;  // convert from wasteful 'wide' string into a good old "C"-string:
-		wide_to_C_string(wc16Temp, psz20ZoneName, 16 + 1);
+			CODEPLUG_SIZEOF_ZONE_LIST_ENTRY);
+		syslog_printf("Wrote to flash at %04X\r\n", (index)* CODEPLUG_SIZEOF_ZONE_LIST_ENTRY
+			+ CODEPLUG_SPIFLASH_ADDR_ZONE_LIST);
 		// unused entries in the codeplug appeared 'zeroed' (filled with 0x00),
 		// thus 0x00 in the first character seems to mark the end of the list:
-		return wc16Temp[0] != 0;
+		return TRUE;
 	}
 	else
 	{
-		psz20ZoneName[0] = '\0';
+		syslog_printf("Failed to write to index %d", index);
 		return FALSE;
 	}
+
 } // end ZoneList_ReadNameByIndex()
 
   //---------------------------------------------------------------------------
@@ -121,7 +176,7 @@ static void ZoneList_OnEnter(app_menu_t *pMenu, menu_item_t *pItem)
 // Tries to find out how many zones exist in the codeplug,
 // and the array-index of the currently active zone . 
 {
-	int i = 0;
+	int i = 1;
 	char sz20[22];
 	char sz20CurrZone[22];
 	scroll_list_control_t *pSL = &pMenu->scroll_list;
@@ -216,9 +271,15 @@ static void ZoneList_Draw(app_menu_t *pMenu, menu_item_t *pItem)
 		LCD_Printf(&dc, " ");
 		dc.font = LCD_OPT_FONT_16x16; // ex: codepage 437, but the useless smileys are radio buttons now,
 									  // to imitate Tytera's zone list (at least a bit) ! 
-		LCD_Printf(&dc, "%c", cRadio); // 16*16 pixels for a circle, not a crumpled egg
-		dc.font = LCD_OPT_FONT_8x16;
-		LCD_Printf(&dc, " %02d %s\r", i + 1, sz20); // '\r' clears to the end of the line, '\n' doesn't
+		if (i != 0) {
+			LCD_Printf(&dc, "%c", cRadio); // 16*16 pixels for a circle, not a crumpled egg
+			dc.font = LCD_OPT_FONT_8x16;
+			LCD_Printf(&dc, " %02d %s\r", i, sz20); // '\r' clears to the end of the line, '\n' doesn't
+		}else{
+			dc.font = LCD_OPT_FONT_8x16;
+			LCD_Printf(&dc, " %s\r", sz20); // '\r' clears to the end of the line, '\n' doesn't
+		}
+		
 		i++;
 		n_visible_items++;
 	}
@@ -233,6 +294,26 @@ static void ZoneList_Draw(app_menu_t *pMenu, menu_item_t *pItem)
 	}
 } // ZoneList_Draw()
 
+int overwriteChannel(uint16_t channelIndex)
+{
+	zone_number_t* pZoneStruct = (zone_number_t *)CODEPLUG_RAM_ADDR_ZONE_NUMBER_STRUCT;
+	zone_t curZone;
+	int zoneNum = pZoneStruct->zone_index - 1;
+	ZoneList_ReadByIndex(zoneNum, &curZone);
+	syslog_printf("Added channel %d to zone %d\r\n", channelIndex, zoneNum);
+	curZone.channels[channel_num-1] = channelIndex;
+	/*
+	for (int i = 0; i < 16;  i++ ) {
+		//syslog_printf("Chan: %d\r\n", curZone.channels[i]);
+		if (!curZone.channels[i]) {
+			syslog_printf("Added channel %d to zone %d\r\n", channelIndex, zoneNum);
+			curZone.channels[i] = channelIndex;
+			i = 100;
+			break;
+		}
+	}*/
+	ZoneList_WriteByIndex(zoneNum, &curZone);
+}
 
   //---------------------------------------------------------------------------
 int am_cbk_ZoneList(app_menu_t *pMenu, menu_item_t *pItem, int event, int param)
@@ -264,17 +345,26 @@ int am_cbk_ZoneList(app_menu_t *pMenu, menu_item_t *pItem, int event, int param)
 		switch ((char)param) // here: message parameter = keyboard code (ASCII)
 		{
 		case 'M':  // green "Menu" key : kind of ENTER. But here, "apply & return" .
-			if (pSL->focused_item >= 0)
+			if (pSL->focused_item > 0)
 			{
-				ZoneList_SetZoneByIndex(pSL->focused_item);
+				ZoneList_SetZoneByIndex(pSL->focused_item-1);
 				// The above command switched to the new zone, and probably set
 				// channel_num = 0 to 'politely ask' the original firmware to 
 				// reload whever is necessary from the codeplug (SPI-Flash). 
 				// It's unknown when exactly that happens (possibly in another task). 
 				// To update the CHANNEL NAME from the *new* zone in our menu, 
 				// let a few hundred milliseconds pass before redrawing the screen:
-				StartStopwatch(&pMenu->stopwatch_late_redraw);
 			}
+			else if (pSL->focused_item == 0) {
+				zone_t nZone;
+				memset(&nZone, 0, CODEPLUG_SIZEOF_ZONE_LIST_ENTRY);
+				wcscpy(nZone.name, L"NewZone_\0");
+
+				md380_spiflash_write(&nZone, ((pSL->num_items-1) * CODEPLUG_SIZEOF_ZONE_LIST_ENTRY)
+					+ CODEPLUG_SPIFLASH_ADDR_ZONE_LIST, 32);
+				
+			}
+			StartStopwatch(&pMenu->stopwatch_late_redraw);
 			return AM_RESULT_EXIT_AND_RELEASE_SCREEN;
 		case 'B':  // red "Back"-key : return from this screen, discard changes.
 			return AM_RESULT_EXIT_AND_RELEASE_SCREEN;
