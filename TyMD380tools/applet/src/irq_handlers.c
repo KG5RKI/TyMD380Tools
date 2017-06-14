@@ -1164,47 +1164,34 @@ static void PollKeysForScroll(void)
 	// where the red "BACK"-button switches back from any submenu to the
 	// parent, and from the main menu to the main screen:
 
-	if (KeyRowColToVal(key) != 11 && KeyRowColToVal(key) != 12) {
-		autorepeat_countdown = 500/*ms*/ / 12;
+	if ((KeyRowColToVal(key) != 11 && KeyRowColToVal(key) != 12)) {
+		autorepeat_countdown = 250/*ms*/ / 12;
 	}
 
-	if (gui_opmode2 == OPM2_MENU)
+	/*if (gui_opmode2 == OPM2_MENU)
 	{ // keyboard focus currently on Tytera's 'green' menu 
 	  // -> ignore kb_row_col_pressed until the key was released
-		green_menu_countdown = 200/*ms*/ / 24;
+		green_menu_countdown = 200 / 24;
 		if (KeyRowColToVal(key) == 11 || KeyRowColToVal(key) == 12) {
 			kb_handle(KeyRowColToVal(key));
-			autorepeat_countdown = 500/*ms*/ / 12;
+			autorepeat_countdown = 500 / 12;
 		}
 		//CheckTalkgroupAfterChannelSwitch();
 	}
-	else // keyboard focus not on Tytera's ('green') menu...
+	else */ // keyboard focus not on Tytera's ('green') menu...
 	{   // so is it "our" key now ?  Not necessarily !
 		// Tytera's menu already quits when PRESSING the red button,
 		// so just because the red button is PRESSED doesn't mean 
 		// the operator wants to open our 'red menu'.  Thus:
-		if (green_menu_countdown > 0)
-		{
-			if (key == 0)
-			{
-				autorepeat_countdown = 500/*ms*/ / 12;
-				--green_menu_countdown;
-			}
-			else // guess the RED BUTTON is still pressed after leaving the GREEN-button-menu
-			{
-				green_menu_countdown = 200/*ms*/ / 24; // ignore keypress for another 200 ms
-			}
-		}
-		else // "green menu" countdown expired, guess the alternative menu may process this key..
-		{
+	
 			if (prev_key == 0 && key != 0)
 			{
-				kb_handle(KeyRowColToVal(key));
+				//kb_handle(KeyRowColToVal(key));
 				//Menu_OnKey(KeyRowColToASCII(key));
 
 				// no fancy FIFO but a simple 1-level buffer.
 				// Consumed in another task or thread, see app_menu.c 
-				autorepeat_countdown = 500/*ms*/ / 12; // <- autorepeat DELAY
+				autorepeat_countdown = 250/*ms*/ / 12; // <- autorepeat DELAY
 			}
 			else // no CHANGE in the keyboard matrix, but maybe...
 				if (key == 0x0012 || key == 0x0022) // cursor key still pressed ?
@@ -1224,7 +1211,7 @@ static void PollKeysForScroll(void)
 					}
 				}
 		}
-	}
+	
 	prev_key = key;
 } // end PollKeysForRedMenu()
 
@@ -1407,16 +1394,17 @@ void SysTick_Handler(void)
       { // (but not in the same interrupt as PollAnalogInputs)
 		 
         PollKeysForRedMenu(); // non-intrusive polling of keys for the 
+		PollKeysForScroll();
         // 'red menu' (menu activated by pressing the red 'BACK'-button,
         // when that button isn't used to control Tytera's own menu).
       }
-	 if ((oldSysTickCounter & 0x6F) == 1) // .. on every 16-th SysTick
+	/* if ((oldSysTickCounter & 0x6F) == 1) // .. on every 16-th SysTick
 	 { // (but not in the same interrupt as PollAnalogInputs)
 
 		 PollKeysForScroll(); // non-intrusive polling of keys for the 
 							   // 'red menu' (menu activated by pressing the red 'BACK'-button,
 							   // when that button isn't used to control Tytera's own menu).
-	 }
+	 }*/
 
 #   endif // CONFIG_APP_MENU ?
    } // end if( oldSysTickCounter > 6000 )
