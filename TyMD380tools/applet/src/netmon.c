@@ -28,6 +28,7 @@
 # include "app_menu.h"     // alternative menu, with faster text display
 # include "lcd_driver.h"   // alternative LCD driver, less QRM, faster 
 # include "irq_handlers.h" // stopwatch for periodic framebuffer updates 
+# include "amenu_lastheard.h"
 #endif // CONFIG_APP_MENU ?
 
 uint8_t nm_screen = 0 ;
@@ -278,6 +279,7 @@ void netmon4_update()
     lastheard_draw_poll();
 
     int src;
+	int dst;
     char log = 'l';
 
     if ( nm_started == 0 ) {
@@ -300,18 +302,33 @@ void netmon4_update()
             mode = '!' ; // on other tg
         }
         src = rst_src;
-        user_t usr;
+		dst = rst_dst;
+        user_t usr, usr2;
    
         if( ( src != 0 ) && ( rst_flco < 4 ) && call_start_state == 1 ) {
             call_start_state = 0;
             rx_new = 1;                         // set status to new for netmon5
             ch_new = 1;                         // set status to new for netmon6
             print_time_hook(log);
+			LHList_AddEntry(src, dst);
             if( usr_find_by_dmrid(&usr, src) == 0 ) {
-                lastheard_printf("=%d->%d %c\n", src, rst_dst, mode);
+				if (usr_find_by_dmrid(&usr2, dst) == 0) {
+					lastheard_printf("=%d->%d %c\n", src, dst, mode);
+				}
+				else {
+					lastheard_printf("=%d->%s %c\n", src, usr2.callsign, mode);
+				}
+                
             } else {
-                lastheard_printf("=%s->%d %c\n", usr.callsign, rst_dst, mode);
+				if (usr_find_by_dmrid(&usr2, dst) == 0) {
+					lastheard_printf("=%s->%s %c\n", usr.callsign, usr2.callsign, mode);
+				}
+				else {
+					lastheard_printf("=%s->%d %c\n", usr.callsign, dst, mode);
+				}
+                
             }
+			
         }
         if ( global_addl_config.userscsv > 1 && (talkerAlias.displayed != 1 && talkerAlias.length > 0) )
         {

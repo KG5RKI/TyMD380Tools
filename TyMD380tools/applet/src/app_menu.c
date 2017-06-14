@@ -61,6 +61,7 @@
 #include "amenu_ccsrch.h" // color code search for current freq and timeslot
 #include "amenu_contacts.h"
 #include "amenu_channels.h"
+#include "amenu_lastheard.h"
 
 #if( ! CONFIG_MORSE_OUTPUT )
 #  error "No 'app menu' without Morse output !" 
@@ -145,6 +146,9 @@ const menu_item_t am_Main[] =
 	{ "[2 Utils]Setup",       DTYPE_SUBMENU, APPMENU_OPT_NONE,0,
 	// |__ hotkey to get here quickly (press RED BUTTON followed by this key)
 	(void*)am_Setup,0,0,           NULL,         NULL },
+
+	{ "Lastheard", DTYPE_NONE, APPMENU_OPT_NONE, 0,
+	NULL,0,0,                  NULL, am_cbk_LastheardList },
 
 	{ "CC Scan", DTYPE_NONE, APPMENU_OPT_NONE, 0,
 	NULL,0,0,                  NULL, am_cbk_CCSrch },

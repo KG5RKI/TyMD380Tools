@@ -234,6 +234,31 @@ void print_date_hook(void)
 #endif //CONFIG_GRAPHICS
 }
 
+void get_RTC_time(char* buffer) {
+
+	wchar_t wide_time[9];
+
+	RTC_TimeTypeDef RTC_TimeStruct;
+	md380_RTC_GetTime(RTC_Format_BCD, &RTC_TimeStruct);
+
+	md380_itow(&wide_time[0], RTC_TimeStruct.RTC_Hours);
+	wide_time[2] = ':';
+	md380_itow(&wide_time[3], RTC_TimeStruct.RTC_Minutes);
+	wide_time[5] = ':';
+	md380_itow(&wide_time[6], RTC_TimeStruct.RTC_Seconds);
+	wide_time[8] = '\0';
+
+	int b = 0;
+	for (int i = 0; i < 9; i++)
+	{
+		if (wide_time[i] == '\0')
+			break;
+		
+		*buffer = wide_time[i];
+		buffer++;
+	}
+}
+
 void print_time_hook(const char log) // ex: void print_time_hook(void), 'log' used by netmon.c
 {
     if( is_netmon_visible() ) {

@@ -66,6 +66,7 @@ SRCS += amenu_codeplug.o
 SRCS += amenu_ccsrch.o
 SRCS += amenu_contacts.o
 SRCS += amenu_channels.o
+SRCS += amenu_lastheard.o
 SRCS += timer.o
 
 

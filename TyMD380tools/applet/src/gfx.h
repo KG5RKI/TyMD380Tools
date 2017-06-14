@@ -74,6 +74,8 @@ void lcd_background_led(int on);
 // ex: void print_time_hook(void);  parameter 'log' used to print info from netmon.c 
 void print_time_hook(char log);   
 
+void get_RTC_time(char* buffer);
+
 void swapFGBG();
 void swapBG();
 
