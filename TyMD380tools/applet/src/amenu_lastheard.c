@@ -24,7 +24,7 @@
 uint8_t lhSize = 0;
 uint8_t lhRBufIndex = 0;
 
-#define MAX_LASTHEARD_ENTRIES 20
+#define MAX_LASTHEARD_ENTRIES 10
 
 lastheard_user lhdir[MAX_LASTHEARD_ENTRIES];
 
