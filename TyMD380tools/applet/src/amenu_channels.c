@@ -29,10 +29,12 @@ char Contact_Name[50];
 
 #define CHANNEL_LIST_EXTRA_OPTIONS 1
 
+int SaveChannel(channel_t* chan, channel_easy* chanE);
 int ParseChannel(channel_t* chan, channel_easy* chanE);
 int am_cbk_Channel_AddToZone(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
 void ChannelList_WriteByIndex(int index, channel_t *tChannel);
 int am_cbk_Channel_CloneToZone(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
+int am_cbk_Channel_Save(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
 
 menu_item_t am_Channel_Edit[] = // setup menu, nesting level 1 ...
 {
@@ -66,6 +68,11 @@ menu_item_t am_Channel_Edit[] = // setup menu, nesting level 1 ...
 	{ "Set CH",      DTYPE_NONE, APPMENU_OPT_BACK,0,
 	NULL,0,0,                  NULL, am_cbk_Channel_AddToZone },
 
+	{ "Save",      DTYPE_NONE, APPMENU_OPT_BACK,0,
+	NULL,0,0,                  NULL, am_cbk_Channel_Save },
+
+	
+
 	{ "Back",       DTYPE_NONE, APPMENU_OPT_BACK,0,
 	NULL,0,0,                  NULL,  am_cbk_ChannelList },
 
@@ -76,13 +83,28 @@ menu_item_t am_Channel_Edit[] = // setup menu, nesting level 1 ...
 
 
 
+
+int am_cbk_Channel_Save(app_menu_t *pMenu, menu_item_t *pItem, int event, int param)
+{ // Simple example for a 'user screen' opened from the application menu
+	if (event == APPMENU_EVT_ENTER) // pressed ENTER (to launch the colour test) ?
+	{
+		SaveChannel(&selChan, &selChanE);
+		ChannelList_WriteByIndex(selIndex, &selChan);
+		return AM_RESULT_OK; // screen now 'occupied' by the colour test screen
+	}
+	return AM_RESULT_NONE; // "proceed as if there was NO callback function"
+} // end am_cbk_ColorTest()
+
+
 int am_cbk_Channel_CloneToZone(app_menu_t *pMenu, menu_item_t *pItem, int event, int param)
 { // Simple example for a 'user screen' opened from the application menu
 	if (event == APPMENU_EVT_ENTER) // pressed ENTER (to launch the colour test) ?
 	{
 		if (numChannels >= CODEPLUG_MAX_DIGITAL_CONTACT_ENTIES)
 			return AM_RESULT_OK;
-		syslog_printf("Got chanindex: %d\r\n", numChannels + 1);
+
+		SaveChannel(&selChan, &selChanE);
+
 		ChannelList_WriteByIndex(numChannels, &selChan);
 		
 		overwriteChannel(numChannels +1); // only draw the colour test pattern ONCE...
@@ -97,9 +119,8 @@ int am_cbk_Channel_AddToZone(app_menu_t *pMenu, menu_item_t *pItem, int event, i
 	if (event == APPMENU_EVT_ENTER) // pressed ENTER (to launch the colour test) ?
 	{
 		
-		syslog_printf("Got chanindex: %d\r\n", selIndex + 1);
 		//ChannelList_WriteByIndex(selIndex, &selChan);
-
+		SaveChannel(&selChan, &selChanE);
 		overwriteChannel(selIndex + 1); // only draw the colour test pattern ONCE...
 		numChannels++;
 		return AM_RESULT_OK; // screen now 'occupied' by the colour test screen
@@ -112,20 +133,36 @@ uint8_t getCC(channel_t* ch)
 {
 	return ((((uint8_t*)ch)[1] & 0xF0) >> 4) & 0xF;
 }
+void setCC(channel_t* ch, uint8_t cc)
+{
+	((uint8_t*)ch)[1] = (((uint8_t*)ch)[1] & 0x0F) | ((cc << 4) & 0xF0);
+}
 
 uint8_t getSlot(channel_t* ch)
 {
 	return ((((uint8_t*)ch)[1] & 0x04) != 0 ? 1 : 2);
 }
+void setSlot(channel_t* ch, uint8_t slot)
+{
+	((uint8_t*)ch)[1] = (((uint8_t*)ch)[1] & (~0x04)) | (slot<=1 ? 0x04: 0);
+}
 
-uint8_t getContactIndex(channel_t* ch)
+uint16_t getContactIndex(channel_t* ch)
 {
 	return *((uint16_t*)&(((uint8_t*)ch)[6]));
+}
+void setContactIndex(channel_t* ch, uint16_t contIndex)
+{
+	*((uint16_t*)&(((uint8_t*)ch)[6])) = contIndex;
 }
 
 uint8_t getTOT(channel_t* ch)
 {
 	return ch->settings[8];
+}
+void setTOT(channel_t* ch, uint8_t tot)
+{
+	ch->settings[8] = tot;
 }
 
 uint8_t getTOTRekeyDelay(channel_t* ch)
@@ -271,20 +308,19 @@ static void ChannelList_Draw(app_menu_t *pMenu, menu_item_t *pItem)
 		}
 		//curCon = &sz20[i];
 
-		/*if (i == pSL->focused_item) // this is the CURRENTLY ACTIVE zone :
+		if (i == pSL->focused_item) // this is the CURRENTLY ACTIVE zone :
 		{
 			cRadio = 0x1A;  // character code for a 'selected radio button', see applet/src/font_8_8.c 
 		}
 		else
 		{
-			if (pCont->type == 0xC1) {
+			//if (pCont->type == 0xC1) {
 				cRadio = 0xF9;
-			}
-			else {
-				cRadio = 0xE9;
-			}
-		}*/
-		cRadio = 0xF9;
+			//}
+			//else {
+			//	cRadio = 0xE9;
+			//}
+		}
 
 		
 
@@ -424,6 +460,8 @@ int ParseChannel(channel_t* chan, channel_easy* chanE)
 	//printf("Channel Name: %S\r\n", chanE->name);
 
 	chanE->CC = getCC(chan);
+
+	chanE->TOT = getTOT(chan);
 	//printf("Color Code: %d\r\n", chanE->CC);
 
 	chanE->Slot = getSlot(chan);
@@ -438,12 +476,48 @@ int ParseChannel(channel_t* chan, channel_easy* chanE)
 	chanE->GroupListIndex = getGroupListIndex(chan);
 	//printf("GroupListIndex: %d\r\n", chanE->GroupListIndex);
 
-	chanE->ScanListIndex = getGroupListIndex(chan);
+	chanE->ScanListIndex = getScanListIndex(chan);
 	//printf("ScanListIndex: %d\r\n", chanE->ScanListIndex);
 
 
 	readFrequency(chan, &chanE->rxFreq, 1);
 	//printf("RX: %s\r\n", chanE->rxFreq.text);
 	readFrequency(chan, &chanE->txFreq, 1);
+	//printf("TX: %s\r\n", chanE->txFreq.text);
+}
+
+int SaveChannel(channel_t* chan, channel_easy* chanE)
+{
+
+	memcpy(chan->name, chanE->name, 32);
+	chan->name[15] = '\0';
+
+	//printf("Channel Name: %S\r\n", chanE->name);
+
+	setCC(chan, chanE->CC);
+	//printf("Color Code: %d\r\n", chanE->CC);
+
+	setTOT(chan, chanE->TOT);
+
+	setSlot(chan, chanE->Slot);
+	//printf("Repeater Slot: %d\r\n", chanE->Slot);
+
+	setContactIndex(chan, chanE->ContactIndex);
+	//printf("ContactIndex: %d\r\n", chanE->ContactIndex);
+
+	//*getEmergencyIndex(chan) = chanE->EmergencyIndex;
+	//printf("EmergencyIndex: %d\r\n", chanE->EmergencyIndex);
+
+	//*getGroupListIndex(chan) = chanE->GroupListIndex;
+	//printf("GroupListIndex: %d\r\n", chanE->GroupListIndex);
+
+	//*getScanListIndex(chan) = chanE->ScanListIndex;
+	//printf("ScanListIndex: %d\r\n", chanE->ScanListIndex);
+
+	
+
+	//readFrequency(chan, &chanE->rxFreq, 1);
+	//printf("RX: %s\r\n", chanE->rxFreq.text);
+	//readFrequency(chan, &chanE->txFreq, 1);
 	//printf("TX: %s\r\n", chanE->txFreq.text);
 }
