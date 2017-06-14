@@ -16,3 +16,5 @@ extern uint8_t channel_num; // <- belongs to THE ORIGINAL FIRMWARE (1..16, 0 for
 extern int am_cbk_ContactsList(app_menu_t *pMenu, menu_item_t *pItem, int event, int param );
 
 
+extern BOOL ContactsList_ReadNameByIndex(int index,             // [in] zero-based zone index
+	contact_t *tContact);

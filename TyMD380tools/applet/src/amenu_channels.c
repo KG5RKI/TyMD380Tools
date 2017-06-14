@@ -19,11 +19,13 @@
 #include "codeplug.h" // codeplug memory addresses, struct- and array-sizes
 #include "amenu_channels.h" // header for THIS module (to check prototypes,etc)
 #include "amenu_codeplug.h"
+#include "amenu_contacts.h"
 
 channel_t selChan;
 channel_easy selChanE;
 int selIndex = 0;
 int numChannels = 0;
+char Contact_Name[50];
 
 #define CHANNEL_LIST_EXTRA_OPTIONS 1
 
@@ -38,8 +40,8 @@ menu_item_t am_Channel_Edit[] = // setup menu, nesting level 1 ...
 	NULL,0,0,          NULL,         NULL },
 	{ "[-]Name",             DTYPE_WSTRING, APPMENU_OPT_NONE,0,
 	selChanE.name ,0,0,          NULL,         NULL },
-	{ "Contact",             DTYPE_UNS16, APPMENU_OPT_NONE,0,
-	&selChanE.ContactIndex ,0,0,          NULL,         NULL },
+	{ "Contact",             DTYPE_STRING, APPMENU_OPT_NONE,0,
+	Contact_Name ,0,0,          NULL,         NULL },
 
 
 	{ "RX",             DTYPE_STRING, APPMENU_OPT_NONE,0,
@@ -357,6 +359,9 @@ int am_cbk_ChannelList(app_menu_t *pMenu, menu_item_t *pItem, int event, int par
 				//ContactList_SetZoneByIndex(pSL->focused_item);
 				selIndex = pSL->focused_item;
 				//fIsTG = (selContact.type == 0xC1 ? 1 : 0);
+				contact_t cont;
+				ContactsList_ReadNameByIndex(selChanE.ContactIndex-1, &cont);
+				wide_to_C_string(cont.name, Contact_Name, 50);
 				Menu_EnterSubmenu(pMenu, am_Channel_Edit);
 
 				// The above command switched to the new zone, and probably set
