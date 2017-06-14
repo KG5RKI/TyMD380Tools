@@ -36,7 +36,7 @@ static void CCSrch_Draw(app_menu_t *pMenu, menu_item_t *pItem)
   lcd_context_t dc;
   char tmpStr[0x500];
   char *cp;
-  char buffa = 0;
+  char buffa = 0, buffa2=0;
 
   // Draw the COMPLETE screen, without clearing it initially to avoid flicker
   LCD_InitContext( &dc ); // init context for 'full screen', no clipping
@@ -57,9 +57,11 @@ static void CCSrch_Draw(app_menu_t *pMenu, menu_item_t *pItem)
 	  StartStopwatch(&ccsrch_stopwatch);
 
 	  c5000_spi0_readreg(0x0d, &buffa);
+	  c5000_spi0_readreg(0x1f, &buffa2);
+	  buffa2 = ((buffa2 & 0xF0) >> 4) & 0xF;
 
 	  //found match!
-	  if (buffa & 0x10) {
+	  if (buffa & 0x10 && buffa2 == cc) {
 		  fMatch = 1;
 		  sprintf(tmpStr, "Found matched cc %d!\r", cc);
 	  }
