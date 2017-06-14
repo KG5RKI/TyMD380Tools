@@ -323,8 +323,9 @@ void gfx_blockfill_hook(int x_from, int y_from, int x_to, int y_to)
         return ;
     }
 
-
-	//swapBG();
+	if (gui_opmode2 != OPM2_MENU) {
+		swapFGBG();
+	}
     
     gfx_blockfill(x_from,y_from,x_to,y_to);
     
