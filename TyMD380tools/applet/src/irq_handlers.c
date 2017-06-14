@@ -204,6 +204,9 @@ uint16_t battery_voltage_mV; // battery voltage [millivolts]
 uint32_t battery_voltage_lp; // internal, for digital lowpass (not 'static' to ease debugging)
 uint32_t volume_pot_lp;      // internal, for digital lowpass
 
+uint16_t keypress_timer_ms; // measures key-down time in MILLISECONDS 
+uint8_t  keypress_ascii;    // code of the currently pressed key, 0 = none
+uint8_t  keypress_ascii_at_power_on; // snapshot of keypress_ascii at power-on
 
 // Internal 'forward' references (avoid compiler warnings)
 #if( CONFIG_MORSE_OUTPUT )
@@ -238,7 +241,7 @@ static void InitDimming(void)
   GPIOC->MODER  /*4002800*/ = ( GPIOC->MODER & ~(3 << (PINPOS_C_BL * 2) ) ) |  (2/*ALT*/ << (PINPOS_C_BL * 2) );
   
   // Two bits in "OSPEEDR" per pin : 00bin for the 'lowest speed', to cause the lowest possible RFI                                  
-  GPIOC->OSPEEDR/*4002808*/ &= ~(3 << (PINPOS_C_BL * 2) );  // RM0090 Rev7 page 283
+  GPIOC->OSPEEDR/*4002808*/ &= ~(3 << (PINPOS_C_BL * 2));  // RM0090 Rev13 page 284
   
   // One bit per pin in "OTYPER" to select open drain or push/pull output mode:
   GPIOC->OTYPER /*4002804*/ &= ~(1<<PINPOS_C_BL);  // RM0090 Rev13 page 279 : Low for push-pull
@@ -1202,7 +1205,7 @@ static void PollKeysForScroll(void)
 					}
 					else // send the same key again, prevents rubbing the paint off..  
 					{
-						autorepeat_countdown = 80/*ms*/ / 24; // 1 / "autorepeat RATE"
+						autorepeat_countdown = 40/*ms*/ / 24; // 1 / "autorepeat RATE"
 
 						//Menu_OnKey(KeyRowColToASCII(key));
 						kb_handle(KeyRowColToVal(key));
