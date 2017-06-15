@@ -52,7 +52,7 @@ static void CCSrch_Draw(app_menu_t *pMenu, menu_item_t *pItem)
   {
 	  LCD_FillRect(0, 0, LCD_SCREEN_WIDTH - 1, LCD_SCREEN_HEIGHT - 1, dc.bg_color);
 
-	  LCD_Printf(&dc, "--Color Code Search--\r"); // title, centered, opaque, full line
+	  LCD_Printf(&dc, "\r--Color Code Search--\r"); // title, centered, opaque, full line
 
 	  StartStopwatch(&ccsrch_stopwatch);
 
@@ -63,24 +63,25 @@ static void CCSrch_Draw(app_menu_t *pMenu, menu_item_t *pItem)
 	  //found match!
 	  if (buffa & 0x10 && buffa2 == cc) {
 		  fMatch = 1;
-		  sprintf(tmpStr, "Found matched cc %d!\r", cc);
+		  LCD_Printf("Found matched cc %d!\r", cc);
 	  }
 	  else {
 		  cc++;
 		  if (cc > 15) {
 			  cc = 0;
 		  }
+		  LCD_Printf(&dc, "%02x Testing cc %d\r", buffa, cc);
+		  //sprintf(tmpStr, "%02x Testing cc %d\r", buffa, cc);
 		  c5000_spi0_writereg(0x1f, (cc & 0xF) << 4);
-		  sprintf(tmpStr, "%02x Testing cc %d\r", buffa, cc);
 	  }
 
 	 
 	  if (strlen(tmpStr) + strlen(ccsrch_buffer) >= 0x500) {
 		  ccsrch_buffer_index = 0;
 	  }
-	  strcpy(&ccsrch_buffer[ccsrch_buffer_index], tmpStr);
-	  ccsrch_buffer_index += strlen(tmpStr);
-	  LCD_Printf(&dc, ccsrch_buffer);
+	  //strcpy(&ccsrch_buffer[ccsrch_buffer_index], tmpStr);
+	  //ccsrch_buffer_index += strlen(tmpStr);
+	  //LCD_Printf(&dc, ccsrch_buffer);
 
 	  // If necessary, fill the rest of the screen (at the bottom) with the background colour:
 	  //LCD_FillRect(0, dc.y, LCD_SCREEN_WIDTH - 1, LCD_SCREEN_HEIGHT - 1, dc.bg_color);
