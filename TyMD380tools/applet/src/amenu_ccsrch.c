@@ -48,7 +48,7 @@ static void CCSrch_Draw(app_menu_t *pMenu, menu_item_t *pItem)
 
   n = 0;         // count the number of bytes per page (depends on the used font)
   
-  if ((ReadStopwatch_ms(&ccsrch_stopwatch) > 100/*ms*/ || cc > 16) && !fMatch)
+  if ((ReadStopwatch_ms(&ccsrch_stopwatch) > 100/*ms*/ || cc > 16))
   {
 	  LCD_FillRect(0, 0, LCD_SCREEN_WIDTH - 1, LCD_SCREEN_HEIGHT - 1, dc.bg_color);
 
@@ -56,12 +56,14 @@ static void CCSrch_Draw(app_menu_t *pMenu, menu_item_t *pItem)
 
 	  StartStopwatch(&ccsrch_stopwatch);
 
-	  c5000_spi0_readreg(0x0d, &buffa);
-	  c5000_spi0_readreg(0x1f, &buffa2);
-	  buffa2 = ((buffa2 & 0xF0) >> 4) & 0xF;
+	  if (!fMatch) {
+		  c5000_spi0_readreg(0x0d, &buffa);
+		  c5000_spi0_readreg(0x1f, &buffa2);
+		  buffa2 = ((buffa2 & 0xF0) >> 4) & 0xF;
+	  }
 
 	  //found match!
-	  if (buffa & 0x10 && buffa2 == cc) {
+	  if ((buffa & 0x10 && buffa2 == cc )|| fMatch) {
 		  fMatch = 1;
 		  LCD_Printf("Found matched cc %d!\r", cc);
 	  }

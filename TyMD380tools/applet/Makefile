@@ -33,52 +33,18 @@ else ifeq ($(FW),S13_020)
     PATCHDIR=s13.020
     MERGEBASE=0x809c000
     INC_DISPINIT=1
+else ifeq ($(FW),FW_2017)
+    FWDEFINE=FW_2017
+    SRCVERSION=FW_2017
+    PATCHDIR=FW_2017
+    MERGEBASE=0x809B000
 else 
 $(error select firmware version)
 endif
 
-SRCS  = main.o printf.o dmesg.o gfx.o system_stm32f4xx.o addl_config.o 
-SRCS += spiflash.o usb.o menu.o rtc_timer.o usersdb.o os.o aes.o
-SRCS += ambe.o  dmr.o 
-SRCS += display.o
-SRCS += console.o
-SRCS += util.o
-SRCS += netmon.o
-SRCS += debug.o
-SRCS += keyb.o
-SRCS += radiostate.o
-SRCS += mbox.o
-SRCS += syslog.o
-SRCS += lastheard.o
-SRCS += etsi.o
-SRCS += sms.o
-SRCS += beep.o
-SRCS += irq_handlers.o
-SRCS += narrator.o
-SRCS += lcd_driver.o
-SRCS += font_8_8.o
-SRCS += app_menu.o
-SRCS += color_picker.o
-SRCS += amenu_hexmon.o
-SRCS += amenu_utils.o
-SRCS += amenu_set_tg.o
-SRCS += amenu_codeplug.o
-SRCS += amenu_ccsrch.o
-SRCS += amenu_contacts.o
-SRCS += amenu_channels.o
-SRCS += amenu_lastheard.o
-SRCS += timer.o
+SRCS  = main.o printf.o system_stm32f4xx.o 
 
 
-ifdef INC_DISPFLIP
-SRCS +=  dispflip.o  # display flip is included @ d13.020
-endif
-ifdef INC_I2C
-SRCS +=  i2c.o #  ALPU Licence Check is disabled, so we have no i2c
-endif
-ifdef INC_DISPINIT
-SRCS +=  dispinit.o
-endif
 
 ###################################################
 

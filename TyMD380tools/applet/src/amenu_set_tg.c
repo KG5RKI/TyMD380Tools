@@ -114,14 +114,14 @@ void CheckTalkgroupAfterChannelSwitch(void) // [in] ad_hoc_tg_channel,ad_hoc_tal
      ad_hoc_tg_channel = 0; // FORGET the *channel* with the ad-hoc TG, but not the ad-hoc TG itself,
      // so we can quickly recall it via app-menu in "up-down"-edit mode.
 
-	 wchar_t *cn_override_group_prefix = L"TG-";
+	 wchar_t *cn_override_group_prefix = L"TG--";
 	 //If channel name begins with "TG-" override talkgroup # with ID from name
 
 	 int tgOverride = 0;
 
-	 if (memcmp(channel_name, cn_override_group_prefix, 6) == 0)
+	 if (memcmp(channel_name, cn_override_group_prefix, 8) == 0)
 	 {
-		 wchar_t *bf = &channel_name[3];
+		 wchar_t *bf = &channel_name[4];
 		 while (*bf != 0) {
 			 tgOverride *= 10;
 			 tgOverride += (*bf++) - '0';

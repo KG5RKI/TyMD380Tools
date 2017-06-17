@@ -42,15 +42,15 @@ $(UNWRAPDIR)/%.img: $(BINDIR)/%.bin | $(UNWRAPDIR)
 	../md380-fw --unwrap $< $@
 
 $(BINDIR)/%.bin: $(DLDIR)/%.zip | $(BINDIR)
-	unzip -p $< "$$(cat firmware_files.txt | grep "^$(basename $(notdir $@))" | cut -f3)" >$@
+	#unzip -p $< "$$(cat firmware_files.txt | grep "^$(basename $(notdir $@))" | cut -f3)" >$@
 	
 
 $(BINDIR)/%.bin: $(DLDIR)/%.bin | $(BINDIR)
 	cp $< $@
 	
 $(DLDIR)/%: | $(DLDIR)
-	which curl >>/dev/null #Check that we have curl.
-	-echo *
-	-cat firmware_files.txt
-	-echo $$(cat firmware_files.txt | grep "^$(notdir $@)" | cut -f2)
-	curl -f -k -L $$(cat firmware_files.txt | grep "^$(notdir $@)" | cut -f2) -o $@
+	#which curl >>/dev/null #Check that we have curl.
+	#-echo *
+	#-cat firmware_files.txt
+	#-echo $$(cat firmware_files.txt | grep "^$(notdir $@)" | cut -f2)
+	#curl -f -k -L $$(cat firmware_files.txt | grep "^$(notdir $@)" | cut -f2) -o $@

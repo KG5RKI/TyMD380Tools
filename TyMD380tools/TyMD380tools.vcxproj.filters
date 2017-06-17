@@ -159,6 +159,9 @@
     <ClCompile Include="applet\src\amenu_channels.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="applet\src\amenu_lastheard.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="applet\src\addl_config.h">
@@ -291,6 +294,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="applet\src\amenu_channels.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="applet\src\amenu_lastheard.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -20,6 +20,14 @@ if __name__ == '__main__':
     #patcher.nopout((0x800C278 + 2))
 
     # bypass vocoder copy protection on D013.020
+	
+	#test manual dial group callable
+    #patcher.sethword(0x08023170, 0x2204)
+    #patcher.sethword(0x08012912, 0x2804)
+    #patcher.sethword(0x0801290A, 0x221C)
+	
+	
+	
 
     patcher.nopout((0x08033f30 + 0x18))
     patcher.nopout((0x08033f30 + 0x1a))

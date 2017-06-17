@@ -116,7 +116,7 @@
     <ExecutablePath>C:\Windows\System32;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
-    <NMakeBuildCommandLine>"C:\cygwin\bin\make.exe" flash</NMakeBuildCommandLine>
+    <NMakeBuildCommandLine>"C:\cygwin\bin\make.exe" flash_FW_2017</NMakeBuildCommandLine>
     <NMakeCleanCommandLine>"C:\cygwin\bin\make.exe" clean</NMakeCleanCommandLine>
     <NMakeReBuildCommandLine>"C:\cygwin\bin\make.exe" flash_S13</NMakeReBuildCommandLine>
     <NMakePreprocessorDefinitions>CONFIG_SPIFLASH;CONFIG_GRAPHICS;CONFIG_SPIF5000;CONFIG_AMBE;CONFIG_AES;CONFIG_MORSE_OUTPUT;CONFIG_DIMMED_LIGHT;CONFIG_APP_MENU;FW_D13_020;WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
@@ -145,6 +145,7 @@
     <ClCompile Include="applet\src\amenu_codeplug.c" />
     <ClCompile Include="applet\src\amenu_contacts.c" />
     <ClCompile Include="applet\src\amenu_hexmon.c" />
+    <ClCompile Include="applet\src\amenu_lastheard.c" />
     <ClCompile Include="applet\src\amenu_set_tg.c" />
     <ClCompile Include="applet\src\amenu_utils.c" />
     <ClCompile Include="applet\src\app_menu.c" />
@@ -195,6 +196,7 @@
     <ClInclude Include="applet\src\amenu_codeplug.h" />
     <ClInclude Include="applet\src\amenu_contacts.h" />
     <ClInclude Include="applet\src\amenu_hexmon.h" />
+    <ClInclude Include="applet\src\amenu_lastheard.h" />
     <ClInclude Include="applet\src\amenu_set_tg.h" />
     <ClInclude Include="applet\src\app_menu.h" />
     <ClInclude Include="applet\src\beep.h" />

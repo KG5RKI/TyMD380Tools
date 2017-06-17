@@ -29,7 +29,10 @@ image_D13:
 	"${MAKE}" -C applet FW=D13_020 all  
 
 image_S13:
-	"${MAKE}" -C applet FW=S13_020 all  
+	"${MAKE}" -C applet FW=S13_020 all 
+	
+image_2017:
+	"${MAKE}" -C applet FW=FW_2017 all  
 
 original_D13: 
 	"${MAKE}" -C firmware unwrapped/D013.020.img
@@ -65,6 +68,9 @@ flash_D13: image_D13
 	./md380-dfu upgrade applet/experiment.bin
 
 flash_S13: image_S13
+	./md380-dfu upgrade applet/experiment.bin
+	
+flash_FW_2017: image_2017
 	./md380-dfu upgrade applet/experiment.bin
 
 sync:
