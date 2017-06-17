@@ -84,6 +84,38 @@ const char *str2wide(char *widestring,
   return widestring;
 }
 
+extern void gfx_drawchar_pos(int r0, int r1, int r2);
+extern void gfx_blockfill(int x_from, int y_from, int x_to, int y_to);
+extern void gfx_drawtext7(const char *str, int x, int y); // firmware
+
+												   // the intention is a string _without_ .. if it is too long.
+												   // and that it only fills background when a char or space is printed.
+void gfx_printf_pos(int x, int y, const char *fmt, ...)
+{
+
+	char buf[50];
+
+	va_list va;
+	va_start(va, fmt);
+
+	//swapFGBG();
+
+	va_snprintf(buf, 50, fmt, va);
+	gfx_drawtext7(buf, x, y);
+	//gfx_clear3(0);
+
+	va_end(va);
+
+}
+
+
+void rx_screen_blue_hook(char *bmp, int x, int y)
+{
+	gfx_blockfill(0, 16, 159, 127);
+	gfx_printf_pos(2, 38, "How bout USERDB?");
+	gfx_printf_pos(2, 18, "TYISBEAST");
+	return;
+}
 
 /* Our RESET handler is called instead of the official one, so this
    main() method comes before the official one.  Our global variables

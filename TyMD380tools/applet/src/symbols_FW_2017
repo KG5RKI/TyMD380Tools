@@ -1,2 +1,7 @@
 gfx_set_bg_color                         = 0x080249FD ;
 gfx_set_fg_color                         = 0x08024369 ;
+
+gfx_drawchar_pos                         = 0x08029BA5 ;
+
+gfx_blockfill                            = 0x080249FD ;
+gfx_drawtext7                            = 0x0802E035 ;

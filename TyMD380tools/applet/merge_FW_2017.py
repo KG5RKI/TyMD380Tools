@@ -191,7 +191,8 @@ if __name__ == '__main__':
 
     # Open the applet symbols
     sapplet = Symbols("%s.sym" % sys.argv[2])
-
+    merger.hookbl(0x08030D76, sapplet.getadr("rx_screen_blue_hook"), 0)
+    merger.hookbl(0x08030DF0, sapplet.getadr("rx_screen_blue_hook"), 0)
     
     print("Merging %s into %s at %08x" % (
         sys.argv[2],
