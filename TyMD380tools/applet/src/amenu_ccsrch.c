@@ -21,10 +21,6 @@
 
 uint32_t ccsrch_stopwatch = 0;
 
-char ccsrch_buffer[0x100] = { 0 };
-uint32_t ccsrch_buffer_index = 0;
-
-
 uint8_t cc = 20;
 uint8_t fMatch = 0;
 
@@ -34,7 +30,7 @@ static void CCSrch_Draw(app_menu_t *pMenu, menu_item_t *pItem)
   //  the start address in the 'test / debug' menu (or whatever the final name will be) .
 { int i, n, bytes_per_line, rd_value, font;
   lcd_context_t dc;
-  char tmpStr[0x500];
+  //char tmpStr[0x500];
   char *cp;
   char buffa = 0, buffa2=0;
 
@@ -48,43 +44,35 @@ static void CCSrch_Draw(app_menu_t *pMenu, menu_item_t *pItem)
 
   n = 0;         // count the number of bytes per page (depends on the used font)
   
-  if ((ReadStopwatch_ms(&ccsrch_stopwatch) > 100/*ms*/ || cc > 16) && !fMatch)
+  if ((ReadStopwatch_ms(&ccsrch_stopwatch) > 100/*ms*/ || cc > 16))
   {
 	  LCD_FillRect(0, 0, LCD_SCREEN_WIDTH - 1, LCD_SCREEN_HEIGHT - 1, dc.bg_color);
 
-	  LCD_Printf(&dc, "\r--Color Code Search--\r"); // title, centered, opaque, full line
+	  LCD_Printf(&dc, "\r--Color Code Search--\r\r"); // title, centered, opaque, full line
 
 	  StartStopwatch(&ccsrch_stopwatch);
 
-	  c5000_spi0_readreg(0x0d, &buffa);
-	  c5000_spi0_readreg(0x1f, &buffa2);
-	  buffa2 = ((buffa2 & 0xF0) >> 4) & 0xF;
+	  if (!fMatch) {
+		  c5000_spi0_readreg(0x0d, &buffa);
+		  c5000_spi0_readreg(0x1f, &buffa2);
+		  buffa2 = ((buffa2 & 0xF0) >> 4) & 0xF;
+	  }
 
 	  //found match!
-	  if (buffa & 0x10 && buffa2 == cc) {
+	  if ((buffa & 0x10 && buffa2 == cc )|| fMatch) {
+		  LCD_Printf(&dc, " Found matched cc %d!\r", cc-1);
 		  fMatch = 1;
-		  LCD_Printf("Found matched cc %d!\r", cc);
 	  }
-	  else {
+	  else if(!fMatch) {
 		  cc++;
 		  if (cc > 15) {
 			  cc = 0;
 		  }
-		  LCD_Printf(&dc, "%02x Testing cc %d\r", buffa, cc);
+		  LCD_Printf(&dc, "  Testing cc %d\r", buffa, cc);
 		  //sprintf(tmpStr, "%02x Testing cc %d\r", buffa, cc);
 		  c5000_spi0_writereg(0x1f, (cc & 0xF) << 4);
 	  }
-
 	 
-	  if (strlen(tmpStr) + strlen(ccsrch_buffer) >= 0x500) {
-		  ccsrch_buffer_index = 0;
-	  }
-	  //strcpy(&ccsrch_buffer[ccsrch_buffer_index], tmpStr);
-	  //ccsrch_buffer_index += strlen(tmpStr);
-	  //LCD_Printf(&dc, ccsrch_buffer);
-
-	  // If necessary, fill the rest of the screen (at the bottom) with the background colour:
-	  //LCD_FillRect(0, dc.y, LCD_SCREEN_WIDTH - 1, LCD_SCREEN_HEIGHT - 1, dc.bg_color);
 	  
   }
 
@@ -103,7 +91,6 @@ int am_cbk_CCSrch(app_menu_t *pMenu, menu_item_t *pItem, int event, int param )
    { case APPMENU_EVT_ENTER: // the operator finished or aborted editing,
 
 	     //StartStopwatch(&ccsrch_stopwatch);
-	     ccsrch_buffer_index = 0;
 		 cc = 20;
 		 fMatch = 0;
          return AM_RESULT_OCCUPY_SCREEN;
@@ -118,7 +105,7 @@ int am_cbk_CCSrch(app_menu_t *pMenu, menu_item_t *pItem, int event, int param )
            // Calculating a checksum causes no QRM because the LCD bus is passive.
 
          
-           if( pMenu->redraw || ReadStopwatch_ms(&ccsrch_stopwatch) > 1000)
+           if( pMenu->redraw || ReadStopwatch_ms(&ccsrch_stopwatch) > 500)
             { 
 			   pMenu->redraw = FALSE;
 			   CCSrch_Draw(pMenu, pItem); 
