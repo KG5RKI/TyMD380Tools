@@ -60,7 +60,7 @@ static void CCSrch_Draw(app_menu_t *pMenu, menu_item_t *pItem)
 
 	  //found match!
 	  if ((buffa & 0x10 && buffa2 == cc )|| fMatch) {
-		  LCD_Printf(&dc, " Found matched cc %d!\r", cc-1);
+		  LCD_Printf(&dc, " Found matched cc %d!\r", cc);
 		  fMatch = 1;
 	  }
 	  else if(!fMatch) {
