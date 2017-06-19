@@ -212,7 +212,7 @@ BOOL ChannelList_ReadNameByIndex(int index,
 			CODEPLUG_SIZEOF_CHANNEL_ENTRY);
 	
 		tChannel->name[15] = '\0';
-		return !(tChannel->settings[3] & 0x01);
+		return (tChannel->name[0] != '\0');
 	}
 	return 0;
 } // end ZoneList_ReadNameByIndex()
