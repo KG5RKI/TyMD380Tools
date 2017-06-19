@@ -26,6 +26,12 @@ if __name__ == '__main__':
     #patcher.sethword(0x08023170, 0x2204)
     #patcher.sethword(0x08012912, 0x2804)
     #patcher.sethword(0x080EB1B0, 0x00FF)
+    patcher.nopout((0x08028154))
+    patcher.nopout((0x08028154 + 0x2))
+    patcher.nopout((0x08028154 + 0x4))
+    patcher.nopout((0x08028154 + 0x6))
+    patcher.nopout((0x08028154 + 0x8))
+    patcher.nopout((0x08028154 + 0xA))
 	
     # freeing ~200k for code patches
     patcher.ffrange(0x0809aee8, 0x080cf754)

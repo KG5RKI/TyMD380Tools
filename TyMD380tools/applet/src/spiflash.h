@@ -5,10 +5,10 @@
 #include <stdint.h>
 
 //Only writes if the adr is in range.
-extern void spiflash_write_with_type_check(void *dst, long adr, long len);
+//extern void spiflash_write_with_type_check(void *dst, long adr, long len);
 
-extern int check_spi_flash_size(void);         // Returns greatest unique address.
-extern uint32_t get_spi_flash_type(uint8_t *); // place for the id
+//extern int check_spi_flash_size(void);         // Returns greatest unique address.
+//extern uint32_t get_spi_flash_type(uint8_t *); // place for the id
                                                // ret:0x00aabbcc  aa=MANUFACTURER ID, bb,cc Device Identification
 
 extern uint32_t spi_flash_addl_config_start;

@@ -8,6 +8,8 @@
 
 #include <stdint.h>
 
+
+#include "config.h"
 #include "printf.h"
 #include "dmesg.h"
 

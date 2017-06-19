@@ -10,11 +10,12 @@
 #include "stm32f4xx_conf.h" // again, added because ST didn't put it here ?
 
 #include <string.h>
-
+#include "dmesg.h"
 #include "config.h"  // need to know CONFIG_DIMMED_LIGHT (defined in config.h since 2017-01-03)
 #include "printf.h"
 #include "version.h"
-
+#include "usersdb.h"
+#include "radiostate.h"
 						  
 GPIO_InitTypeDef  GPIO_InitStructure;
 
@@ -108,12 +109,29 @@ void gfx_printf_pos(int x, int y, const char *fmt, ...)
 
 }
 
+#define text_height 16
 
 void rx_screen_blue_hook(char *bmp, int x, int y)
 {
+	user_t usr;
+
+	int y_index = 22;
+
+	usr_find_by_dmrid(&usr, rst_src);
+	gfx_set_fg_color(0x00FF00);
 	gfx_blockfill(0, 16, 159, 127);
-	gfx_printf_pos(2, 38, "How bout USERDB?");
-	gfx_printf_pos(2, 18, "TYISBEAST");
+	gfx_set_bg_color(0x00FF00);
+	gfx_set_fg_color(0x000000);
+
+	gfx_printf_pos(2, y_index, "%s - %s", usr.callsign, usr.name);
+	y_index += text_height;
+	gfx_printf_pos(2, y_index, "%s, %s", usr.place, usr.state);
+	y_index += text_height*2;
+	gfx_printf_pos(2, y_index, "%s", usr.country);
+	y_index += text_height;
+	//gfx_printf_pos(2, y_index, "%s", usr.);
+	//y_index += text_height;
+
 	return;
 }
 
@@ -129,7 +147,7 @@ void rx_screen_blue_hook(char *bmp, int x, int y)
 */
 int main(void) {
 
-  //dmesg_init();
+  dmesg_init();
   
   /*
   RTC_TimeTypeDef RTC_TimeTypeTime;

@@ -5,3 +5,46 @@ gfx_drawchar_pos                         = 0x08029BA5 ;
 
 gfx_blockfill                            = 0x080249FD ;
 gfx_drawtext7                            = 0x0802E035 ;
+
+md380_spiflash_read                      = 0x080439CB ;
+
+md380_spiflash_write                      = 0x08043AB3 ;
+
+md380_spiflash_security_registers_read   = 0x08043E0D ;
+
+md380_spiflash_disable                   = 0x08043A9B ;
+
+md380_spiflash_enable                    = 0x08043A7F ;
+
+md380_spiflash_wait                      = 0x08043A5D ;
+
+md380_spi_sendrecv                       = 0x08043A11;
+
+md380_spiflash_block_erase64k            = 0x080437E9 ;
+
+md380_spiflash_sektor_erase4k            = 0x080437B5 ;
+
+md380_OSMboxPost                         = 0x0803E711 ;
+
+md380_OSMboxPend                         = 0x0803E5FB ;
+
+
+md380_blockadr                           = 0x2001FB14 ;
+md380_packetlen                          = 0x2001FB18 ;
+
+md380_dfutargetadr                       = 0x20001228 ;
+md380_dfu_target_adr                     = 0x20001228 ;
+
+md380_dfu_state                          = 0x2001FE3F ;
+md380_thingy2                            = 0x2001FE40 ;
+
+
+usb_upld_handle                          = 0x080D94BD ;
+usb_dnld_handle                          = 0x080D8AC5 ;
+
+usb_send_packet                          = 0x08079CF3 ;
+
+md380_packet                             = 0x2001BD20 ;
+md380_usbstring                          = 0x2001E554 ;
+
+dmr_call_start                           = 0x0804C52B ;

@@ -52,14 +52,12 @@ void rst_voice_lc_header(lc_t *lc)
     int flco = get_flco( lc );
     
     int groupcall = flco == 0;
-
+	updateSrcDst(src, dst);
     if( !rst_voice_active || rst_src != src || rst_dst != dst) {
 		updateSrcDst(src, dst);
         rst_flco = flco ;
 
-        PRINT("\n* Call from %d to %s%d started.\n", src, groupcall ? "group ":"", dst);
-
-        PRINT("cs " );
+        
         dump_full_lc(lc);
         
         char grp_c = 'U' ;        
@@ -70,10 +68,10 @@ void rst_voice_lc_header(lc_t *lc)
             rst_grp = 0 ;            
         }
         
-        LOGR("cs %c %d->%d\n", grp_c, src, dst );
+        //LOGR("cs %c %d->%d\n", grp_c, src, dst );
 
-        rst_voice_active = 1 ;
-        rx_voice = 1 ;				// flag for new voice call received    
+        //rst_voice_active = 1 ;
+        //rx_voice = 1 ;				// flag for new voice call received    
     }
 }
 
@@ -84,12 +82,12 @@ void rst_term_with_lc(lc_t *lc)
     int flco = get_flco( lc );
     
     int groupcall = flco == 0;
-    
+	updateSrcDst(src, dst);
     if( rst_voice_active ) {
 		updateSrcDst(src, dst);
-        PRINT("\n* Call from %d to %s%d ended.\n", src, groupcall ? "group ":"", dst);
+        //PRINT("\n* Call from %d to %s%d ended.\n", src, groupcall ? "group ":"", dst);
         
-        PRINT("ce " );
+        //PRINT("ce " );
         dump_full_lc(lc);
         
         char grp_c = 'U' ;        
@@ -97,10 +95,10 @@ void rst_term_with_lc(lc_t *lc)
             grp_c = 'G' ;
         }
 
-        LOGR("ce %c %d->%d\n", grp_c, src, dst );
+        //LOGR("ce %c %d->%d\n", grp_c, src, dst );
 
-        rst_voice_active = 0 ;
-        rx_voice = 0 ;				// flag for voice call ended
+        //rst_voice_active = 0 ;
+        //rx_voice = 0 ;				// flag for voice call ended
     }
 }
 
@@ -215,9 +213,9 @@ void rst_data_header(void *data)
         ug = 'G' ;
     }
 
-    LOGR("dh %c (%d) %d->%d %d\n", ug, rst_hdr_sap, rst_hdr_src, rst_hdr_dst, get_answer(data) );
+    //LOGR("dh %c (%d) %d->%d %d\n", ug, rst_hdr_sap, rst_hdr_src, rst_hdr_dst, get_answer(data) );
 
-    PRINT("sap=%d %s dpf=%d %s src=%d dst=%d btf=%d grp=%d\n", sap, sap_to_str(sap), dpf, dpf_to_str(dpf), get_adr(datahdr->src),get_adr(datahdr->dst), btf, grp );
+    //PRINT("sap=%d %s dpf=%d %s src=%d dst=%d btf=%d grp=%d\n", sap, sap_to_str(sap), dpf, dpf_to_str(dpf), get_adr(datahdr->src),get_adr(datahdr->dst), btf, grp );
 
 //    PRINT("data: ");
 //    PRINTHEX(datahdr,12);
@@ -248,10 +246,10 @@ void rst_conf_data_packet(void *data, int len)
     uint8_t *datap = data ;
     
     uint8_t serial = datap[0] >> 1 ;
-    PRINT("serial %d\n",serial);  
+    //PRINT("serial %d\n",serial);  
     
     if( serial != expected_serial ) {
-        PRINT("out of order\n");
+        //PRINT("out of order\n");
         // TODO signal damaged buffer.
         // fix for now:
         blocks_outstanding++ ;
@@ -269,12 +267,12 @@ void rst_conf_data_packet(void *data, int len)
 
 void rst_packet_complete(void *data, int len)
 {        
-    PRINT("buffer: ");
-    PRINTHEX(databuffer,len);
-    PRINT("\n");    
-    PRINT("buffer: ");
-    PRINTASC(databuffer,len);
-    PRINT("\n");          
+    //PRINT("buffer: ");
+    //PRINTHEX(databuffer,len);
+    //PRINT("\n");    
+    //PRINT("buffer: ");
+   // PRINTASC(databuffer,len);
+   // PRINT("\n");          
     
     uint8_t *b = data ;
 
@@ -283,8 +281,8 @@ void rst_packet_complete(void *data, int len)
     uint16_t sport = ( b[20] << 8 ) + b[21] ;
     uint16_t dport = ( b[22] << 8 ) + b[23] ;
     
-    LOGR("%d.%d.%d.%d:%d %d.%d.%d.%d:%d\n", b[12], b[13],b[14], b[15], sport, b[16], b[17],b[18], b[19], dport );
-    PRINT("%d.%d.%d.%d:%d %d.%d.%d.%d:%d\n", b[12], b[13],b[14], b[15], sport, b[16], b[17],b[18], b[19], dport );
+   // LOGR("%d.%d.%d.%d:%d %d.%d.%d.%d:%d\n", b[12], b[13],b[14], b[15], sport, b[16], b[17],b[18], b[19], dport );
+   // PRINT("%d.%d.%d.%d:%d %d.%d.%d.%d:%d\n", b[12], b[13],b[14], b[15], sport, b[16], b[17],b[18], b[19], dport );
 }
 
 void rst_data_block(void *data, int len)
@@ -299,7 +297,7 @@ void rst_data_block(void *data, int len)
 #endif
     
     if( blocks_outstanding < 1 ) {
-        PRINT("spurious data block?\n");
+       // PRINT("spurious data block?\n");
         return ;
     }
     blocks_outstanding-- ;

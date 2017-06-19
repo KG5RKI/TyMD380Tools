@@ -19,6 +19,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />
+    <None Include="applet\Makefile" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="applet\src\addl_config.c">

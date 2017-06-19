@@ -191,8 +191,18 @@ if __name__ == '__main__':
 
     # Open the applet symbols
     sapplet = Symbols("%s.sym" % sys.argv[2])
+	
+    #merger.hookstub(0x080E50C6,  # USB manufacturer string handler function.
+    #                sapplet.getadr("getmfgstr"))
+	
     merger.hookbl(0x08030D76, sapplet.getadr("rx_screen_blue_hook"), 0)
     merger.hookbl(0x08030DF0, sapplet.getadr("rx_screen_blue_hook"), 0)
+	
+    #merger.hookbl(0x080D8A20, sapplet.getadr("usb_upld_hook"), 0x080D94BC)  # Old handler adr.
+	
+    dmr_call_start_hook_list = [0x804C3DC, 0x0804BE34, 0x804BE0C, 0x804BDA6]
+    for adr in dmr_call_start_hook_list:
+        merger.hookbl(adr, sapplet.getadr("dmr_call_start_hook"))
     
     print("Merging %s into %s at %08x" % (
         sys.argv[2],

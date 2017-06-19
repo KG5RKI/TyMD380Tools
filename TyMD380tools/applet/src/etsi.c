@@ -71,7 +71,6 @@ void dump_full_lc( lc_t *lc )
     uint8_t fid = lc->fid ;
     uint8_t opts = lc->svc_opts ;
     
-    PRINT("flco=%02x %s fid=%d svc=%d src=%d dst=%d\n",flco,get_flco_str(lc), fid,opts,get_adr(lc->src),get_adr(lc->dst));
 
     if (flco == 0 && fid == 0x00 && taContext.src != get_adr(lc->src))
     {
@@ -112,7 +111,6 @@ void dump_full_lc( lc_t *lc )
         {
             if (taContext.format == 1 || taContext.format == 2)
             {
-                PRINT("TA %d (%d): %s\n", taContext.src, taContext.length, taContext.text);
                 if (talkerAlias.src != taContext.src)
                 {
                     talkerAlias = taContext;
@@ -120,7 +118,6 @@ void dump_full_lc( lc_t *lc )
             }
             else
             {
-                PRINT("TA Unsupported format: %s", get_ta_type_str(taContext.format));
                 talkerAlias.length = 0;
             }
         }
@@ -142,7 +139,6 @@ void dump_full_lc( lc_t *lc )
         {
             if (taContext.format == 1 || taContext.format == 2)
             {
-                PRINT("TA %d (%d): %s\n", taContext.src, taContext.length, taContext.text);
                 if (talkerAlias.src != taContext.src)
                 {
                     talkerAlias = taContext;
@@ -150,7 +146,6 @@ void dump_full_lc( lc_t *lc )
             }
             else
             {
-                PRINT("TA Unsupported format: %s", get_ta_type_str(taContext.format));
                 talkerAlias.length = 0;
             }
         }

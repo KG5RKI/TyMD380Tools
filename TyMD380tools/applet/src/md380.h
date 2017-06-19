@@ -48,7 +48,7 @@ extern char welcomebmp[];
 // md380 usb
 
 //! Handle to the original (unhooked) upload handler.
-int usb_upld_handle(void*, char*, int, int);
+int usb_upld_handle(void*, void*, void*, void*);
 //! This returns a USB packet to the host from the upload handler.
 int usb_send_packet(void*, char*, uint16_t);
 

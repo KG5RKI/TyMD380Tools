@@ -134,6 +134,7 @@
     <Text Include="readme.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="applet\Makefile" />
     <None Include="Makefile" />
   </ItemGroup>
   <ItemGroup>

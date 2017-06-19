@@ -207,7 +207,7 @@ void usr_splitbuffer(user_t *up)
 
 int usr_find_by_dmrid( user_t *up, int dmrid )
 {
-    if( !find_dmr_user(up->buffer, dmrid, (void *) 0x100000, BSIZE) ) {
+    if( !find_dmr_user(up->buffer, dmrid, (void *) 0x920000, BSIZE) ) {
         // safeguard
         up->buffer[0] = '?' ;
         up->buffer[1] = 0 ;
