@@ -312,21 +312,10 @@ void netmon4_update()
             print_time_hook(log);
 			LHList_AddEntry(src, dst);
             if( usr_find_by_dmrid(&usr, src) == 0 ) {
-				if (usr_find_by_dmrid(&usr2, dst) == 0) {
-					lastheard_printf("=%d->%d %c\n", src, dst, mode);
-				}
-				else {
-					lastheard_printf("=%d->%s %c\n", src, usr2.callsign, mode);
-				}
+				lastheard_printf("=%d->%d %c\n", src, rst_dst, mode);
                 
             } else {
-				if (usr_find_by_dmrid(&usr2, dst) == 0) {
-					lastheard_printf("=%s->%s %c\n", usr.callsign, usr2.callsign, mode);
-				}
-				else {
-					lastheard_printf("=%s->%d %c\n", usr.callsign, dst, mode);
-				}
-                
+				lastheard_printf("=%s->%d %c\n", usr.callsign, rst_dst, mode);
             }
 			
         }
