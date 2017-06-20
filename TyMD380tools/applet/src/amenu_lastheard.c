@@ -20,6 +20,8 @@
 #include "usersdb.h"
 #include "amenu_lastheard.h" // header for THIS module (to check prototypes,etc)
 #include "gfx.h"
+#include "blacklist.h"
+#include "amenu_set_tg.h"
 
 uint8_t lhSize = 0;
 uint8_t lhRBufIndex = 0;
@@ -28,6 +30,62 @@ uint8_t lhRBufIndex = 0;
 
 lastheard_user lhdir[MAX_LASTHEARD_ENTRIES];
 
+lastheard_user selUser;
+
+int am_cbk_Lastheard_BlockUser(app_menu_t *pMenu, menu_item_t *pItem, int event, int param)
+{ // Simple example for a 'user screen' opened from the application menu
+	if (event == APPMENU_EVT_ENTER) // pressed ENTER (to launch the colour test) ?
+	{
+		blockID(selUser.src);
+		return AM_RESULT_OK; // screen now 'occupied' by the colour test screen
+	}
+	return AM_RESULT_NONE; // "proceed as if there was NO callback function"
+} // end am_cbk_ColorTest()
+
+int am_cbk_Lastheard_PrivCall(app_menu_t *pMenu, menu_item_t *pItem, int event, int param)
+{ // Simple example for a 'user screen' opened from the application menu
+	if (event == APPMENU_EVT_ENTER) // pressed ENTER (to launch the colour test) ?
+	{
+		ad_hoc_talkgroup = selUser.src;
+		ad_hoc_tg_channel = channel_num;
+		ad_hoc_call_type = CONTACT_USER;
+		CheckTalkgroupAfterChannelSwitch();
+		return AM_RESULT_OK; // screen now 'occupied' by the colour test screen
+	}
+	return AM_RESULT_NONE; // "proceed as if there was NO callback function"
+} // end am_cbk_ColorTest()
+
+
+
+menu_item_t am_Lastheard_Options[] = // setup menu, nesting level 1 ...
+{ // { "Text__max__13", data_type,  options,opt_value,
+  //     pvValue,iMinValue,iMaxValue, string table, callback }
+
+
+  // { "Text__max__13", data_type,  options,opt_value,
+  //    pvValue,iMinValue,iMaxValue,           string table, callback }
+	{ "Options",             DTYPE_NONE, APPMENU_OPT_NONE,0,
+	NULL,0,0,          NULL,         NULL },
+
+	{ "[-]Callsign",             DTYPE_STRING, APPMENU_OPT_NONE,0,
+	&selUser.dbEntry.callsign,0,0,          NULL,         NULL },
+
+	{ "ID",             DTYPE_INTEGER, APPMENU_OPT_NONE,0,
+	&selUser.src,0,0,          NULL,         NULL },
+
+	{ "Private Call",       DTYPE_NONE, APPMENU_OPT_BACK,0,
+	NULL,0,0,                  NULL,  am_cbk_Lastheard_PrivCall },
+
+	{ "Ignore",       DTYPE_NONE, APPMENU_OPT_BACK,0,
+	NULL,0,0,                  NULL,  am_cbk_Lastheard_BlockUser },
+
+	{ "Back",       DTYPE_NONE, APPMENU_OPT_BACK,0,
+	NULL,0,0,                  NULL,  NULL },
+
+	// End of the list marked by "all zeroes" :
+	{ NULL, 0/*dt*/, 0/*opt*/, 0/*ov*/, NULL/*pValue*/, 0,0, NULL, NULL }
+
+}; // end am_Setup[]
 
 void LHList_AddEntry(uint32_t src, uint32_t dst) 
 {
@@ -216,7 +274,9 @@ int am_cbk_LastheardList(app_menu_t *pMenu, menu_item_t *pItem, int event, int p
 				//ContactList_SetZoneByIndex(pSL->focused_item);
 				//contactIndex = pSL->focused_item;
 				//fIsTG = (selContact.type == 0xC1 ? 1 : 0);
-				//Menu_EnterSubmenu(pMenu, am_Contact_Edit);
+				memcpy(&selUser, &lhdir[pSL->focused_item], sizeof(lastheard_user));
+				usr_find_by_dmrid(&selUser.dbEntry, selUser.src);
+				Menu_EnterSubmenu(pMenu, am_Lastheard_Options);
 
 				// The above command switched to the new zone, and probably set
 				// channel_num = 0 to 'politely ask' the original firmware to 

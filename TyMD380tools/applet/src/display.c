@@ -26,6 +26,7 @@
 #include "lcd_driver.h"
 #include "codeplug.h"
 #include "amenu_set_tg.h"
+#include "blacklist.h"
 
 
 char eye_paltab[] = {
@@ -653,18 +654,18 @@ void draw_alt_statusline()
 			
 	        if( usr_find_by_dmrid(&usr, src) == 0 ) {
 				if (usr_find_by_dmrid(&usr2, rst_dst) == 0) {
-					gfx_printf_pos2(RX_POPUP_X_START, 96, 157, "lh:%d->%d %c", src, rst_dst, mode);
+					gfx_printf_pos2(RX_POPUP_X_START, 96, 157, "lh:%d->%d %c %s", src, rst_dst, mode, (isBlackListed(src)?"-Ignore":" "));
 				}
 				else {
-					gfx_printf_pos2(RX_POPUP_X_START, 96, 157, "lh:%d->%s %c", src, usr2.callsign, mode);
+					gfx_printf_pos2(RX_POPUP_X_START, 96, 157, "lh:%d->%s %c %s", src, usr2.callsign, mode, (isBlackListed(src) ? "-Ignore" : " "));
 				}
         	} else {
         	    
 				if (usr_find_by_dmrid(&usr2, rst_dst) == 0) {
-					gfx_printf_pos2(RX_POPUP_X_START, 96, 157, "lh:%s->%d %c", usr.callsign, rst_dst, mode);
+					gfx_printf_pos2(RX_POPUP_X_START, 96, 157, "lh:%s->%d %c %s", usr.callsign, rst_dst, mode, (isBlackListed(src) ? "-Ignore" : " "));
 				}
 				else {
-					gfx_printf_pos2(RX_POPUP_X_START, 96, 157, "lh:%s->%s %c", usr.callsign, usr2.callsign, mode);
+					gfx_printf_pos2(RX_POPUP_X_START, 96, 157, "lh:%s->%s %c %s", usr.callsign, usr2.callsign, mode, (isBlackListed(src) ? "-Ignore" : " "));
 				}
 	        }	
 	}

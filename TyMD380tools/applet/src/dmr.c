@@ -29,7 +29,7 @@
 #include "os.h"
 #include "debug.h"
 #include "radiostate.h"
-
+#include "blacklist.h"
 
 /* global Bufferspace to transfer data*/
 //char DebugLine1[30];
@@ -288,8 +288,11 @@ void dmr_apply_squelch_hook(OS_EVENT *event, char * mode)
         rst_signal_my_call();
     }
 
-    //Promiscuous mode!
-    if( *mode == 0x08 && global_addl_config.promtg == 1 ) {
+	//mute people that are blacklisted
+	if (*mode == 0x09 && isBlackListed(rst_src) || isBlackListed(rst_hdr_src) || isBlackListed(g_src)) {
+		*mode = 0x08;
+		//dmr_before_squelch();
+	}else if( *mode == 0x08 && global_addl_config.promtg == 1 && rst_dst < 10000) {
         printf("Applying monitor mode to a public call.\n");
         *mode = 0x09;
 
@@ -299,6 +302,8 @@ void dmr_apply_squelch_hook(OS_EVENT *event, char * mode)
          */
         dmr_before_squelch();
     }
+
+	
 
     /* This is really OSMboxPost().  We should probably change up these
        names now that we're figuring out what the functions really
@@ -324,8 +329,9 @@ void dmr_apply_privsquelch_hook(OS_EVENT *event, char *mode)
         rst_signal_my_call();
     }
 
+
     //Promiscuous mode!
-    if( *mode == 0x08 && global_addl_config.promtg == 1 ) {
+	if( *mode == 0x08 && global_addl_config.promtg == 1 && rst_dst < 10000) {
         printf("Applying monitor mode to a private call.\n");
         *mode = 0x09;
         dmr_before_squelch();

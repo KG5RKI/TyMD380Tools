@@ -145,10 +145,12 @@
     <ClCompile Include="applet\src\amenu_codeplug.c" />
     <ClCompile Include="applet\src\amenu_contacts.c" />
     <ClCompile Include="applet\src\amenu_hexmon.c" />
+    <ClCompile Include="applet\src\amenu_lastheard.c" />
     <ClCompile Include="applet\src\amenu_set_tg.c" />
     <ClCompile Include="applet\src\amenu_utils.c" />
     <ClCompile Include="applet\src\app_menu.c" />
     <ClCompile Include="applet\src\beep.c" />
+    <ClCompile Include="applet\src\blacklist.c" />
     <ClCompile Include="applet\src\color_picker.c" />
     <ClCompile Include="applet\src\console.c" />
     <ClCompile Include="applet\src\debug.c" />
@@ -195,9 +197,11 @@
     <ClInclude Include="applet\src\amenu_codeplug.h" />
     <ClInclude Include="applet\src\amenu_contacts.h" />
     <ClInclude Include="applet\src\amenu_hexmon.h" />
+    <ClInclude Include="applet\src\amenu_lastheard.h" />
     <ClInclude Include="applet\src\amenu_set_tg.h" />
     <ClInclude Include="applet\src\app_menu.h" />
     <ClInclude Include="applet\src\beep.h" />
+    <ClInclude Include="applet\src\blacklist.h" />
     <ClInclude Include="applet\src\codeplug.h" />
     <ClInclude Include="applet\src\console.h" />
     <ClInclude Include="applet\src\debug.h" />
