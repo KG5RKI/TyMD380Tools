@@ -18,7 +18,7 @@
 #include "spiflash.h" // md380_spiflash_read()
 #include "codeplug.h" // codeplug memory addresses, struct- and array-sizes
 #include "amenu_contacts.h" // header for THIS module (to check prototypes,etc)
-
+#include "amenu_set_tg.h"
 
 contact_t selContact;
 int contactIndex = 0;
@@ -27,6 +27,7 @@ char fIsTG = 0;
 
 int am_cbk_SetType(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
 int am_cbk_SetID(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
+int am_cbk_CallContact(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
 
 const am_stringtable_t am_stringtab_contact_types[] =
 {
@@ -44,9 +45,7 @@ menu_item_t am_Contact_Edit[] = // setup menu, nesting level 1 ...
 
 	// { "Text__max__13", data_type,  options,opt_value,
 	//    pvValue,iMinValue,iMaxValue,           string table, callback }
-	{ "Edit Contact",             DTYPE_NONE, APPMENU_OPT_NONE,0,
-	NULL,0,0,          NULL,         NULL },
-
+	
 	{ "[-]Name",             DTYPE_WSTRING, APPMENU_OPT_NONE,0,
 	selContact.name ,0,0,          NULL,         NULL },
 
@@ -58,6 +57,8 @@ menu_item_t am_Contact_Edit[] = // setup menu, nesting level 1 ...
 	1, // <- here: bitmask !
 	&fIsTG,0,1, am_stringtab_contact_types, am_cbk_SetType },
 
+	{ "[-]Set as TG",   DTYPE_NONE, APPMENU_OPT_BACK,0,
+	NULL ,0,0,          NULL,         am_cbk_CallContact },
 	
 	{ "Back",       DTYPE_NONE, APPMENU_OPT_BACK,0,
 	NULL,0,0,                  NULL,  am_cbk_ContactsList },
@@ -147,6 +148,28 @@ int am_cbk_SetType(app_menu_t *pMenu, menu_item_t *pItem, int event, int param)
 	} // end switch( event )
 	return AM_RESULT_NONE; // "proceed as if there was NO callback function"
 } // end am_cbk_SetTalkgroup()
+
+int am_cbk_CallContact(app_menu_t *pMenu, menu_item_t *pItem, int event, int param)
+{
+	switch (event) // what happened, why did the menu framework call us ?
+	{
+	
+	case APPMENU_EVT_ENTER: // the operator finished or aborted editing,
+
+	{
+		ad_hoc_call_type = selContact.type;
+		ad_hoc_talkgroup = ((int)selContact.id_h << 16) | ((int)selContact.id_m << 8) | (int)selContact.id_l;
+		ad_hoc_tg_channel = channel_num;
+		channel_num = 0;
+		CheckTalkgroupAfterChannelSwitch();
+		
+	} // end if < FINISHED (not ABORTED) editing >
+	return AM_RESULT_OK; // "event was processed HERE"
+	default: // all other events are not handled here (let the sender handle them)
+		break;
+	} // end switch( event )
+	return AM_RESULT_NONE; // "proceed as if there was NO callback function"
+} // end am_cbk_CallContact()
 
 
 /*
