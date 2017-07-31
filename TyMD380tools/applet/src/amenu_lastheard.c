@@ -209,10 +209,8 @@ static void Lastheard_Draw(app_menu_t *pMenu, menu_item_t *pItem)
 		Menu_GetColours(sel_flags, &dc.fg_color, &dc.bg_color);
 		dc.x = 0;
 		dc.font = LCD_OPT_FONT_8x16;
-		LCD_Printf(&dc, " ");
-		//dc.font = LCD_OPT_FONT_16x16; // ex: codepage 437, but the useless smileys are radio buttons now,
-									  // to imitate Tytera's zone list (at least a bit) ! 
-		LCD_Printf(&dc, "%c", cRadio); // 16*16 pixels for a circle, not a crumpled egg
+		
+		LCD_Printf(&dc, " %c ", cRadio); // 16*16 pixels for a circle, not a crumpled egg
 		dc.font = LCD_OPT_FONT_8x16;
 		LCD_Printf(&dc, "%s - %d\r", lhUser->callsign, lhUser->dst); // '\r' clears to the end of the line, '\n' doesn't
 
