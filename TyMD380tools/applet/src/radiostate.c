@@ -20,6 +20,7 @@ int rst_src = 0 ;
 int rst_dst = 0 ;
 int rst_grp = 0 ;
 int rst_mycall = 0 ;
+int g_src = 0 ;
 uint8_t rst_flco = 0;
 
 int rst_hdr_sap ;
@@ -52,6 +53,8 @@ void rst_voice_lc_header(lc_t *lc)
     int flco = get_flco( lc );
     
     int groupcall = flco == 0;
+	if(groupcall)
+		g_src = src;
 
     if(( !rst_voice_active || rst_src != src || rst_dst != dst) && dst < 10000) {
 		updateSrcDst(src, dst);
@@ -84,7 +87,8 @@ void rst_term_with_lc(lc_t *lc)
     int flco = get_flco( lc );
     
     int groupcall = flco == 0;
-
+	if(groupcall)
+		g_src = src;
     if( rst_voice_active && dst < 10000) {
 		updateSrcDst(src, dst);
         PRINT("\n* Call from %d to %s%d ended.\n", src, groupcall ? "group ":"", dst);

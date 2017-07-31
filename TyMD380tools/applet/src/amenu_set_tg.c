@@ -74,6 +74,8 @@ int am_cbk_SetTalkgroup(app_menu_t *pMenu, menu_item_t *pItem, int event, int pa
   return AM_RESULT_NONE; // "proceed as if there was NO callback function"
 } // end am_cbk_SetTalkgroup()
 
+extern int fDrawOncePer;
+
 //---------------------------------------------------------------------------
 void CheckTalkgroupAfterChannelSwitch(void) // [in] ad_hoc_tg_channel,ad_hoc_talkgroup; [out] contact.xyz
   // Called from somewhere (display task?) after a channel-switch,
@@ -113,6 +115,7 @@ void CheckTalkgroupAfterChannelSwitch(void) // [in] ad_hoc_tg_channel,ad_hoc_tal
      //    Intuitively switch to A DIFFERENT channel and back, to invoke the "original" TG.
      ad_hoc_tg_channel = 0; // FORGET the *channel* with the ad-hoc TG, but not the ad-hoc TG itself,
      // so we can quickly recall it via app-menu in "up-down"-edit mode.
+	 fDrawOncePer = 0;
 
 	 wchar_t *cn_override_group_prefix = L"TG--";
 	 //If channel name begins with "TG-" override talkgroup # with ID from name

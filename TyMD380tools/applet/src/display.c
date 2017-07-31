@@ -676,27 +676,29 @@ void draw_alt_statusline()
     gfx_select_font(gfx_font_norm);
 }
 
-void draw_adhoc_statusline()
+void draw_adhoc_statusline(int x, int y, int xlen, int ylen)
 {
 	int dst;
 	int src;
 	int grp;
 	int fFound = 0;
 
-	gfx_set_fg_color(0);
-	gfx_set_bg_color(0xff8032);
-	gfx_select_font(gfx_font_small);
+	//gfx_set_fg_color(0);
+	//gfx_set_bg_color(0xff8032);
+	//gfx_select_font(gfx_font_small);
+
+	//gfx_blockfill(x, y, x+320, y+24);
 
 	user_t usr;
 	if (usr_find_by_dmrid(&usr, ad_hoc_talkgroup) == 0) {
-		gfx_printf_pos2(RX_POPUP_X_START + 20, 55, 120, "AdHoc: %s - %d", (ad_hoc_call_type == CONTACT_GROUP ? "TG" : "Priv"), ad_hoc_talkgroup);
+		gfx_printf_pos2(x, y, 120, "%s - %d", (ad_hoc_call_type == CONTACT_GROUP ? "TG" : "Priv"), ad_hoc_talkgroup);
 	}
 	else {
-		gfx_printf_pos2(RX_POPUP_X_START + 20, 55, 120, "AdHoc: %s - %s", (ad_hoc_call_type == CONTACT_GROUP ? "TG" : "Priv"), usr.callsign);
+		gfx_printf_pos2(x, y, 120, "%s - %s", (ad_hoc_call_type == CONTACT_GROUP ? "TG" : "Priv"), usr.callsign);
 	}
-	gfx_set_fg_color(0);
-	gfx_set_bg_color(0xff000000);
-	gfx_select_font(gfx_font_norm);
+	//gfx_set_fg_color(0);
+	//gfx_set_bg_color(0xff000000);
+	//gfx_select_font(gfx_font_norm);
 }
 
 void draw_datetime_row_hook()
@@ -714,10 +716,10 @@ void draw_datetime_row_hook()
     if( is_netmon_visible() ) {
         return ;
     }
-	if (ad_hoc_tg_channel)
+	/*if (ad_hoc_tg_channel)
 	{
 		draw_adhoc_statusline();
-	}
+	}*/
     if( is_statusline_visible() || global_addl_config.datef == 6 ) {
         draw_alt_statusline();
         return ; 
