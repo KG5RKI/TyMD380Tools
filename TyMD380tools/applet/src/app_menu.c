@@ -1423,8 +1423,12 @@ void Menu_WriteBackEditedValue(app_menu_t *pMenu, menu_item_t *pItem)
 	  // If the edited value is a member of global_addl_config, save it in Flash LATER.
 	  // (DO NOT save it immediately after every inc/dec-step or similar. 
 	  //  Writing to Flash takes time, stresses the Flash, may cause audio drop-outs, etc)
-	if ((uint8_t*)pItem->pvValue >= (uint8_t*)&global_addl_config
-		&& (uint8_t*)pItem->pvValue < ((uint8_t*)&global_addl_config + sizeof(global_addl_config)))
+	if (((uint8_t*)pItem->pvValue >= (uint8_t*)&global_addl_config
+		&& (uint8_t*)pItem->pvValue < ((uint8_t*)&global_addl_config + sizeof(global_addl_config))) ||
+
+		((uint8_t*)pItem->pvValue >= (uint8_t*)&md380_radio_config
+		&& (uint8_t*)pItem->pvValue < ((uint8_t*)&md380_radio_config + sizeof(radio_config_t)))
+		)
 	{
 		pMenu->save_on_exit = TRUE;
 	}
