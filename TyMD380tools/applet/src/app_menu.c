@@ -393,6 +393,7 @@ void Menu_Close(app_menu_t *pMenu)
 	if (pMenu->save_on_exit) // modified global_addl_config but didn't save yet ?
 	{
 		cfg_save();           // [in] global_addl_config,  [out] SPI-Flash
+		rc_write_radio_config_to_flash();
 		pMenu->save_on_exit = FALSE; // "done"
 	}
 
