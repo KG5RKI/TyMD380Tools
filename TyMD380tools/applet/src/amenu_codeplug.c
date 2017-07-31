@@ -366,8 +366,7 @@ int am_cbk_ZoneList(app_menu_t *pMenu, menu_item_t *pItem, int event, int param)
 			else if (pSL->focused_item == 0) {
 				zone_t nZone;
 				memset(&nZone, 0, CODEPLUG_SIZEOF_ZONE_LIST_ENTRY);
-				wcscpy(nZone.name, L"NewZone_\0");
-
+				snprintfw(nZone.name, sizeof(nZone.name), "Zone%d\0", (pSL->num_items - 1));
 				md380_spiflash_write(&nZone, ((pSL->num_items-1) * CODEPLUG_SIZEOF_ZONE_LIST_ENTRY)
 					+ CODEPLUG_SPIFLASH_ADDR_ZONE_LIST, 32);
 				
