@@ -56,7 +56,7 @@ void rst_voice_lc_header(lc_t *lc)
 	if(groupcall)
 		g_src = src;
 
-    if(( !rst_voice_active || rst_src != src || rst_dst != dst) && dst < 10000) {
+    if(( !rst_voice_active || rst_src != src || rst_dst != dst)) {
 		updateSrcDst(src, dst);
         rst_flco = flco ;
 
