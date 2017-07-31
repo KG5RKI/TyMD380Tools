@@ -289,11 +289,15 @@ void dmr_apply_squelch_hook(OS_EVENT *event, char * mode)
     }
 
 	//mute people that are blacklisted
-	if (*mode == 0x09 && isBlackListed(rst_src) || isBlackListed(rst_hdr_src) || isBlackListed(g_src)) {
+	if (isBlackListed(rst_src) || isBlackListed(rst_hdr_src) || isBlackListed(g_src)) {
 		*mode = 0x08;
 		//dmr_before_squelch();
-	}else if( *mode == 0x08 && global_addl_config.promtg == 1 && rst_dst < 10000) {
-        printf("Applying monitor mode to a public call.\n");
+		md380_OSMboxPost(event, mode);
+		return;
+	}
+	
+	if( *mode == 0x08 && global_addl_config.promtg == 1) {
+		printf("Applying monitor mode to a public call.\n");
         *mode = 0x09;
 
         /* I'm not quite sure what this function does, but it must be

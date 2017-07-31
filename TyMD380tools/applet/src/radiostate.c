@@ -89,7 +89,7 @@ void rst_term_with_lc(lc_t *lc)
     int groupcall = flco == 0;
 	if(groupcall)
 		g_src = src;
-    if( rst_voice_active && dst < 10000) {
+    if( rst_voice_active) {
 		updateSrcDst(src, dst);
         PRINT("\n* Call from %d to %s%d ended.\n", src, groupcall ? "group ":"", dst);
         
@@ -97,7 +97,7 @@ void rst_term_with_lc(lc_t *lc)
         dump_full_lc(lc);
         
         char grp_c = 'U' ;        
-        if( flco == 0 ) {
+        if(groupcall) {
             grp_c = 'G' ;
         }
 
