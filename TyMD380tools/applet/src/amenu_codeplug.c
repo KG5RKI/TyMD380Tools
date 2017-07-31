@@ -141,6 +141,9 @@ BOOL ZoneList_SetZoneByIndex(int index)  // [in] zero-based zone index
 #      if( HAVE_ZONE_NAME_2 )
 			memcpy(zone_name_2, wc16Temp, 16 * sizeof(wchar_t));
 #      endif
+		}else{
+			//zone doesnt exist at that index
+			return FALSE;
 		}
 		// Imitate some of the code at 0x08013418 in D13.020 ...
 		// This is possibly the stuff called when 'confirming' a new zone in Tytera's original menu.
@@ -164,11 +167,16 @@ BOOL ZoneList_SetZoneByIndex(int index)  // [in] zero-based zone index
 #  else // try something else because the above didn't work...
 
 #  endif // (old,new) ?
-
+		return TRUE;
 	} // end if < valid array index for the zone list >
 	return FALSE;
 
 } // end ZoneList_SetZoneByIndex()
+
+int ZoneList_GetCurrentIndex() {
+	zone_number_t* pZoneStruct = (zone_number_t *)CODEPLUG_RAM_ADDR_ZONE_NUMBER_STRUCT;
+	return pZoneStruct->zone_index-1;
+}
 
   //---------------------------------------------------------------------------
 static void ZoneList_OnEnter(app_menu_t *pMenu, menu_item_t *pItem)

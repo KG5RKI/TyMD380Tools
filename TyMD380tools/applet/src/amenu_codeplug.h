@@ -13,3 +13,5 @@ extern uint8_t channel_num; // <- belongs to THE ORIGINAL FIRMWARE (1..16, 0 for
 extern int am_cbk_ZoneList(app_menu_t *pMenu, menu_item_t *pItem, int event, int param );
 extern int overwriteChannel(uint16_t channelIndex);
 
+extern int ZoneList_GetCurrentIndex();
+extern BOOL ZoneList_SetZoneByIndex(int index);
