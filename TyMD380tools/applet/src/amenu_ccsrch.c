@@ -68,7 +68,7 @@ static void CCSrch_Draw(app_menu_t *pMenu, menu_item_t *pItem)
 		  if (cc > 15) {
 			  cc = 0;
 		  }
-		  LCD_Printf(&dc, "  Testing cc %d\r", buffa, cc);
+		  LCD_Printf(&dc, " Testing cc %d\r", cc);
 		  //sprintf(tmpStr, "%02x Testing cc %d\r", buffa, cc);
 		  c5000_spi0_writereg(0x1f, (cc & 0xF) << 4);
 	  }
