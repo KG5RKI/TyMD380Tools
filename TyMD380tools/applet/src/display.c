@@ -691,10 +691,10 @@ void draw_adhoc_statusline(int x, int y, int xlen, int ylen)
 
 	user_t usr;
 	if (usr_find_by_dmrid(&usr, ad_hoc_talkgroup) == 0) {
-		gfx_printf_pos2(x, y, 120, "%s - %d", (ad_hoc_call_type == CONTACT_GROUP ? "TG" : "Priv"), ad_hoc_talkgroup);
+		gfx_printf_pos2(x, y, 320, "%s - %d", (ad_hoc_call_type == CONTACT_GROUP ? "TG" : "Priv"), ad_hoc_talkgroup);
 	}
 	else {
-		gfx_printf_pos2(x, y, 120, "%s - %s", (ad_hoc_call_type == CONTACT_GROUP ? "TG" : "Priv"), usr.callsign);
+		gfx_printf_pos2(x, y, 320, "%s - %s", (ad_hoc_call_type == CONTACT_GROUP ? "TG" : "Priv"), usr.callsign);
 	}
 	//gfx_set_fg_color(0);
 	//gfx_set_bg_color(0xff000000);
