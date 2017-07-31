@@ -750,5 +750,5 @@ void display_credits()
     //drawascii(GIT_VERSION, 160, 180);
 
     //drawtext(VERSIONDATE, 160, 220);
-	drawtext(L"TY_NET", 165, 200);
+	drawtext(VERSIONDATE, 165, 200);
 }
