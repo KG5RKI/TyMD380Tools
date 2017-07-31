@@ -120,6 +120,7 @@ const static wchar_t wt_button_top_press[]  = L"Top Pressed";
 const static wchar_t wt_button_bot_press[]  = L"Bottom Pressed";
 const static wchar_t wt_button_top_held[]   = L"Top Held";
 const static wchar_t wt_button_bot_held[]   = L"Bottom Held";
+
 const static wchar_t wt_button_unassigned[] = L"Unassigned";
 const static wchar_t wt_button_alert_tone[] = L"All Tone Tog";
 const static wchar_t wt_button_emerg_on[]   = L"Emergency On";
@@ -138,7 +139,8 @@ const static wchar_t wt_button_scan[]       = L"Scan On/Off";
 const static wchar_t wt_button_squelch[]    = L"Squelch Tight";
 const static wchar_t wt_button_privacy[]    = L"Privacy On/Off";
 const static wchar_t wt_button_vox[]        = L"Vox On/Off";
-const static wchar_t wt_button_zone[]       = L"Zone Inc.";
+const static wchar_t wt_button_zone_inc[]   = L"Zone Inc.";
+const static wchar_t wt_button_zone_dec[]   = L"Zone Dec.";
 const static wchar_t wt_button_zone_tog[]   = L"Zone Toggle";
 const static wchar_t wt_button_bat_ind[]    = L"Bat Indicator";
 const static wchar_t wt_button_man_dial[]   = L"Manual Dial";
@@ -155,7 +157,7 @@ const static wchar_t wt_button_toggle_prom[] = L"Toggle Promiscuous";
 const static wchar_t wt_button_adhoc_priv[]  = L"Priv Call LH";
 
 const static uint8_t button_functions[]     = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a,
-                                               0x0b, 0x0c, 0x0d, 0x0e, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1e,
+                                               0x0b, 0x0c, 0x0d, 0x0e, 0x15, 0x16, 0x17, 0x56, 0x57, 0x19, 0x1a, 0x1e,
                                                0x1f, 0x26, 0x50, 0x51
 #                                            if( CONFIG_MORSE_OUTPUT )
                                               ,0x52 // starts the 'Morse narrator' via programmable button
@@ -1194,7 +1196,8 @@ void nm_button_scan() { set_sidebutton_function(wt_button_scan); }
 void nm_button_squelch() { set_sidebutton_function(wt_button_squelch); }
 void nm_button_privacy() { set_sidebutton_function(wt_button_privacy); }
 void nm_button_vox() { set_sidebutton_function(wt_button_vox); }
-void nm_button_zone() { set_sidebutton_function(wt_button_zone); }
+void nm_button_zone_inc() { set_sidebutton_function(wt_button_zone_inc); }
+void nm_button_zone_dec() { set_sidebutton_function(wt_button_zone_dec); }
 void nm_button_zone_tog() { set_sidebutton_function(wt_button_zone_tog); }
 void nm_button_bat_ind() { set_sidebutton_function(wt_button_bat_ind); }
 void nm_button_man_dial() { set_sidebutton_function(wt_button_man_dial); }
@@ -1252,7 +1255,8 @@ void select_sidebutton_function_screen(void)
    mn_submenu_add(wt_button_squelch, nm_button_squelch);
    mn_submenu_add(wt_button_privacy, nm_button_privacy);
    mn_submenu_add(wt_button_vox, nm_button_vox);
-   mn_submenu_add(wt_button_zone, nm_button_zone);
+   mn_submenu_add(wt_button_zone_inc, nm_button_zone_inc);
+   mn_submenu_add(wt_button_zone_dec, nm_button_zone_dec);
    mn_submenu_add(wt_button_zone_tog, nm_button_zone_tog);
    mn_submenu_add(wt_button_bat_ind, nm_button_bat_ind);
    mn_submenu_add(wt_button_man_dial, nm_button_man_dial);

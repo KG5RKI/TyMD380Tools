@@ -31,6 +31,7 @@
 #endif
 #include <stdint.h>
 #include "amenu_set_tg.h"
+#include "amenu_codeplug.h"
 #include "spiflash.h"
 
 uint8_t kb_backlight=0; // flag to disable backlight via sidekey.
@@ -293,6 +294,7 @@ void handle_sidekey( int keycode, int keypressed )
 
 void evaluate_sidekey( int button_function) // This is where new functions for side buttons can be added
 {
+	int zoneIndex = 0;
   switch ( button_function ) {  // We will start at 0x50 to avoid conflicting with any added functions by Tytera.
     case 0x50 :                 // Toggle backlight enable pin to input/output. Disables backlight completely.
       #if (CONFIG_DIMMED_LIGHT) // If backlight dimmer is enabled, we will use that instead.
@@ -335,6 +337,31 @@ void evaluate_sidekey( int button_function) // This is where new functions for s
 		ad_hoc_tg_channel = channel_num;
 		ad_hoc_call_type = CONTACT_USER;
 		CheckTalkgroupAfterChannelSwitch();
+		break;
+
+	case 0x56: // zone inc
+		zoneIndex = ZoneList_GetCurrentIndex();
+		if (!ZoneList_SetZoneByIndex(zoneIndex + 1)) {
+			for (int i = 0; i < CODEPLUG_MAX_ZONE_LIST_ENTRIES; i++) {
+				if (ZoneList_SetZoneByIndex(i)) {
+					break;
+				}
+			}
+		}
+		break;
+
+	case 0x57: // zone dec
+		zoneIndex = ZoneList_GetCurrentIndex();
+		if (zoneIndex > 0 && ZoneList_SetZoneByIndex(zoneIndex - 1)) {
+			break;
+		}
+		else {
+			for (int i = CODEPLUG_MAX_ZONE_LIST_ENTRIES-1; i >= 0; i--) {
+				if (ZoneList_SetZoneByIndex(i)) {
+					break;
+				}
+			}
+		}
 		break;
 
     default:
