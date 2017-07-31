@@ -35,6 +35,7 @@ void rst_data_block(void *data, int len);
 
 void rst_signal_other_call();
 void rst_signal_my_call();
+void mute_speaker();
 
 #ifdef __cplusplus
 }

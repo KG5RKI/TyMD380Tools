@@ -290,7 +290,10 @@ void dmr_apply_squelch_hook(OS_EVENT *event, char * mode)
 
 	//mute people that are blacklisted
 	if (isBlackListed(rst_src) || isBlackListed(rst_hdr_src) || isBlackListed(g_src)) {
+		
 		*mode = 0x08;
+		mute_speaker();
+
 		//dmr_before_squelch();
 		md380_OSMboxPost(event, mode);
 		return;
@@ -335,7 +338,7 @@ void dmr_apply_privsquelch_hook(OS_EVENT *event, char *mode)
 
 
     //Promiscuous mode!
-	if( *mode == 0x08 && global_addl_config.promtg == 1 && rst_dst < 10000) {
+	if( *mode == 0x08 && global_addl_config.promtg == 1) {
         printf("Applying monitor mode to a private call.\n");
         *mode = 0x09;
         dmr_before_squelch();

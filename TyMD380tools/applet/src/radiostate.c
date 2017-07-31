@@ -13,6 +13,9 @@
 #include "syslog.h"
 #include "usersdb.h"
 
+#include "stm32f4_discovery.h"
+#include "stm32f4xx_conf.h" // again, added because ST didn't put it here ?
+
 //#include <arpa/inet.h>
 
 int rst_voice_active = 0 ;
@@ -28,6 +31,15 @@ int rst_hdr_src ;
 int rst_hdr_dst ;
 
 // TODO locking. because 1 writer locking no prio. readers only visualize.
+
+void mute_speaker() {
+	//bp_send_beep(BEEP_TEST_1);
+	//GPIO_SetBits(GPIOB, GPIO_Pin_8); //Mutes speaker (but only for a moment)
+	char buffa = 0;
+	c5000_spi0_readreg(0x0E, &buffa);
+	buffa &= ~(0x08);
+	c5000_spi0_writereg(0x0E, buffa);
+}
 
 inline int is_tracing()
 {
