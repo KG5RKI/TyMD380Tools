@@ -49,7 +49,7 @@ menu_item_t am_Channel_Edit[] = // setup menu, nesting level 1 ...
 	{ "RX",             DTYPE_STRING, APPMENU_OPT_NONE,0,
 	selChanE.rxFreq.text ,0,0,          NULL,         NULL },
 	{ "TX",             DTYPE_STRING, APPMENU_OPT_NONE,0,
-	selChanE.rxFreq.text ,0,0,          NULL,         NULL },
+	selChanE.txFreq.text ,0,0,          NULL,         NULL },
 
 	{ "Color Code",      DTYPE_UNS8, APPMENU_OPT_EDITABLE | APPMENU_OPT_IMM_UPDATE,0,
 	&selChanE.CC ,0,15,          NULL,         NULL },
@@ -482,7 +482,7 @@ int ParseChannel(channel_t* chan, channel_easy* chanE)
 
 	readFrequency(chan, &chanE->rxFreq, 1);
 	//printf("RX: %s\r\n", chanE->rxFreq.text);
-	readFrequency(chan, &chanE->txFreq, 1);
+	readFrequency(chan, &chanE->txFreq, 0);
 	//printf("TX: %s\r\n", chanE->txFreq.text);
 }
 
