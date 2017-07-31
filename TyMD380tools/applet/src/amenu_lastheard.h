@@ -36,7 +36,7 @@ extern "C" {
 		uint32_t src;
 		uint32_t dst;
 		char timestamp[0x10];
-		user_t dbEntry;
+		//user_t dbEntry;
 		char callsign[8];
 		char name[32];
 

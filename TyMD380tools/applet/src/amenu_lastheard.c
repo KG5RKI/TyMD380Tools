@@ -26,7 +26,7 @@
 uint8_t lhSize = 0;
 uint8_t lhRBufIndex = 0;
 
-#define MAX_LASTHEARD_ENTRIES 10
+#define MAX_LASTHEARD_ENTRIES 20
 
 lastheard_user lhdir[MAX_LASTHEARD_ENTRIES];
 
@@ -73,6 +73,12 @@ menu_item_t am_Lastheard_Options[] = // setup menu, nesting level 1 ...
 	{ "ID:",             DTYPE_INTEGER, APPMENU_OPT_NONE,0,
 	&selUser.src,0,0,          NULL,         NULL },
 
+	{ "TG:",             DTYPE_INTEGER, APPMENU_OPT_NONE,0,
+	&selUser.dst,0,0,          NULL,         NULL },
+
+	{ "Time:",             DTYPE_STRING, APPMENU_OPT_NONE,0,
+	selUser.timestamp ,0,0,          NULL,         NULL },
+
 	{ "[-]Private Call",       DTYPE_NONE, APPMENU_OPT_BACK,0,
 	NULL,0,0,                  NULL,  am_cbk_Lastheard_PrivCall },
 
@@ -89,21 +95,26 @@ menu_item_t am_Lastheard_Options[] = // setup menu, nesting level 1 ...
 
 void LHList_AddEntry(uint32_t src, uint32_t dst) 
 {
-	if (usr_find_by_dmrid(&lhdir[lhRBufIndex].dbEntry, src) == 0) {
+	for (int i = 0; i < MAX_LASTHEARD_ENTRIES-1; i++) {
+		memcpy(&lhdir[MAX_LASTHEARD_ENTRIES-i-1], &lhdir[MAX_LASTHEARD_ENTRIES-i-2], sizeof(lastheard_user));
+	}
+	user_t dbEntry;
+	if (usr_find_by_dmrid(&dbEntry, src) == 0) {
 		return;
 	}
-	lastheard_user* lh = &lhdir[lhRBufIndex];
+
+	lastheard_user* lh = &lhdir[0];
 	lh->src = src;
 	lh->dst = dst;
 	get_RTC_time(lh->timestamp);
-	memcpy(lh->name, lh->dbEntry.firstname, strnlen(lh->dbEntry.firstname, 32));
-	memcpy(lh->callsign, lh->dbEntry.callsign, strnlen(lh->dbEntry.callsign, 8));
+	memcpy(lh->name, dbEntry.firstname, strnlen(dbEntry.firstname, 32));
+	memcpy(lh->callsign, dbEntry.callsign, strnlen(dbEntry.callsign, 8));
 
-	lhSize++;
-	lhRBufIndex++;
-	if (lhRBufIndex >= MAX_LASTHEARD_ENTRIES) {
 
-		lhRBufIndex = 0;
+	if (lhSize < MAX_LASTHEARD_ENTRIES && lhRBufIndex < MAX_LASTHEARD_ENTRIES) {
+
+		lhRBufIndex++;
+		lhSize++;
 	}
 }
 
@@ -116,27 +127,16 @@ static void Lastheard_OnEnter(app_menu_t *pMenu, menu_item_t *pItem)
 	scroll_list_control_t *pSL = &pMenu->scroll_list;
 
 	ScrollList_Init(pSL); // set all struct members to defaults
-	//pSL->current_item = contactIndex; // currently active zone still unknown
-	pSL->focused_item = 0;
+	//pSL->current_item = 0; // currently active zone still unknown
+	
 	//contactIndex = 0;
-	int i = (lhRBufIndex < lhSize  ? MAX_LASTHEARD_ENTRIES : lhRBufIndex);
-	int b = 0;
-	char dir = 0;
-	while (((!dir && i >= lhRBufIndex) || (dir && i <lhRBufIndex)) && b<MAX_LASTHEARD_ENTRIES)
-	{
-		if (!dir && i >= MAX_LASTHEARD_ENTRIES) {
-			i = 0;
-			dir = 1;
-		}
-		
-		++i;
-		++b;
-	}
 
-	pSL->num_items = (lhRBufIndex < lhSize ? MAX_LASTHEARD_ENTRIES : lhRBufIndex);
-	pSL->focused_item = (lhRBufIndex < lhSize ? (pSL->num_items-1) - lhRBufIndex : (pSL->num_items - 1));
+	pSL->num_items = (lhSize < MAX_LASTHEARD_ENTRIES ? lhSize : MAX_LASTHEARD_ENTRIES);
+	pSL->focused_item = 0;
 	//ContactsList_Recache(pMenu);
 	
+
+	pSL->num_items = lhSize;
 
 	// Begin navigating through the list at the currently active zone:
 	if (pSL->focused_item > pSL->num_items)
@@ -158,7 +158,7 @@ static void Lastheard_Draw(app_menu_t *pMenu, menu_item_t *pItem)
 
 	lastheard_user* lhUser;
 
-	pSL->num_items = (lhRBufIndex < lhSize ? MAX_LASTHEARD_ENTRIES : lhRBufIndex);
+	pSL->num_items = (lhSize < MAX_LASTHEARD_ENTRIES ? lhSize : MAX_LASTHEARD_ENTRIES);
 
 	// Draw the COMPLETE screen, without clearing it initially to avoid flicker
 	LCD_InitContext(&dc); // init context for 'full screen', no clipping
@@ -172,27 +172,25 @@ static void Lastheard_Draw(app_menu_t *pMenu, menu_item_t *pItem)
 	}
 	LCD_HorzLine(dc.x1, dc.y++, dc.x2, dc.fg_color); // spacer between title and scrolling list
 	LCD_HorzLine(dc.x1, dc.y++, dc.x2, dc.bg_color);
-	i = pSL->scroll_pos;   // zero-based array index of the topmost VISIBLE item
+	//i = pSL->scroll_pos;   // zero-based array index of the topmost VISIBLE item
 	n_visible_items = 0;   // find out how many items fit on the screen
 
 	//i = (lhSize%MAX_LASTHEARD_ENTRIES < lhRBufIndex ? lhRBufIndex : 0);
-	i = lhRBufIndex - 1;
-	int rBuf = lhRBufIndex-1;
-	if (lhRBufIndex == 0) {
+	//i = 0;
+	//int rBuf = lhRBufIndex-1;
+	/*if (lhRBufIndex == 0) {
 		i = MAX_LASTHEARD_ENTRIES - 1;
 		rBuf = lhRBufIndex;
-	}
+	}*/
 
-	int b = 0;
-	char dir = 0;
-	while ((dc.y < (LCD_SCREEN_HEIGHT - 8)) && i < lhSize &&  (b<pSL->num_items) && b<MAX_LASTHEARD_ENTRIES)
+	//char dir = 0;
+	for(i=pSL->scroll_pos; i<pSL->num_items && (dc.y < (LCD_SCREEN_HEIGHT - 8)); i++)
+	//while ((dc.y < (LCD_SCREEN_HEIGHT - 8)) && i < pSL->num_items && i<MAX_LASTHEARD_ENTRIES)
 	{
 		if (i > MAX_LASTHEARD_ENTRIES) {
-			i = 0;
-			dir = 1;
+			break;
 		}
-		if (i < 0 && lhSize > lhRBufIndex)
-			i = MAX_LASTHEARD_ENTRIES - 1;
+		
 
 		lhUser = &lhdir[i];
 
@@ -211,22 +209,14 @@ static void Lastheard_Draw(app_menu_t *pMenu, menu_item_t *pItem)
 		Menu_GetColours(sel_flags, &dc.fg_color, &dc.bg_color);
 		dc.x = 0;
 		dc.font = LCD_OPT_FONT_8x16;
-		//LCD_Printf(&dc, " ");
+		LCD_Printf(&dc, " ");
 		//dc.font = LCD_OPT_FONT_16x16; // ex: codepage 437, but the useless smileys are radio buttons now,
 									  // to imitate Tytera's zone list (at least a bit) ! 
 		LCD_Printf(&dc, "%c", cRadio); // 16*16 pixels for a circle, not a crumpled egg
 		dc.font = LCD_OPT_FONT_8x16;
-		LCD_Printf(&dc, "%s - %d\r", lhUser->dbEntry.callsign, lhUser->dst); // '\r' clears to the end of the line, '\n' doesn't
+		LCD_Printf(&dc, "%s - %d\r", lhUser->callsign, lhUser->dst); // '\r' clears to the end of the line, '\n' doesn't
 
 		n_visible_items++;
-
-		if (i == 0 && b < pSL->num_items - 1) {
-			i = MAX_LASTHEARD_ENTRIES - 1;
-			dir = 1;
-		}
-
-		--i;
-		b++;
 	}
 
 	// If necessary, fill the rest of the screen (at the bottom) with the background colour:
@@ -292,25 +282,26 @@ int am_cbk_LastheardList(app_menu_t *pMenu, menu_item_t *pItem, int event, int p
 		case 'B':  // red "Back"-key : return from this screen, discard changes.
 			return AM_RESULT_EXIT_AND_RELEASE_SCREEN;
 		case 'U':  // cursor UP
-			if (pSL->focused_item < (pSL->num_items - 1))
-			{
-				++pSL->focused_item;
-			}
-			else if(pSL->focused_item >= (pSL->num_items - 1)) {
-				pSL->focused_item = 0;
-				
-			}
-			//contactIndex = pSL->focused_item;
-			//ContactsList_Recache(pMenu);
-			break;
-		case 'D':  // cursor DOWN
-			if (pSL->focused_item > 0 )
+			if (pSL->focused_item > 0)
 			{
 				--pSL->focused_item;
 			}
 			else {
 				pSL->focused_item = pSL->num_items - 1;
 			}
+			//contactIndex = pSL->focused_item;
+			//ContactsList_Recache(pMenu);
+			break;
+		case 'D':  // cursor DOWN
+			if (pSL->focused_item < (pSL->num_items - 1))
+			{
+				++pSL->focused_item;
+			}
+			else if (pSL->focused_item >= (pSL->num_items - 1)) {
+				pSL->focused_item = 0;
+
+			}
+			
 			//contactIndex = pSL->focused_item;
 			//ContactsList_Recache(pMenu);
 			break;
