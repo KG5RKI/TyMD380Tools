@@ -107,8 +107,8 @@ void LHList_AddEntry(uint32_t src, uint32_t dst)
 	lh->src = src;
 	lh->dst = dst;
 	get_RTC_time(lh->timestamp);
-	memcpy(lh->name, dbEntry.firstname, strnlen(dbEntry.firstname, 32));
-	memcpy(lh->callsign, dbEntry.callsign, strnlen(dbEntry.callsign, 8));
+	strcpy(lh->name, dbEntry.firstname);
+	strcpy(lh->callsign, dbEntry.callsign);
 
 
 	if (lhSize < MAX_LASTHEARD_ENTRIES && lhRBufIndex < MAX_LASTHEARD_ENTRIES) {
