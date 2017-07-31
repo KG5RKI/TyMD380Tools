@@ -60,7 +60,7 @@ static void CCSrch_Draw(app_menu_t *pMenu, menu_item_t *pItem)
 
 	  //found match!
 	  if ((buffa & 0x10 && buffa2 == cc )|| fMatch) {
-		  LCD_Printf(&dc, " Found matched cc %d!\r", cc);
+		  LCD_Printf(&dc, " Found Match: %d\r", cc);
 		  fMatch = 1;
 	  }
 	  else if(!fMatch) {
@@ -68,7 +68,7 @@ static void CCSrch_Draw(app_menu_t *pMenu, menu_item_t *pItem)
 		  if (cc > 15) {
 			  cc = 0;
 		  }
-		  LCD_Printf(&dc, " Testing cc %d\r", cc);
+		  LCD_Printf(&dc, " Testing Code - %d\r", cc);
 		  //sprintf(tmpStr, "%02x Testing cc %d\r", buffa, cc);
 		  c5000_spi0_writereg(0x1f, (cc & 0xF) << 4);
 	  }
