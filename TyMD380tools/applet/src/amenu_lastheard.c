@@ -64,22 +64,22 @@ menu_item_t am_Lastheard_Options[] = // setup menu, nesting level 1 ...
 
   // { "Text__max__13", data_type,  options,opt_value,
   //    pvValue,iMinValue,iMaxValue,           string table, callback }
-	{ "Options",             DTYPE_NONE, APPMENU_OPT_NONE,0,
-	NULL,0,0,          NULL,         NULL },
+	{ "[-]Name:",             DTYPE_STRING, APPMENU_OPT_NONE,0,
+	selUser.name,0,0,          NULL,         NULL },
 
-	{ "[-]Callsign",             DTYPE_STRING, APPMENU_OPT_NONE,0,
-	&selUser.dbEntry.callsign,0,0,          NULL,         NULL },
+	{ "Call:",             DTYPE_STRING, APPMENU_OPT_NONE,0,
+	selUser.callsign,0,0,          NULL,         NULL },
 
-	{ "ID",             DTYPE_INTEGER, APPMENU_OPT_NONE,0,
+	{ "ID:",             DTYPE_INTEGER, APPMENU_OPT_NONE,0,
 	&selUser.src,0,0,          NULL,         NULL },
 
-	{ "Private Call",       DTYPE_NONE, APPMENU_OPT_BACK,0,
+	{ "[-]Private Call",       DTYPE_NONE, APPMENU_OPT_BACK,0,
 	NULL,0,0,                  NULL,  am_cbk_Lastheard_PrivCall },
 
 	{ "Ignore",       DTYPE_NONE, APPMENU_OPT_BACK,0,
 	NULL,0,0,                  NULL,  am_cbk_Lastheard_BlockUser },
 
-	{ "Back",       DTYPE_NONE, APPMENU_OPT_BACK,0,
+	{ "[-]Back",       DTYPE_NONE, APPMENU_OPT_BACK,0,
 	NULL,0,0,                  NULL,  NULL },
 
 	// End of the list marked by "all zeroes" :
@@ -96,6 +96,8 @@ void LHList_AddEntry(uint32_t src, uint32_t dst)
 	lh->src = src;
 	lh->dst = dst;
 	get_RTC_time(lh->timestamp);
+	memcpy(lh->name, lh->dbEntry.firstname, strnlen(lh->dbEntry.firstname, 32));
+	memcpy(lh->callsign, lh->dbEntry.callsign, strnlen(lh->dbEntry.callsign, 8));
 
 	lhSize++;
 	lhRBufIndex++;
@@ -275,7 +277,7 @@ int am_cbk_LastheardList(app_menu_t *pMenu, menu_item_t *pItem, int event, int p
 				//contactIndex = pSL->focused_item;
 				//fIsTG = (selContact.type == 0xC1 ? 1 : 0);
 				memcpy(&selUser, &lhdir[pSL->focused_item], sizeof(lastheard_user));
-				usr_find_by_dmrid(&selUser.dbEntry, selUser.src);
+				//usr_find_by_dmrid(&selUser.dbEntry, selUser.src);
 				Menu_EnterSubmenu(pMenu, am_Lastheard_Options);
 
 				// The above command switched to the new zone, and probably set

@@ -37,7 +37,8 @@ extern "C" {
 		uint32_t dst;
 		char timestamp[0x10];
 		user_t dbEntry;
-
+		char callsign[8];
+		char name[32];
 
 	} lastheard_user;
 
