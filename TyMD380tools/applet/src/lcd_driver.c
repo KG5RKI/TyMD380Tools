@@ -20,6 +20,7 @@
 
 #include <stm32f4xx.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>       // memset(), ...
 #include "printf.h"       // Kustaa Nyholm's tinyprintf (printf.c)
 #include "md380.h"
@@ -480,6 +481,68 @@ void LCD_HorzLine( // Draws a thin horizontal line ..
 	int x1, int y, int x2, uint16_t wColor)
 {
 	LCD_FillRect(x1, y, x2, y, wColor); // .. just a camouflaged 'fill rectangle'
+} // end LCD_HorzLine()
+
+
+void LCD_DrawLine(int x1, int y1, int x2, int y2, uint16_t color) {
+	int tmp = 0;
+	//if (x1 == x2 && x1) {
+	//	LCD_FillRect(x1, y1, x2, y2, color);
+	//	return;
+	//}
+	//if (x2 < x1) {
+	//	tmp = x2;
+	//	x2 = x1;
+	//	x1 = tmp;
+		//tmp = y2;
+		//y2 = y1;
+		//y1 = tmp;
+	//}
+	/*if (y2 < y1) {
+		tmp = y2;
+		y2 = y1;
+		y1 = tmp;
+	}*/
+		
+	int deltaX = x2 - x1;
+	int	deltaY = y2 - y1;
+	int error = 0;
+
+		// Note the below fails for completely vertical lines.
+	if (!deltaX)
+		deltaX++;
+	if (!deltaY)
+		deltaY++;
+	int deltaError = abs((int)((float)deltaY / (float)deltaX));
+
+	int	Y = y1;
+	for (int X = x1; X < x2 && Y < y2;) {
+		LCD_SetPixelAt(X, Y, color);
+		error = error + deltaError;
+		if (error >= 0.5) {
+			//if (y1 < y2)
+				++Y;
+			//else
+			//	--Y;
+			error -= 1.0;
+		}
+		if (x2 - x1 > 2) {
+			X++;
+		}
+	}
+}
+
+void LCD_DrawCube(int x1, int y3, int x2, int y2, uint16_t color)
+{
+#define maxY 128
+#define maxX 160
+	
+	LCD_DrawLine(20, 20, 100, 100, color);
+	LCD_DrawLine(100, 20, 20, 100, color);
+
+	LCD_DrawLine(10, 100, 100, 10, color);
+	
+
 } // end LCD_HorzLine()
 
   //---------------------------------------------------------------------------

@@ -24,6 +24,7 @@
 // Needed for LED functions.  Cut dependency.
 #include "stm32f4_discovery.h"
 #include "stm32f4xx_conf.h" // again, added because ST didn't put it here ?
+#include "amenu_set_tg.h"
 
 
 uint8_t GFX_backlight_on=0; // DL4YHF 2017-01-07 : 0="off" (low intensity), 1="on" (high intensity)
@@ -41,6 +42,16 @@ void swapFGBG() {
 		fg_color = rgb16torgb(fg_color);
 		gfx_set_bg_color(bg_color);
 		gfx_set_fg_color(fg_color);
+	}
+}
+void swapFGBGi() {
+	uint16_t fg_color = 0, bg_color = 0;
+	if (global_addl_config.alt_text) {
+		Menu_GetColours(SEL_FLAG_NONE, &fg_color, &bg_color);
+		fg_color = rgb16torgb(fg_color);
+		bg_color = rgb16torgb(bg_color);
+		gfx_set_bg_color(fg_color);
+		gfx_set_fg_color(bg_color);
 	}
 }
 void swapBG() {
@@ -349,7 +360,7 @@ void gfx_blockfill_hook(int x_from, int y_from, int x_to, int y_to)
     }
 
 	if (gui_opmode2 != OPM2_MENU) {
-		swapFGBG();
+		swapFGBGi();
 	}
     
     gfx_blockfill(x_from,y_from,x_to,y_to);
@@ -417,6 +428,9 @@ void gfx_drawtext2_hook(wchar_t *str, int x, int y, int xlen)
     gfx_drawtext2(str, x, y, xlen);
 }
 
+extern void draw_adhoc_statusline(int x, int y, int xlen, int ylen);
+
+int fDrawOncePer = 0;
 void gfx_drawtext4_hook(wchar_t *str, int x, int y, int xlen, int ylen)
 {
    // PRINTRET();
@@ -427,7 +441,7 @@ void gfx_drawtext4_hook(wchar_t *str, int x, int y, int xlen, int ylen)
     { return; // then don't allow Tytera's "gfx" to spoil the framebuffer
     }
 # endif
-
+   swapFGBG();
     
     if( is_netmon_visible() ) {
         // channel name
@@ -440,7 +454,18 @@ void gfx_drawtext4_hook(wchar_t *str, int x, int y, int xlen, int ylen)
         }
     }
 
-	swapFGBG();
+	if (x == D_TEXT_CHANNAME_X && y == D_TEXT_CHANNAME_Y) {
+
+		
+		if (ad_hoc_tg_channel)
+		{
+			//gfx_drawtext4(str, x, y, xlen, ylen);
+			draw_adhoc_statusline(x, y, xlen, ylen);
+			return;
+		}
+	}
+	
+	
     
 #if defined(FW_D13_020) || defined(FW_S13_020)
     gfx_drawtext4(str,x,y,xlen,ylen);

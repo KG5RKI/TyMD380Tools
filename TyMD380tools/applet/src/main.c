@@ -26,10 +26,10 @@
 #include "usersdb.h"
 #include "util.h"
 #include "spiflash.h"
-
+#include "lcd_driver.h"
 #include "irq_handlers.h" // Initially written by DL4YHF as a 'playground' with various interrupt handlers .
                           // Details in applet/src/irq_handlers.c . 
-
+#include "bootanim.h"
 						  
 GPIO_InitTypeDef  GPIO_InitStructure;
 
@@ -105,10 +105,15 @@ const char *str2wide(char *widestring,
 
 void demo_show_animation(void)
 {
-    for (int i = 0; i < 0x60; i += 3) {
-        gfx_drawbmp(welcomebmp, 0, i);
-        sleep(30);
+	setupBootAnim();
+	
+	//LCD_DrawCube(0, 0, 0, 0, 0xF05A);
+    for (int i = 0; i<100 ; i += 1) {
+        //gfx_drawbmp(welcomebmp, 0, i);
+		renderBootAnim();
+        sleep(10);
     }
+	//sleep(5000);
 }
 
 void demo_clear(void)
@@ -122,8 +127,8 @@ void demo_clear(void)
 
 void demo(void)
 {
-    display_credits();
-    sleep(1000);
+    //display_credits();
+    //sleep(500);
     demo_show_animation();
     demo_clear();
 }

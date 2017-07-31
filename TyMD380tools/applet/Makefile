@@ -68,6 +68,8 @@ SRCS += amenu_contacts.o
 SRCS += amenu_channels.o
 SRCS += amenu_lastheard.o
 SRCS += timer.o
+SRCS += blacklist.o
+SRCS += bootanim.o
 
 
 ifdef INC_DISPFLIP

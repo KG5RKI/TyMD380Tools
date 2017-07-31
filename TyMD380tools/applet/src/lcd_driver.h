@@ -107,6 +107,9 @@ void LCD_FillRect( // Draws a frame-less, solid, filled rectangle
 	uint16_t wColor); // [in] filling colour (BGR565)
 void LCD_HorzLine(int x1, int y, int x2, uint16_t wColor);
 
+void LCD_DrawLine(int x1, int y, int x2, int y2, uint16_t color);
+void LCD_DrawCube(int x1, int y3, int x2, int y2, uint16_t color);
+
 void LCD_ColorGradientTest(void); // Fills the framebuffer with a 
 								  // 2D color gradient. Used for testing .. details in lcd_driver.c .
 
