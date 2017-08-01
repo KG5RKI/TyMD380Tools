@@ -483,9 +483,23 @@ void LCD_HorzLine( // Draws a thin horizontal line ..
 	LCD_FillRect(x1, y, x2, y, wColor); // .. just a camouflaged 'fill rectangle'
 } // end LCD_HorzLine()
 
+int fixBoundsPointX(int pt) {
+	if (pt < 0) pt = 0;
+	if (pt > LCD_SCREEN_WIDTH) pt = LCD_SCREEN_WIDTH-1;
+	return pt;
+}
+int fixBoundsPointY(int pt) {
+	if (pt < 0) pt = 0;
+	if (pt > LCD_SCREEN_HEIGHT) pt = LCD_SCREEN_HEIGHT-1;
+	return pt;
+}
 
 void LCD_DrawLine(int x1, int y1, int x2, int y2, uint16_t color) {
 	int tmp = 0;
+	x1 = fixBoundsPointX(x1);
+	x2 = fixBoundsPointX(x2);
+	y1 = fixBoundsPointX(y1);
+	y2 = fixBoundsPointX(y2);
 	//if (x1 == x2 && x1) {
 	//	LCD_FillRect(x1, y1, x2, y2, color);
 	//	return;
@@ -502,6 +516,27 @@ void LCD_DrawLine(int x1, int y1, int x2, int y2, uint16_t color) {
 		tmp = y2;
 		y2 = y1;
 		y1 = tmp;
+	}*/
+
+	/*char steep = abs(y2 - y1) > abs(x2 - x1);
+	if (steep) {
+		tmp = y1;
+		y1 = x1;
+		x1 = tmp;
+
+		tmp = y2;
+		y2 = x2;
+		x2 = tmp;
+	}
+
+	if (x1 > x2) {
+		tmp = x1;
+		x1 = x2;
+		x2 = tmp;
+
+		tmp = y1;
+		y1 = y2;
+		y2 = tmp;
 	}*/
 		
 	int deltaX = x2 - x1;
