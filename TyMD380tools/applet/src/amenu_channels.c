@@ -20,6 +20,7 @@
 #include "amenu_channels.h" // header for THIS module (to check prototypes,etc)
 #include "amenu_codeplug.h"
 #include "amenu_contacts.h"
+#include "amenu_scanlist.h"
 
 channel_t selChan;
 channel_easy selChanE;
@@ -57,10 +58,10 @@ menu_item_t am_Channel_Edit[] = // setup menu, nesting level 1 ...
 	&selChanE.Slot ,1,2,          NULL,         NULL },
 	{ "TOT",      DTYPE_UNS8, APPMENU_OPT_EDITABLE | APPMENU_OPT_IMM_UPDATE | APPMENU_OPT_FACTOR, 15,
 	&selChanE.TOT ,0,60,          NULL,         NULL },
-	{ "ScanList",      DTYPE_UNS8, APPMENU_OPT_NONE,0,
-	&selChanE.ScanListIndex ,0,0,          NULL,         NULL },
+	{ "ScanList",      DTYPE_UNS8, APPMENU_OPT_EDITABLE | APPMENU_OPT_IMM_UPDATE, 0,
+	&selChanE.ScanListIndex, 0, CODEPLUG_MAX_SCANLIST-1,   NULL,   NULL },
 	{ "GroupList",      DTYPE_UNS8, APPMENU_OPT_NONE,0,
-	&selChanE.GroupListIndex ,0,0,          NULL,         NULL },
+	&selChanE.GroupListIndex , 0, 0, NULL, NULL },
 
 	{ "Clone CH",      DTYPE_NONE, APPMENU_OPT_BACK,0,
 	NULL,0,0,                  NULL, am_cbk_Channel_CloneToZone },
@@ -71,7 +72,6 @@ menu_item_t am_Channel_Edit[] = // setup menu, nesting level 1 ...
 	{ "Save",      DTYPE_NONE, APPMENU_OPT_BACK,0,
 	NULL,0,0,                  NULL, am_cbk_Channel_Save },
 
-	
 	{ "Back",       DTYPE_NONE, APPMENU_OPT_BACK,0,
 	NULL,0,0,                  NULL,  am_cbk_ChannelList },
 
@@ -79,8 +79,6 @@ menu_item_t am_Channel_Edit[] = // setup menu, nesting level 1 ...
 	{ NULL, 0, 0, 0, NULL, 0,0, NULL, NULL }
 
 }; // end am_Setup[]
-
-
 
 
 int am_cbk_Channel_Save(app_menu_t *pMenu, menu_item_t *pItem, int event, int param)
@@ -177,6 +175,11 @@ uint8_t getEmergencyIndex(channel_t* ch)
 uint8_t getScanListIndex(channel_t* ch)
 {
 	return ch->settings[11];
+}
+
+void setScanListIndex(channel_t* ch, uint8_t index)
+{
+	ch->settings[11] = index;
 }
 
 uint8_t getGroupListIndex(channel_t* ch)
@@ -504,6 +507,7 @@ int SaveChannel(channel_t* chan, channel_easy* chanE)
 	//*getGroupListIndex(chan) = chanE->GroupListIndex;
 	//printf("GroupListIndex: %d\r\n", chanE->GroupListIndex);
 
+	setScanListIndex(chan, chanE->ScanListIndex);
 	//*getScanListIndex(chan) = chanE->ScanListIndex;
 	//printf("ScanListIndex: %d\r\n", chanE->ScanListIndex);
 
