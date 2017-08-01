@@ -141,7 +141,7 @@ const menu_item_t am_Main[] =
 
 	{ "Type", DTYPE_UNS8, APPMENU_OPT_EDITABLE | APPMENU_OPT_BITMASK,
 	1, // <- here: bitmask !
-	&ad_hoc_call_type,0,1, am_stringtab_contact_types, NULL },
+	&contact.type, 0, 1, am_stringtab_contact_types, NULL },
 
 	{ "[1 Config]Contacts", DTYPE_NONE, APPMENU_OPT_NONE, 0,
 	NULL,0,0,                  NULL, am_cbk_ContactsList },
