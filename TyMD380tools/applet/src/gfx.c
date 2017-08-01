@@ -454,7 +454,7 @@ void gfx_drawtext4_hook(wchar_t *str, int x, int y, int xlen, int ylen)
         }
     }
 
-	if (x == D_TEXT_CHANNAME_X && y == D_TEXT_CHANNAME_Y) {
+	/*if (x == D_TEXT_CHANNAME_X && y == D_TEXT_CHANNAME_Y) {
 
 		
 		if (ad_hoc_tg_channel)
@@ -463,7 +463,7 @@ void gfx_drawtext4_hook(wchar_t *str, int x, int y, int xlen, int ylen)
 			draw_adhoc_statusline(x, y, xlen, ylen);
 			return;
 		}
-	}
+	}*/
 	
 	
     
