@@ -254,10 +254,12 @@ BOOL ScrollList_AutoScroll(scroll_list_control_t *pSL);
 // Application-menu "API" (and interface to the keyboard handler, etc), in app_menu.c :
 void Menu_Open(app_menu_t *pMenu, menu_item_t *pItems, char *cpJumpToItem, int edit_mode);
 BOOL Menu_EnterSubmenu(app_menu_t *pMenu, menu_item_t *pItems);
+void Menu_PushSubmenuToStack(app_menu_t *pMenu);
 void Menu_OnKey(uint8_t key); // called on keypress from some interrupt handler .
 int  Menu_IsVisible(void);     // 1=currently visible (open), 0=not open; don't intercept keys
 int  Menu_GetItemIndex(void);  // used by the Morse narrator (narrator.c) to detect "changes"
 void Menu_GetColours(int sel_flags, uint16_t *pFgColor, uint16_t *pBgColor);
+int  Menu_InvokeCallback(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
 int  Menu_DrawIfVisible(int caller); // Paints the 'application menu' 
 									 // into the framebuffer. Must only be called from a DISPLAY task !
 									 // Returns 0 when invisible, 1 when visible (used in various hooks).

@@ -62,6 +62,7 @@
 #include "amenu_contacts.h"
 #include "amenu_channels.h"
 #include "amenu_lastheard.h"
+#include "amenu_scanlist.h"
 
 #if( ! CONFIG_MORSE_OUTPUT )
 #  error "No 'app menu' without Morse output !" 
@@ -103,10 +104,8 @@ void Menu_OnExitKey(app_menu_t *pMenu);
 void Menu_BeginEditing(app_menu_t *pMenu, menu_item_t *pItem, uint8_t edit_mode);
 void Menu_FinishEditing(app_menu_t *pMenu, menu_item_t *pItem);
 void Menu_OnIncDecEdit(app_menu_t *pMenu, int delta);
-void Menu_PushSubmenuToStack(app_menu_t *pMenu);
 BOOL Menu_PopSubmenuFromStack(app_menu_t *pMenu);
 menu_item_t *Menu_GetFocusedItem(app_menu_t *pMenu);
-int  Menu_InvokeCallback(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
 BOOL Menu_CheckLongKeypressToActivateMorse(app_menu_t *pMenu);
 
 
@@ -146,8 +145,12 @@ const menu_item_t am_Main[] =
 
 	{ "[1 Config]Contacts", DTYPE_NONE, APPMENU_OPT_NONE, 0,
 	NULL,0,0,                  NULL, am_cbk_ContactsList },
+
 	{ "Channels", DTYPE_NONE, APPMENU_OPT_NONE, 0,
 	NULL,0,0,                  NULL, am_cbk_ChannelList },
+
+	{ "Scan Lists", DTYPE_NONE, APPMENU_OPT_NONE, 0,
+	NULL,0,0,                  NULL, am_cbk_ScanList },
 
 	{ "[2 Utils]Setup",       DTYPE_SUBMENU, APPMENU_OPT_NONE,0,
 	// |__ hotkey to get here quickly (press RED BUTTON followed by this key)

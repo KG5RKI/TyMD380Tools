@@ -72,7 +72,6 @@ menu_item_t am_Channel_Edit[] = // setup menu, nesting level 1 ...
 	NULL,0,0,                  NULL, am_cbk_Channel_Save },
 
 	
-
 	{ "Back",       DTYPE_NONE, APPMENU_OPT_BACK,0,
 	NULL,0,0,                  NULL,  am_cbk_ChannelList },
 
@@ -228,9 +227,8 @@ void ChannelList_WriteByIndex(int index,
 	}
 } // end ZoneList_ReadNameByIndex()
 
-
   //---------------------------------------------------------------------------
-static void ChannelList_OnEnter(app_menu_t *pMenu, menu_item_t *pItem)
+void ChannelList_OnEnter(app_menu_t *pMenu, menu_item_t *pItem)
 // Called ONCE when "entering" the 'Zone List' display.
 // Tries to find out how many zones exist in the codeplug,
 // and the array-index of the currently active zone . 
@@ -268,10 +266,10 @@ static void ChannelList_OnEnter(app_menu_t *pMenu, menu_item_t *pItem)
 		pSL->focused_item = 0;
 	}
 
-} // end ZoneList_OnEnter()
+} // end ChannelList_OnEnter()
 
   //---------------------------------------------------------------------------
-static void ChannelList_Draw(app_menu_t *pMenu, menu_item_t *pItem)
+void ChannelList_Draw(app_menu_t *pMenu, menu_item_t *pItem)
 // Draws the 'zone list' screen. Gets visible when ENTERING that item in the app-menu.
 // 
 {
@@ -289,12 +287,13 @@ static void ChannelList_Draw(app_menu_t *pMenu, menu_item_t *pItem)
 	ScrollList_AutoScroll(pSL); // modify pSL->scroll_pos to make the FOCUSED item visible
 	dc.font = LCD_OPT_FONT_16x16;
 	{
-		LCD_Printf(&dc, "  %d/%d\r", (int)(pSL->focused_item + 1), (int)pSL->num_items);
+		LCD_Printf(&dc, " Channels\r");
 	}
 	LCD_HorzLine(dc.x1, dc.y++, dc.x2, dc.fg_color); // spacer between title and scrolling list
 	LCD_HorzLine(dc.x1, dc.y++, dc.x2, dc.bg_color);
 	i = pSL->scroll_pos;   // zero-based array index of the topmost VISIBLE item
 	n_visible_items = 0;   // find out how many items fit on the screen
+	char fDrawNumOnce = 0;
 	while ((dc.y < (LCD_SCREEN_HEIGHT - 8)) && (i<pSL->num_items))
 	{
 		channel_t* pCont = (i == selIndex ? &selChan : &tCont);
@@ -311,40 +310,34 @@ static void ChannelList_Draw(app_menu_t *pMenu, menu_item_t *pItem)
 		if (i == pSL->focused_item) // this is the CURRENTLY ACTIVE zone :
 		{
 			cRadio = 0x1A;  // character code for a 'selected radio button', see applet/src/font_8_8.c 
-		}
-		else
-		{
-			//if (pCont->type == 0xC1) {
-				cRadio = 0xF9;
-			//}
-			//else {
-			//	cRadio = 0xE9;
-			//}
-		}
-
-		
-
-		if (i == pSL->focused_item)
-		{
 			sel_flags = SEL_FLAG_FOCUSED;
 		}
-		//else if (i == pSL->current_item) // this is the CURRENTLY ACTIVE zone :
-		//{
-		//	sel_flags = SEL_FLAG_CURRENT;  // additional highlighting (besides the selected button)
-		//}
 		else
 		{
+			cRadio = 0xF9;
 			sel_flags = SEL_FLAG_NONE;
 		}
+
 		Menu_GetColours(sel_flags, &dc.fg_color, &dc.bg_color);
 		dc.x = 0;
-		dc.font = LCD_OPT_FONT_8x16;
-		LCD_Printf(&dc, " ");
+		dc.font = LCD_OPT_FONT_16x16;
+		if (!fDrawNumOnce) {
+			fDrawNumOnce = 1;
+			LCD_Printf(&dc, "%d   ", pSL->focused_item+1);
+			dc.x = 32;
+		}
+		else {
+			dc.x = 0;
+			LCD_Printf(&dc, "  ");
+		}
+		
 		dc.font = LCD_OPT_FONT_16x16; // ex: codepage 437, but the useless smileys are radio buttons now,
 									  // to imitate Tytera's zone list (at least a bit) ! 
-		LCD_Printf(&dc, "%c", cRadio); // 16*16 pixels for a circle, not a crumpled egg
+		LCD_Printf(&dc, "%c", (sel_flags == SEL_FLAG_FOCUSED ? cRadio : ' ')); // 16*16 pixels for a circle, not a crumpled egg
+		
 		dc.font = LCD_OPT_FONT_8x16;
-		LCD_Printf(&dc, " %S\r", (wchar_t*)pCont->name); // '\r' clears to the end of the line, '\n' doesn't
+		LCD_Printf(&dc, "%S\r", (wchar_t*)pCont->name); // '\r' clears to the end of the line, '\n' doesn't
+		
 		i++;
 		n_visible_items++;
 	}
@@ -395,9 +388,9 @@ int am_cbk_ChannelList(app_menu_t *pMenu, menu_item_t *pItem, int event, int par
 				//ContactList_SetZoneByIndex(pSL->focused_item);
 				selIndex = pSL->focused_item;
 				//fIsTG = (selContact.type == 0xC1 ? 1 : 0);
-				contact_t cont;
-				ContactsList_ReadNameByIndex(selChanE.ContactIndex-1, &cont);
-				wide_to_C_string(cont.name, Contact_Name, 50);
+				//contact_t cont;
+				//ContactsList_ReadNameByIndex(selChanE.ContactIndex-1, &cont);
+				//wide_to_C_string(cont.name, Contact_Name, 50);
 				Menu_EnterSubmenu(pMenu, am_Channel_Edit);
 
 				// The above command switched to the new zone, and probably set

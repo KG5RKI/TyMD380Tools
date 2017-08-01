@@ -92,7 +92,7 @@ BOOL ContactsList_ReadNameByIndex(int index,             // [in] zero-based zone
 		// thus 0x00 in the first character seems to mark the end of the list:
 		//return wc16Temp[0] != 0;
 		tContact->name[15] = '\0';
-		return tContact->name[0] != '0' && !(tContact->id_h == 0xFF && tContact->id_l == 0xFF && tContact->id_m == 0xFF);
+		return tContact->name[0] != '\0' && !(tContact->id_h == 0xFF && tContact->id_l == 0xFF && tContact->id_m == 0xFF);
 	}
 	return 0;
 } // end ZoneList_ReadNameByIndex()
