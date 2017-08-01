@@ -29,6 +29,7 @@ int selScanListChan = 0;
 void am_cbk_DeleteFromScanList(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
 void am_cbk_SetPriorityCh1(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
 void am_cbk_SetPriorityCh2(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
+void am_cbk_DeleteScanList(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
 
 const menu_item_t am_ScanList_Manage[] = { { "[-]Remove", DTYPE_NONE, APPMENU_OPT_BACK, 0, NULL, 0, 0,  NULL, am_cbk_DeleteFromScanList },
 										 { "Priority 1", DTYPE_NONE, APPMENU_OPT_BACK, 0, NULL, 0, 0,  NULL, am_cbk_SetPriorityCh1 },
@@ -101,6 +102,34 @@ void am_cbk_DeleteFromScanList(app_menu_t *pMenu, menu_item_t *pItem, int event,
 			selScanList.channels[selScanListChan] = 0;
 		}
 		ScanList_WriteByIndex(selScanListIndex, &selScanList);
+		return AM_RESULT_EXIT_AND_RELEASE_SCREEN; // screen now 'occupied' by the colour test screen
+	}
+	return AM_RESULT_NONE; // "proceed as if there was NO callback function"
+} // end am_cbk_SaveScanList()
+
+void am_cbk_DeleteScanList(app_menu_t *pMenu, menu_item_t *pItem, int event, int param)
+{ // Simple example for a 'user screen' opened from the application menu
+	if (event == APPMENU_EVT_ENTER) // pressed ENTER (to launch the colour test) ?
+	{
+		scanlist_t tempList;
+		ScanList_ReadByIndex(selScanListIndex, &tempList);
+		if (selScanListIndex < CODEPLUG_MAX_SCANLIST - 1) {
+			
+			int b = selScanListIndex;
+			for (int i = selScanListIndex + 1; i < CODEPLUG_MAX_SCANLIST; i++) {
+				ScanList_ReadByIndex(i, &tempList);
+				ScanList_WriteByIndex(b++, &tempList);
+				if (tempList.name[0] == '\0'  || i == CODEPLUG_MAX_SCANLIST - 1) {
+					memset(tempList.name, 0, sizeof(tempList.name));
+					ScanList_WriteByIndex(i, &tempList);
+					break;
+				}
+			}
+		}
+		else {
+			memset(tempList.name, 0, sizeof(tempList.name));
+			ScanList_WriteByIndex(selScanListIndex, &tempList);
+		}
 		return AM_RESULT_EXIT_AND_RELEASE_SCREEN; // screen now 'occupied' by the colour test screen
 	}
 	return AM_RESULT_NONE; // "proceed as if there was NO callback function"
@@ -518,6 +547,7 @@ const menu_item_t am_ScanList_Edit[]        = { { "[-]Name:", DTYPE_WSTRING, APP
 												{ "Sample(ms):", DTYPE_UNS8, APPMENU_OPT_EDITABLE | APPMENU_OPT_FACTOR, 250, &selScanList.sampletime, 750, 5000,  NULL, NULL },
 												{ "[-]Edit List", DTYPE_NONE, APPMENU_OPT_NONE, 0, NULL, 0, 0, NULL, am_cbk_ChannelListView },
 												{ "Add To List", DTYPE_NONE, APPMENU_OPT_NONE, 0, NULL, 0, 0, NULL, am_cbk_ChannelListAdd },
+												{ "Delete", DTYPE_NONE, APPMENU_OPT_BACK, 0, NULL, 0, 0, NULL, am_cbk_DeleteScanList },
 												{ "[-]Back (Save)", DTYPE_NONE, APPMENU_OPT_BACK, 0, NULL, 0, 0, NULL, am_cbk_SaveScanList },
 												// End of the list marked by "all zeroes" :
 												{ NULL, 0/*dt*/, 0/*opt*/, 0/*ov*/, NULL/*pValue*/, 0,0, NULL, NULL } };
