@@ -20,10 +20,19 @@
 #include "amenu_scanlist.h" // header for THIS module (to check prototypes,etc)
 #include "amenu_set_tg.h"
 #include "amenu_channels.h"
+#include "syslog.h"
 
 scanlist_t selScanList;
 int selScanListIndex = 0;
+int selScanListChan = 0;
 
+void am_cbk_DeleteFromScanList(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
+
+const menu_item_t am_ScanList_Manage[] = { { "[-]Remove", DTYPE_NONE, APPMENU_OPT_BACK, 0, NULL, 0, 0,  NULL, am_cbk_DeleteFromScanList },
+
+										{ "Back ", DTYPE_NONE, APPMENU_OPT_BACK, 0, NULL, 0, 0, NULL, NULL },
+										// End of the list marked by "all zeroes" :
+										{ NULL, 0/*dt*/, 0/*opt*/, 0/*ov*/, NULL/*pValue*/, 0,0, NULL, NULL } };
 
 //---------------------------------------------------------------------------
 BOOL ScanList_ReadByIndex(int index,             // [in] zero-based zone index
@@ -65,6 +74,29 @@ void am_cbk_SaveScanList(app_menu_t *pMenu, menu_item_t *pItem, int event, int p
 	{
 		md380_spiflash_write(&selScanList, (selScanListIndex * CODEPLUG_SIZEOF_SCANLIST_ENTRY)
 			+ CODEPLUG_SPIFLASH_ADDR_SCANLIST, sizeof(scanlist_t));
+		return AM_RESULT_EXIT_AND_RELEASE_SCREEN; // screen now 'occupied' by the colour test screen
+	}
+	return AM_RESULT_NONE; // "proceed as if there was NO callback function"
+} // end am_cbk_SaveScanList()
+
+void am_cbk_DeleteFromScanList(app_menu_t *pMenu, menu_item_t *pItem, int event, int param)
+{ // Simple example for a 'user screen' opened from the application menu
+	if (event == APPMENU_EVT_ENTER) // pressed ENTER (to launch the colour test) ?
+	{
+		if (selScanListChan < CODEPLUG_MAX_SCANLIST_CHANNELS - 1) {
+			int b = selScanListChan;
+			for (int i = selScanListChan + 1; i < CODEPLUG_MAX_SCANLIST_CHANNELS; i++) {
+				selScanList.channels[b++] = selScanList.channels[i];
+				if (!selScanList.channels[i] || i == CODEPLUG_MAX_SCANLIST_CHANNELS - 1) {
+					selScanList.channels[i] = 0;
+					break;
+				}
+			}
+		}
+		else {
+			selScanList.channels[selScanListChan] = 0;
+		}
+		ScanList_WriteByIndex(selScanListIndex, &selScanList);
 		return AM_RESULT_EXIT_AND_RELEASE_SCREEN; // screen now 'occupied' by the colour test screen
 	}
 	return AM_RESULT_NONE; // "proceed as if there was NO callback function"
@@ -331,8 +363,14 @@ int am_cbk_ChannelListView(app_menu_t *pMenu, menu_item_t *pItem, int event, int
 		switch ((char)param) // here: message parameter = keyboard code (ASCII)
 		{
 		case 'M':  // green "Menu" key : kind of ENTER. But here, "apply & return" .
+			
+			selScanListChan = pSL->focused_item;
+			Menu_EnterSubmenu(pMenu, &am_ScanList_Manage);
+			return AM_RESULT_EXIT_AND_RELEASE_SCREEN;
+
 		case 'B':  // red "Back"-key : return from this screen, discard changes.
 			return AM_RESULT_EXIT_AND_RELEASE_SCREEN;
+
 		case 'U':  // cursor UP
 			if (pSL->focused_item > 0)
 			{
