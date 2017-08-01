@@ -133,6 +133,9 @@ extern "C" {
 
 #if defined(FW_D13_020) || defined(FW_S13_020)
 	extern contact_t contact;
+	static int current_TG() {
+		return ((int)contact.id_h << 16) | ((int)contact.id_m << 8) | (int)contact.id_l;
+	}
 #endif
 
 	// from pc = 0x080134dc 
