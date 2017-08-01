@@ -21,12 +21,14 @@
 #include "amenu_codeplug.h"
 #include "amenu_contacts.h"
 #include "amenu_scanlist.h"
+#include "syslog.h"
 
 channel_t selChan;
 channel_easy selChanE;
+scanlist_t scanList;
 int selIndex = 0;
 int numChannels = 0;
-char Contact_Name[50];
+contact_t cont;
 
 #define CHANNEL_LIST_EXTRA_OPTIONS 1
 
@@ -36,16 +38,14 @@ int am_cbk_Channel_AddToZone(app_menu_t *pMenu, menu_item_t *pItem, int event, i
 void ChannelList_WriteByIndex(int index, channel_t *tChannel);
 int am_cbk_Channel_CloneToZone(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
 int am_cbk_Channel_Save(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
+int am_cbk_Channel_ScanListChange(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
 
-menu_item_t am_Channel_Edit[] = // setup menu, nesting level 1 ...
+menu_item_t am_Channel_Edit[] = 
 {
-	{ "Edit Channel",             DTYPE_NONE, APPMENU_OPT_NONE,0,
-	NULL,0,0,          NULL,         NULL },
 	{ "[-]Name",             DTYPE_WSTRING, APPMENU_OPT_NONE,0,
 	selChanE.name ,0,0,          NULL,         NULL },
-	{ "Contact",             DTYPE_STRING, APPMENU_OPT_NONE,0,
-	Contact_Name ,0,0,          NULL,         NULL },
-
+	{ "Cont",             DTYPE_WSTRING, APPMENU_OPT_NONE,0,
+	cont.name ,0,0,          NULL,         NULL },
 
 	{ "RX",             DTYPE_STRING, APPMENU_OPT_NONE,0,
 	selChanE.rxFreq.text ,0,0,          NULL,         NULL },
@@ -58,18 +58,18 @@ menu_item_t am_Channel_Edit[] = // setup menu, nesting level 1 ...
 	&selChanE.Slot ,1,2,          NULL,         NULL },
 	{ "TOT",      DTYPE_UNS8, APPMENU_OPT_EDITABLE | APPMENU_OPT_IMM_UPDATE | APPMENU_OPT_FACTOR, 15,
 	&selChanE.TOT ,0,60,          NULL,         NULL },
-	{ "ScanList",      DTYPE_UNS8, APPMENU_OPT_EDITABLE | APPMENU_OPT_IMM_UPDATE, 0,
-	&selChanE.ScanListIndex, 0, CODEPLUG_MAX_SCANLIST-1,   NULL,   NULL },
+	{ "Scan",      DTYPE_WSTRING, APPMENU_OPT_EDITABLE, 0,
+	scanList.name, 0, CODEPLUG_MAX_SCANLIST-1,   NULL,   am_cbk_Channel_ScanListChange },
 	{ "GroupList",      DTYPE_UNS8, APPMENU_OPT_NONE,0,
 	&selChanE.GroupListIndex , 0, 0, NULL, NULL },
 
-	{ "Clone CH",      DTYPE_NONE, APPMENU_OPT_BACK,0,
+	{ "Copy To Zone",      DTYPE_NONE, APPMENU_OPT_BACK,0,
 	NULL,0,0,                  NULL, am_cbk_Channel_CloneToZone },
 
-	{ "Set CH",      DTYPE_NONE, APPMENU_OPT_BACK,0,
+	{ "Add to Zone",      DTYPE_NONE, APPMENU_OPT_BACK,0,
 	NULL,0,0,                  NULL, am_cbk_Channel_AddToZone },
 
-	{ "Save",      DTYPE_NONE, APPMENU_OPT_BACK,0,
+	{ "[-]Save",      DTYPE_NONE, APPMENU_OPT_BACK,0,
 	NULL,0,0,                  NULL, am_cbk_Channel_Save },
 
 	{ "Back",       DTYPE_NONE, APPMENU_OPT_BACK,0,
@@ -80,6 +80,37 @@ menu_item_t am_Channel_Edit[] = // setup menu, nesting level 1 ...
 
 }; // end am_Setup[]
 
+int cacheScanList(int index) {
+	syslog_printf("ScanList: %d\r\n", selChanE.ScanListIndex);
+	return ScanList_ReadByIndex(index, &scanList);
+	syslog_printf("Scan: %S\r\n", scanList.name);
+}
+
+int am_cbk_Channel_ScanListChange(app_menu_t *pMenu, menu_item_t *pItem, int event, int param)
+{ // Simple example for a 'user screen' opened from the application menu
+	if (event == APPMENU_EVT_ENTER) // pressed ENTER (to launch the colour test) ?
+	{
+		pMenu->iEditValue = selChanE.ScanListIndex;
+		//SaveChannel(&selChan, &selChanE);
+		//ChannelList_WriteByIndex(selIndex, &selChan);
+		return AM_RESULT_OK; // screen now 'occupied' by the colour test screen
+	}
+	else if (event == APPMENU_EVT_GET_VALUE) // someone wants us to paint into the framebuffer
+	{ // To minimize QRM from the display cable, only redraw when necessary (no "dynamic" content here):
+		pItem->pvValue = scanList.name;
+		return AM_RESULT_NONE;
+	}
+	else if (event == APPMENU_EVT_BEGIN_EDIT) {
+		syslog_printf("tEdit: %d\r\n", pMenu->iEditValue);
+		while(!cacheScanList(pMenu->iEditValue) && pMenu->iEditValue>=pItem->iMinValue && pMenu->iEditValue<=pItem->iMaxValue) {
+			pMenu->iEditValue--;
+		}
+		pItem->pvValue = scanList.name;
+		//wcscpy(scanList.name, L"BOOBS");
+		return AM_RESULT_OK;
+	}
+	return AM_RESULT_NONE; // "proceed as if there was NO callback function"
+} // end am_cbk_ColorTest()
 
 int am_cbk_Channel_Save(app_menu_t *pMenu, menu_item_t *pItem, int event, int param)
 { // Simple example for a 'user screen' opened from the application menu
@@ -326,7 +357,8 @@ void ChannelList_Draw(app_menu_t *pMenu, menu_item_t *pItem)
 		dc.font = LCD_OPT_FONT_16x16;
 		if (!fDrawNumOnce) {
 			fDrawNumOnce = 1;
-			LCD_Printf(&dc, "%d   ", pSL->focused_item+1);
+			dc.font = LCD_OPT_FONT_8x16;
+			LCD_Printf(&dc, " %d  ", pSL->focused_item+1);
 			dc.x = 32;
 		}
 		else {
@@ -389,11 +421,12 @@ int am_cbk_ChannelList(app_menu_t *pMenu, menu_item_t *pItem, int event, int par
 			if (pSL->focused_item >= 0)
 			{
 				//ContactList_SetZoneByIndex(pSL->focused_item);
-				selIndex = pSL->focused_item;
+				//selIndex = pSL->focused_item;
 				//fIsTG = (selContact.type == 0xC1 ? 1 : 0);
-				//contact_t cont;
-				//ContactsList_ReadNameByIndex(selChanE.ContactIndex-1, &cont);
-				//wide_to_C_string(cont.name, Contact_Name, 50);
+
+				cacheScanList(selChanE.ScanListIndex);
+				
+				ContactsList_ReadNameByIndex(selChanE.ContactIndex-1, &cont);
 				Menu_EnterSubmenu(pMenu, am_Channel_Edit);
 
 				// The above command switched to the new zone, and probably set

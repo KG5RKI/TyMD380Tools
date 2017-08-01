@@ -27,8 +27,12 @@ int selScanListIndex = 0;
 int selScanListChan = 0;
 
 void am_cbk_DeleteFromScanList(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
+void am_cbk_SetPriorityCh1(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
+void am_cbk_SetPriorityCh2(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
 
 const menu_item_t am_ScanList_Manage[] = { { "[-]Remove", DTYPE_NONE, APPMENU_OPT_BACK, 0, NULL, 0, 0,  NULL, am_cbk_DeleteFromScanList },
+										 { "Priority 1", DTYPE_NONE, APPMENU_OPT_BACK, 0, NULL, 0, 0,  NULL, am_cbk_SetPriorityCh1 },
+										 { "Priority 2", DTYPE_NONE, APPMENU_OPT_BACK, 0, NULL, 0, 0,  NULL, am_cbk_SetPriorityCh2 },
 
 										{ "Back ", DTYPE_NONE, APPMENU_OPT_BACK, 0, NULL, 0, 0, NULL, NULL },
 										// End of the list marked by "all zeroes" :
@@ -101,6 +105,28 @@ void am_cbk_DeleteFromScanList(app_menu_t *pMenu, menu_item_t *pItem, int event,
 	}
 	return AM_RESULT_NONE; // "proceed as if there was NO callback function"
 } // end am_cbk_SaveScanList()
+
+void am_cbk_SetPriorityCh1(app_menu_t *pMenu, menu_item_t *pItem, int event, int param)
+{ // Simple example for a 'user screen' opened from the application menu
+	if (event == APPMENU_EVT_ENTER) // pressed ENTER (to launch the colour test) ?
+	{
+		selScanList.primary = selScanListIndex;
+		ScanList_WriteByIndex(selScanListIndex, &selScanList);
+		return AM_RESULT_EXIT_AND_RELEASE_SCREEN; // screen now 'occupied' by the colour test screen
+	}
+	return AM_RESULT_NONE; // "proceed as if there was NO callback function"
+} // end am_cbk_SetPriorityCh1()
+
+void am_cbk_SetPriorityCh2(app_menu_t *pMenu, menu_item_t *pItem, int event, int param)
+{ // Simple example for a 'user screen' opened from the application menu
+	if (event == APPMENU_EVT_ENTER) // pressed ENTER (to launch the colour test) ?
+	{
+		selScanList.secondary = selScanListIndex;
+		ScanList_WriteByIndex(selScanListIndex, &selScanList);
+		return AM_RESULT_EXIT_AND_RELEASE_SCREEN; // screen now 'occupied' by the colour test screen
+	}
+	return AM_RESULT_NONE; // "proceed as if there was NO callback function"
+} // end am_cbk_SetPriorityCh2()
 
 
   //---------------------------------------------------------------------------

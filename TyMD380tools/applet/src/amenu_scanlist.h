@@ -22,3 +22,5 @@ typedef struct
 
 
 extern int am_cbk_ScanList(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
+extern BOOL ScanList_ReadByIndex(int index, scanlist_t *tList);
+extern BOOL ScanList_WriteByIndex(int index, scanlist_t *tList);
