@@ -108,7 +108,7 @@ void demo_show_animation(void)
 	setupBootAnim();
 	
 	//LCD_DrawCube(0, 0, 0, 0, 0xF05A);
-    for (int i = 0; i<100 ; i += 1) {
+    for (int i = 0; i<150 ; i += 1) {
         //gfx_drawbmp(welcomebmp, 0, i);
 		renderBootAnim();
         sleep(10);
@@ -127,9 +127,10 @@ void demo_clear(void)
 
 void demo(void)
 {
-    //display_credits();
-    //sleep(500);
     demo_show_animation();
+	demo_clear();
+	display_credits();
+	sleep(1000);
     demo_clear();
 }
 
