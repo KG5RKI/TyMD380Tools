@@ -53,6 +53,19 @@ Line2d Render[20];
 Line2d ORender[20];
 
 
+void draw_txt_bootanim(char* testStr, int x, int y, char font, uint16_t fg_color, uint16_t bg_color) {
+	char c = 0;
+	int maxLen = 16;
+	while (((c = *testStr) != 0) && maxLen>0)
+	{
+		x = LCD_DrawCharAt(c, x, y, fg_color, bg_color, font);
+		//++i; // character index and limiting counter
+		++testStr;
+		// (in rare cases, some of the leading text may be OVERWRITTEN below)
+		maxLen--;
+	}
+}
+
 void SetVars(void)
 {
 	float Xan2, Yan2, Zan2;
@@ -120,7 +133,8 @@ void ProcessLine(Line2d *ret, Line3d vec)
 	zvt1 = zv1 - Zoff;
 
 
-	if (zvt1 < -5) {
+	//if (zvt1 < -5) 
+	{
 		rx1 = 256 * (xv1 / zvt1) + Xoff;
 		ry1 = 256 * (yv1 / zvt1) + Yoff;
 		Ok = 1; // ok we are alright for point 1.
@@ -144,7 +158,7 @@ void ProcessLine(Line2d *ret, Line3d vec)
 	}
 
 
-	if (Ok == 1) 
+	//if (Ok == 1) 
 	{
 
 		ret->p0.x = rx1;
@@ -165,49 +179,51 @@ void setupBootAnim() {
 	
 	fact = 180.0 / 3.14159259; // conversion from degrees to radians.
 
-	Xoff = 63; // positions the center of the 3d conversion space into the center of the OLED screen. This is usally screen_x_size / 2.
-	Yoff = 63; // screen_y_size /2
-	Zoff = 500;
+	Xoff = LCD_SCREEN_WIDTH/2; // positions the center of the 3d conversion space into the center of the OLED screen. This is usally screen_x_size / 2.
+	Yoff = LCD_SCREEN_HEIGHT/2; // screen_y_size /2
+	Zoff = 550;
+
+#define cube_size 50
 
 
 	// line segments to draw a cube. basically p0 to p1. p1 to p2. p2 to p3 so on.
 
 	// Front Face.
 
-	Lines[0].p0.x = -50;
-	Lines[0].p0.y = -50;
-	Lines[0].p0.z = 50;
-	Lines[0].p1.x = 50;
-	Lines[0].p1.y = -50;
-	Lines[0].p1.z = 50;
+	Lines[0].p0.x = -cube_size;
+	Lines[0].p0.y = -cube_size;
+	Lines[0].p0.z = cube_size;
+	Lines[0].p1.x = cube_size;
+	Lines[0].p1.y = -cube_size;
+	Lines[0].p1.z = cube_size;
 
 
 
-	Lines[1].p0.x = 50;
-	Lines[1].p0.y = -50;
-	Lines[1].p0.z = 50;
-	Lines[1].p1.x = 50;
-	Lines[1].p1.y = 50;
-	Lines[1].p1.z = 50;
+	Lines[1].p0.x = cube_size;
+	Lines[1].p0.y = -cube_size;
+	Lines[1].p0.z = cube_size;
+	Lines[1].p1.x = cube_size;
+	Lines[1].p1.y = cube_size;
+	Lines[1].p1.z = cube_size;
 
 
 
 
-	Lines[2].p0.x = 50;
-	Lines[2].p0.y = 50;
-	Lines[2].p0.z = 50;
-	Lines[2].p1.x = -50;
-	Lines[2].p1.y = 50;
-	Lines[2].p1.z = 50;
+	Lines[2].p0.x = cube_size;
+	Lines[2].p0.y = cube_size;
+	Lines[2].p0.z = cube_size;
+	Lines[2].p1.x = -cube_size;
+	Lines[2].p1.y = cube_size;
+	Lines[2].p1.z = cube_size;
 
 
 
-	Lines[3].p0.x = -50;
-	Lines[3].p0.y = 50;
-	Lines[3].p0.z = 50;
-	Lines[3].p1.x = -50;
-	Lines[3].p1.y = -50;
-	Lines[3].p1.z = 50;
+	Lines[3].p0.x = -cube_size;
+	Lines[3].p0.y = cube_size;
+	Lines[3].p0.z = cube_size;
+	Lines[3].p1.x = -cube_size;
+	Lines[3].p1.y = -cube_size;
+	Lines[3].p1.z = cube_size;
 
 
 
@@ -216,76 +232,76 @@ void setupBootAnim() {
 
 	//back face.
 
-	Lines[4].p0.x = -50;
-	Lines[4].p0.y = -50;
-	Lines[4].p0.z = -50;
-	Lines[4].p1.x = 50;
-	Lines[4].p1.y = -50;
-	Lines[4].p1.z = -50;
+	Lines[4].p0.x = -cube_size;
+	Lines[4].p0.y = -cube_size;
+	Lines[4].p0.z = -cube_size;
+	Lines[4].p1.x = cube_size;
+	Lines[4].p1.y = -cube_size;
+	Lines[4].p1.z = -cube_size;
 
 
 
-	Lines[5].p0.x = 50;
-	Lines[5].p0.y = -50;
-	Lines[5].p0.z = -50;
-	Lines[5].p1.x = 50;
-	Lines[5].p1.y = 50;
-	Lines[5].p1.z = -50;
+	Lines[5].p0.x = cube_size;
+	Lines[5].p0.y = -cube_size;
+	Lines[5].p0.z = -cube_size;
+	Lines[5].p1.x = cube_size;
+	Lines[5].p1.y = cube_size;
+	Lines[5].p1.z = -cube_size;
 
 
 
 
-	Lines[6].p0.x = 50;
-	Lines[6].p0.y = 50;
-	Lines[6].p0.z = -50;
-	Lines[6].p1.x = -50;
-	Lines[6].p1.y = 50;
-	Lines[6].p1.z = -50;
+	Lines[6].p0.x = cube_size;
+	Lines[6].p0.y = cube_size;
+	Lines[6].p0.z = -cube_size;
+	Lines[6].p1.x = -cube_size;
+	Lines[6].p1.y = cube_size;
+	Lines[6].p1.z = -cube_size;
 
 
 
-	Lines[7].p0.x = -50;
-	Lines[7].p0.y = 50;
-	Lines[7].p0.z = -50;
-	Lines[7].p1.x = -50;
-	Lines[7].p1.y = -50;
-	Lines[7].p1.z = -50;
+	Lines[7].p0.x = -cube_size;
+	Lines[7].p0.y = cube_size;
+	Lines[7].p0.z = -cube_size;
+	Lines[7].p1.x = -cube_size;
+	Lines[7].p1.y = -cube_size;
+	Lines[7].p1.z = -cube_size;
 
 
 
 
 	// now the 4 edge lines.
 
-	Lines[8].p0.x = -50;
-	Lines[8].p0.y = -50;
-	Lines[8].p0.z = 50;
-	Lines[8].p1.x = -50;
-	Lines[8].p1.y = -50;
-	Lines[8].p1.z = -50;
+	Lines[8].p0.x = -cube_size;
+	Lines[8].p0.y = -cube_size;
+	Lines[8].p0.z = cube_size;
+	Lines[8].p1.x = -cube_size;
+	Lines[8].p1.y = -cube_size;
+	Lines[8].p1.z = -cube_size;
 
 
-	Lines[9].p0.x = 50;
-	Lines[9].p0.y = -50;
-	Lines[9].p0.z = 50;
-	Lines[9].p1.x = 50;
-	Lines[9].p1.y = -50;
-	Lines[9].p1.z = -50;
+	Lines[9].p0.x = cube_size;
+	Lines[9].p0.y = -cube_size;
+	Lines[9].p0.z = cube_size;
+	Lines[9].p1.x = cube_size;
+	Lines[9].p1.y = -cube_size;
+	Lines[9].p1.z = -cube_size;
 
 
-	Lines[10].p0.x = -50;
-	Lines[10].p0.y = 50;
-	Lines[10].p0.z = 50;
-	Lines[10].p1.x = -50;
-	Lines[10].p1.y = 50;
-	Lines[10].p1.z = -50;
+	Lines[10].p0.x = -cube_size;
+	Lines[10].p0.y = cube_size;
+	Lines[10].p0.z = cube_size;
+	Lines[10].p1.x = -cube_size;
+	Lines[10].p1.y = cube_size;
+	Lines[10].p1.z = -cube_size;
 
 
-	Lines[11].p0.x = 50;
-	Lines[11].p0.y = 50;
-	Lines[11].p0.z = 50;
-	Lines[11].p1.x = 50;
-	Lines[11].p1.y = 50;
-	Lines[11].p1.z = -50;
+	Lines[11].p0.x = cube_size;
+	Lines[11].p0.y = cube_size;
+	Lines[11].p0.z = cube_size;
+	Lines[11].p1.x = cube_size;
+	Lines[11].p1.y = cube_size;
+	Lines[11].p1.z = -cube_size;
 
 
 
@@ -293,7 +309,11 @@ void setupBootAnim() {
 	OldLinestoRender = LinestoRender;
 
 	LCD_FillRect(0, 0, LCD_SCREEN_WIDTH - 1, LCD_SCREEN_HEIGHT - 1, 0x0);
-}
+
+	draw_txt_bootanim("MDToolz", 6, 4, LCD_OPT_FONT_8x16, 0x0FF0, 0x0);
+	//draw_txt_bootanim("MDToolz", LCD_SCREEN_WIDTH - (LCD_SCREEN_WIDTH / 3) + 5, 35, LCD_OPT_FONT_8x16, 0x0FF0, 0x0);
+	draw_txt_bootanim("KG5RKI", LCD_SCREEN_WIDTH - (LCD_SCREEN_WIDTH / 3) + 2, LCD_SCREEN_HEIGHT - 22, LCD_OPT_FONT_8x16, 0x0FF0, 0x0);
+} 
 
 
 void renderBootAnim() {
