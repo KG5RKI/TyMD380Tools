@@ -45,7 +45,7 @@ int am_cbk_SetTalkgroup(app_menu_t *pMenu, menu_item_t *pItem, int event, int pa
   switch( event ) // what happened, why did the menu framework call us ?
    { case APPMENU_EVT_GET_VALUE : // called to retrieve the current value
         // How to retrieve the talkgroup number ? Inspired by Brad's PR #708 :
-        return ((int)contact.id_h<<16) | ((int)contact.id_m<<8) | (int)contact.id_l;
+        return current_TG();
      case APPMENU_EVT_END_EDIT: // the operator finished or aborted editing,
         if( param ) // "finished", not "aborted" -> write back the new ("edited") value
          { contact.id_l =  pMenu->iEditValue & 0xFF ;
