@@ -112,7 +112,7 @@ const static wchar_t wt_splash_callname[]   = L"Callsign+Name";
 
 const static wchar_t wt_cp_override_dmrid[] = L"ID Override";
 
-const static wchar_t wt_config_reset[] = L"Config Reset";
+const static wchar_t wt_config_reset[]      = L"Config Reset";
 const static wchar_t wt_config_reset_doit[] = L"Config Reset2";
 
 const static wchar_t wt_sidebutton_menu[]   = L"Side Buttons";
@@ -148,7 +148,7 @@ const static wchar_t wt_button_lone_work[]  = L"Lone wk On/Off";
 const static wchar_t wt_button_1750_hz[]    = L"1750hz Tone";
 const static wchar_t wt_button_bklt_en[]    = L"Toggle bklight";
 const static wchar_t wt_button_set_tg[]     = L"Set Talkgroup";
-const static wchar_t wt_button_alt_text[]   = L"Alt. Text Color";
+const static wchar_t wt_button_alt_text[]   = L"Alt. UI Colors";
 #if( CONFIG_MORSE_OUTPUT )
 const static wchar_t wt_button_narrator[]   = L"Morse Narrator";
 const static wchar_t wt_button_cw_repeat[]  = L"Morse Repeat";
