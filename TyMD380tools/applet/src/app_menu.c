@@ -350,6 +350,11 @@ void Menu_Open(
 				if (strncmp(cpJumpToItem, cp, n) == 0)
 				{
 					pMenu->item_index = (uint8_t)i;
+					if (!edit_mode) {
+						Menu_InvokeCallback(pMenu, pItem, APPMENU_EVT_ENTER, 0);
+						pMenu->redraw = TRUE;
+						return;
+					}
 					//((menu_item_t*)pMenu->pItems)[i].pvValue = 0;
 				}
 			}
