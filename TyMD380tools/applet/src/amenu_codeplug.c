@@ -20,6 +20,8 @@
 #include "codeplug.h" // codeplug memory addresses, struct- and array-sizes
 #include "amenu_codeplug.h" // header for THIS module (to check prototypes,etc)
 
+zone_t selZone;
+int selZoneIndex = 0;
 
 //---------------------------------------------------------------------------
 BOOL ZoneList_ReadNameByIndex(int index,             // [in] zero-based zone index
@@ -100,6 +102,34 @@ BOOL ZoneList_WriteByIndex(int index,             // [in] zero-based zone index
 	}
 
 } // end ZoneList_ReadNameByIndex()
+
+void am_cbk_DeleteZone(app_menu_t *pMenu, menu_item_t *pItem, int event, int param)
+{ // Simple example for a 'user screen' opened from the application menu
+	if (event == APPMENU_EVT_ENTER) // pressed ENTER (to launch the colour test) ?
+	{
+		zone_t tempList;
+		ZoneList_ReadByIndex(selZoneIndex, &tempList);
+		if (selZoneIndex < CODEPLUG_MAX_ZONE_LIST_ENTRIES - 1) {
+
+			int b = selZoneIndex;
+			for (int i = selZoneIndex + 1; i < CODEPLUG_MAX_ZONE_LIST_ENTRIES; i++) {
+				ZoneList_ReadByIndex(i, &tempList);
+				ZoneList_WriteByIndex(b++, &tempList);
+				if (tempList.name[0] == '\0' || i == CODEPLUG_MAX_ZONE_LIST_ENTRIES - 1) {
+					memset(tempList.name, 0, sizeof(tempList.name));
+					ZoneList_WriteByIndex(i, &tempList);
+					break;
+				}
+			}
+		}
+		else {
+			memset(tempList.name, 0, sizeof(tempList.name));
+			ScanList_WriteByIndex(selZoneIndex, &tempList);
+		}
+		return AM_RESULT_EXIT_AND_RELEASE_SCREEN; // screen now 'occupied' by the colour test screen
+	}
+	return AM_RESULT_NONE; // "proceed as if there was NO callback function"
+} // end am_cbk_DeleteZone()
 
   //---------------------------------------------------------------------------
 BOOL ZoneList_SetZoneByIndex(int index)  // [in] zero-based zone index
@@ -323,6 +353,22 @@ int overwriteChannel(uint16_t channelIndex)
 	ZoneList_WriteByIndex(zoneNum, &curZone);
 }
 
+void am_cbk_ZoneSwitch(app_menu_t *pMenu, menu_item_t *pItem, int event, int param)
+{ // Simple example for a 'user screen' opened from the application menu
+	if (event == APPMENU_EVT_ENTER) // pressed ENTER (to launch the colour test) ?
+	{
+		ZoneList_SetZoneByIndex(selZoneIndex);
+		return AM_RESULT_EXIT_AND_RELEASE_SCREEN; // screen now 'occupied' by the colour test screen
+	}
+	return AM_RESULT_NONE; // "proceed as if there was NO callback function"
+} // end am_cbk_ZoneSwitch()
+
+const menu_item_t am_ZoneList_Manage[] = {  { "[-]Switch to", DTYPE_NONE, APPMENU_OPT_BACK, 0, NULL, 0, 0,  NULL, am_cbk_ZoneSwitch },
+											{ "Delete", DTYPE_NONE, APPMENU_OPT_BACK, 0, NULL, 0, 0,  NULL, am_cbk_DeleteZone },
+											{ "Back ", DTYPE_NONE, APPMENU_OPT_BACK, 0, NULL, 0, 0, NULL, NULL },
+											// End of the list marked by "all zeroes" :
+											{ NULL, 0/*dt*/, 0/*opt*/, 0/*ov*/, NULL/*pValue*/, 0,0, NULL, NULL } };
+
   //---------------------------------------------------------------------------
 int am_cbk_ZoneList(app_menu_t *pMenu, menu_item_t *pItem, int event, int param)
 // Callback function, invoked from the "app menu" framework for the 'ZONES' list.
@@ -355,7 +401,12 @@ int am_cbk_ZoneList(app_menu_t *pMenu, menu_item_t *pItem, int event, int param)
 		case 'M':  // green "Menu" key : kind of ENTER. But here, "apply & return" .
 			if (pSL->focused_item > 0)
 			{
-				ZoneList_SetZoneByIndex(pSL->focused_item-1);
+				selZoneIndex = pSL->focused_item - 1;
+				ZoneList_ReadByIndex(selZoneIndex, &selZone);
+
+				Menu_EnterSubmenu(pMenu, &am_ZoneList_Manage);
+
+				
 				// The above command switched to the new zone, and probably set
 				// channel_num = 0 to 'politely ask' the original firmware to 
 				// reload whever is necessary from the codeplug (SPI-Flash). 
