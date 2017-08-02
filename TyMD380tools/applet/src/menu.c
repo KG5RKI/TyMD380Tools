@@ -155,6 +155,7 @@ const static wchar_t wt_button_cw_repeat[]  = L"Morse Repeat";
 #endif
 const static wchar_t wt_button_toggle_prom[] = L"Toggle Promiscuous";
 const static wchar_t wt_button_adhoc_priv[]  = L"Priv Call LH";
+const static wchar_t wt_button_lastheard[]   = L"Open Lastheard";
 
 const static uint8_t button_functions[]     = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a,
                                                0x0b, 0x0c, 0x0d, 0x0e, 0x15, 0x16, 0x17, 0x56, 0x57, 0x19, 0x1a, 0x1e,
@@ -165,6 +166,7 @@ const static uint8_t button_functions[]     = {0x00, 0x01, 0x02, 0x03, 0x04, 0x0
 #                                            endif
 											  ,0x54 // toggle promisc
 											  ,0x55
+											  ,0x58 // open lastheard
                                               };
 
 uint8_t button_selected = 0;
@@ -1211,6 +1213,7 @@ void nm_button_set_tg()  { set_sidebutton_function(wt_button_set_tg);  }
 #endif
 void nm_button_toggle_prom(){ set_sidebutton_function(wt_button_toggle_prom); }
 void nm_button_adhoc_priv() { set_sidebutton_function(wt_button_adhoc_priv); }
+void nm_button_lastheard() { set_sidebutton_function(wt_button_lastheard); }
 
 void select_sidebutton_function_screen(void)
 {
@@ -1270,6 +1273,7 @@ void select_sidebutton_function_screen(void)
 # endif
    mn_submenu_add(wt_button_toggle_prom,nm_button_toggle_prom);
    mn_submenu_add(wt_button_adhoc_priv, nm_button_adhoc_priv);
+   mn_submenu_add(wt_button_lastheard, nm_button_lastheard);
    
 
 

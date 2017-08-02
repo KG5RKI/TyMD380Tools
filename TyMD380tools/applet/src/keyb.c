@@ -363,6 +363,12 @@ void evaluate_sidekey( int button_function) // This is where new functions for s
 			}
 		}
 		break;
+	case 0x58:    // "Open Lastheard"
+#    if (CONFIG_APP_MENU)
+		Menu_Open(NULL/*default instance*/, NULL/*main items*/, "Lastheard"/*cpJumpToItem*/, APPMENU_EDIT_OFF);
+		backlight_timer = md380_radio_config.backlight_time * 500;
+#    endif
+		break;
 
     default:
       return;

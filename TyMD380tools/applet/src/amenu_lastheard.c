@@ -244,7 +244,7 @@ int am_cbk_LastheardList(app_menu_t *pMenu, menu_item_t *pItem, int event, int p
 	}
 	else if (event == APPMENU_EVT_PAINT) // someone wants us to paint into the framebuffer
 	{ // To minimize QRM from the display cable, only redraw when necessary (no "dynamic" content here):
-		if (pMenu->visible == APPMENU_USERSCREEN_VISIBLE) // only if HexMon already 'occupied' the screen !
+		//if (pMenu->visible == APPMENU_USERSCREEN_VISIBLE) // only if HexMon already 'occupied' the screen !
 		{
 			if (pMenu->redraw)
 			{
