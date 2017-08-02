@@ -136,12 +136,12 @@ const menu_item_t am_Main[] =
 	// DMR-"talkgroup", -"reflector", current_channel_info, 
 	// and how all this sticks together in the original firmware.
 	// See (old) menu.c : create_menu_entry_set_tg_screen_store() .
-	{ "TkGrp",            DTYPE_INTEGER, APPMENU_OPT_EDITABLE,0,
+	{ "TkGrp", DTYPE_INTEGER, APPMENU_OPT_EDITABLE, 0,
 	NULL/*pvValue*/,0/*min*/,0x00FFFFFF/*max:24 bit*/, NULL,am_cbk_SetTalkgroup },
 
 	{ "Type", DTYPE_UNS8, APPMENU_OPT_EDITABLE | APPMENU_OPT_BITMASK,
 	1, // <- here: bitmask !
-	&contact.type, 0, 1, am_stringtab_contact_types, NULL },
+	&contact.type, 0, 1, am_stringtab_contact_types, am_cbk_SetCallType },
 
 	{ "[1 Config]Contacts", DTYPE_NONE, APPMENU_OPT_NONE, 0,
 	NULL,0,0,                  NULL, am_cbk_ContactsList },

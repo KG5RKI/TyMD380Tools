@@ -74,6 +74,29 @@ int am_cbk_SetTalkgroup(app_menu_t *pMenu, menu_item_t *pItem, int event, int pa
   return AM_RESULT_NONE; // "proceed as if there was NO callback function"
 } // end am_cbk_SetTalkgroup()
 
+int am_cbk_SetCallType(app_menu_t *pMenu, menu_item_t *pItem, int event, int param)
+{
+	switch (event) // what happened, why did the menu framework call us ?
+	{
+	case APPMENU_EVT_GET_VALUE: // called to retrieve the current value
+								// How to retrieve the talkgroup number ? Inspired by Brad's PR #708 :
+		return contact.type;
+	case APPMENU_EVT_END_EDIT: // the operator finished or aborted editing,
+		if (param) // "finished", not "aborted" -> write back the new ("edited") value
+		{
+			ad_hoc_call_type = pMenu->iEditValue;
+
+			ad_hoc_talkgroup = current_TG();
+			ad_hoc_tg_channel = channel_num;
+			CheckTalkgroupAfterChannelSwitch(); // ad_hoc_talkgroup -> contact.xyz
+		} // end if < FINISHED (not ABORTED) editing >
+		return AM_RESULT_OK; // "event was processed HERE"
+	default: // all other events are not handled here (let the sender handle them)
+		break;
+	} // end switch( event )
+	return AM_RESULT_NONE; // "proceed as if there was NO callback function"
+} // end am_cbk_SetCallType()
+
 extern int fDrawOncePer;
 
 //---------------------------------------------------------------------------
