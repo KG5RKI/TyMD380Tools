@@ -127,17 +127,17 @@ const menu_item_t am_Main[] =
 { // { "Text__max__13", data_type,  options,opt_value,
   //     pvValue,iMinValue,iMaxValue, string table, callback }
 	{ "CH  ",             DTYPE_WSTRING, APPMENU_OPT_NONE,0,
-	channel_name,0,0,          NULL,         NULL },
+	channel_name,0,0,          NULL,      am_cbk_ChannelList },
 	{ "Zone",             DTYPE_WSTRING, APPMENU_OPT_NONE,0,
-	zone_name,0,0,               NULL, am_cbk_ZoneList },
+	zone_name,0,0,               NULL,    am_cbk_ZoneList },
 	{ "Cont",             DTYPE_WSTRING, APPMENU_OPT_NONE,0,
-	contact.name,0,0,          NULL,         NULL },
+	contact.name,0,0,          NULL,      am_cbk_ContactsList },
 	// yet to be found out: Relation between 'contact.name', 'tx_id',
 	// DMR-"talkgroup", -"reflector", current_channel_info, 
 	// and how all this sticks together in the original firmware.
 	// See (old) menu.c : create_menu_entry_set_tg_screen_store() .
 	{ "TkGrp", DTYPE_INTEGER, APPMENU_OPT_EDITABLE, 0,
-	NULL/*pvValue*/,0/*min*/,0x00FFFFFF/*max:24 bit*/, NULL,am_cbk_SetTalkgroup },
+	NULL/*pvValue*/,0/*min*/,0x00FFFFFF/*max:24 bit*/, NULL, am_cbk_SetTalkgroup },
 
 	{ "Type", DTYPE_UNS8, APPMENU_OPT_EDITABLE | APPMENU_OPT_BITMASK,
 	1, // <- here: bitmask !
@@ -170,7 +170,6 @@ const menu_item_t am_Main[] =
 
 	// End of the list marked by "all zeroes" :
 	{ NULL, 0/*dt*/, 0/*opt*/, 0/*ov*/, NULL/*pValue*/, 0,0, NULL, NULL }
-
 };
 
 const menu_item_t am_Setup[] = // setup menu, nesting level 1 ...
