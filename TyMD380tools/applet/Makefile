@@ -70,7 +70,7 @@ SRCS += amenu_lastheard.o
 SRCS += timer.o
 SRCS += blacklist.o
 SRCS += bootanim.o
-
+SRCS += amenu_scanlist.o
 
 ifdef INC_DISPFLIP
 SRCS +=  dispflip.o  # display flip is included @ d13.020
