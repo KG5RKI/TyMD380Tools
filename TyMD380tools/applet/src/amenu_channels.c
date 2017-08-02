@@ -106,6 +106,7 @@ int am_cbk_Channel_ScanListChange(app_menu_t *pMenu, menu_item_t *pItem, int eve
 			pMenu->iEditValue--;
 		}
 		pItem->pvValue = scanList.name;
+		selChanE.ScanListIndex = pMenu->iEditValue;
 		//wcscpy(scanList.name, L"BOOBS");
 		return AM_RESULT_OK;
 	}
@@ -118,6 +119,7 @@ int am_cbk_Channel_Save(app_menu_t *pMenu, menu_item_t *pItem, int event, int pa
 	{
 		SaveChannel(&selChan, &selChanE);
 		ChannelList_WriteByIndex(selIndex, &selChan);
+		
 		return AM_RESULT_OK; // screen now 'occupied' by the colour test screen
 	}
 	return AM_RESULT_NONE; // "proceed as if there was NO callback function"
