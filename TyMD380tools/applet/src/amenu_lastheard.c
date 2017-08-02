@@ -107,7 +107,7 @@ void LHList_AddEntry(uint32_t src, uint32_t dst)
 	lh->src = src;
 	lh->dst = dst;
 	get_RTC_time(lh->timestamp);
-	strcpy(lh->name, dbEntry.firstname);
+	strcpy(lh->name, dbEntry.name);
 	strcpy(lh->callsign, dbEntry.callsign);
 
 
