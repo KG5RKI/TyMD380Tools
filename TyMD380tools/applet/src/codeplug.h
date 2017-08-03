@@ -28,6 +28,7 @@ extern "C" {
 
 	typedef struct
 	{
+		uint8_t bIsAnalog;
 		uint8_t CC;
 		uint8_t Slot;
 		uint16_t ContactIndex;

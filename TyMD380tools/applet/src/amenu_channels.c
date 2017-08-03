@@ -81,9 +81,11 @@ menu_item_t am_Channel_Edit[] =
 }; // end am_Setup[]
 
 int cacheScanList(int index) {
-	syslog_printf("ScanList: %d\r\n", selChanE.ScanListIndex);
-	return ScanList_ReadByIndex(index, &scanList);
-	syslog_printf("Scan: %S\r\n", scanList.name);
+	if (!index) {
+		wcscpy(scanList.name, L"None");
+		return TRUE;
+	}
+	return ScanList_ReadByIndex(index-1, &scanList);
 }
 
 int am_cbk_Channel_ScanListChange(app_menu_t *pMenu, menu_item_t *pItem, int event, int param)
@@ -101,7 +103,6 @@ int am_cbk_Channel_ScanListChange(app_menu_t *pMenu, menu_item_t *pItem, int eve
 		return AM_RESULT_NONE;
 	}
 	else if (event == APPMENU_EVT_BEGIN_EDIT) {
-		syslog_printf("tEdit: %d\r\n", pMenu->iEditValue);
 		while(!cacheScanList(pMenu->iEditValue) && pMenu->iEditValue>=pItem->iMinValue && pMenu->iEditValue<=pItem->iMaxValue) {
 			pMenu->iEditValue--;
 		}
@@ -168,13 +169,22 @@ void setCC(channel_t* ch, uint8_t cc)
 	((uint8_t*)ch)[1] = (((uint8_t*)ch)[1] & 0x0F) | ((cc << 4) & 0xF0);
 }
 
+uint8_t getType(channel_t* ch)
+{
+	return ((((uint8_t*)ch)[0] & 0x01) != 0 ? 1 : 0);
+}
+void setType(channel_t* ch, uint8_t type)
+{
+	((uint8_t*)ch)[0] = (((uint8_t*)ch)[1] & (~0x01)) | (type ? 0x01: 0);
+}
+
 uint8_t getSlot(channel_t* ch)
 {
 	return ((((uint8_t*)ch)[1] & 0x04) != 0 ? 1 : 2);
 }
 void setSlot(channel_t* ch, uint8_t slot)
 {
-	((uint8_t*)ch)[1] = (((uint8_t*)ch)[1] & (~0x04)) | (slot<=1 ? 0x04: 0);
+	((uint8_t*)ch)[1] = (((uint8_t*)ch)[1] & (~0x04)) | (slot <= 1 ? 0x04 : 0);
 }
 
 uint16_t getContactIndex(channel_t* ch)
@@ -490,6 +500,8 @@ int ParseChannel(channel_t* chan, channel_easy* chanE)
 
 	//printf("Channel Name: %S\r\n", chanE->name);
 
+	chanE->bIsAnalog = getType(chan);
+
 	chanE->CC = getCC(chan);
 
 	chanE->TOT = getTOT(chan);
@@ -524,6 +536,8 @@ int SaveChannel(channel_t* chan, channel_easy* chanE)
 	chan->name[15] = '\0';
 
 	//printf("Channel Name: %S\r\n", chanE->name);
+	
+	setType(chan, chanE->bIsAnalog);
 
 	setCC(chan, chanE->CC);
 	//printf("Color Code: %d\r\n", chanE->CC);
