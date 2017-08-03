@@ -36,8 +36,7 @@
 const static wchar_t wt_addl_func[]         = L"MD380Toolz";
 const static wchar_t wt_datef[]             = L"Date format";
 const static wchar_t wt_debug[]             = L"USB logging";
-//const static wchar_t wt_netmon[]            = L"NetMon";
-const static wchar_t wt_netmon[]            = L"Alt. Menu"; // for now, later a true submenu.
+const static wchar_t wt_netmon[]            = L"NetMon";
 const static wchar_t wt_disable[]           = L"Disable";
 const static wchar_t wt_enable[]            = L"Enable";
 const static wchar_t wt_rbeep[]             = L"M. RogerBeep";
@@ -1985,7 +1984,7 @@ void create_menu_entry_addl_functions_screen(void)
     mn_submenu_add(wt_bootopts, create_menu_entry_bootopts_screen);
     mn_submenu_add_98(wt_datef, create_menu_entry_datef_screen);
     mn_submenu_add_98(wt_showcall, create_menu_entry_showcall_screen);
-    mn_submenu_add_98(wt_debug, create_menu_entry_debug_screen);
+    //mn_submenu_add_98(wt_debug, create_menu_entry_debug_screen);
     mn_submenu_add_98(wt_promtg, create_menu_entry_promtg_screen);
     mn_submenu_add_8a(wt_edit, create_menu_entry_edit_screen, 0); // disable this menu entry - no function jet
     mn_submenu_add_8a(wt_edit_dmr_id, create_menu_entry_edit_dmr_id_screen, 1);
