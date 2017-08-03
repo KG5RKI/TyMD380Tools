@@ -342,6 +342,8 @@ void ChannelList_OnEnter(app_menu_t *pMenu, menu_item_t *pItem)
 		zone_t curZone;
 		ZoneList_ReadByIndex(ZoneList_GetCurrentIndex(), &curZone);
 		selIndex = curZone.channels[channel_num-1] - 1;
+		if (selIndex < 0)
+			selIndex = 0;
 	}
 
 	ScrollList_Init(pSL); // set all struct members to defaults
