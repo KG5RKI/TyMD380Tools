@@ -30,14 +30,19 @@ int selIndex = 0;
 int numChannels = 0;
 contact_t cont;
 
-#define CHANNEL_LIST_EXTRA_OPTIONS 1
-
 
 int am_cbk_Channel_AddToZone(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
 void ChannelList_WriteByIndex(int index, channel_t *tChannel);
 int am_cbk_Channel_CloneToZone(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
 int am_cbk_Channel_Save(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
 int am_cbk_Channel_ScanListChange(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
+
+const am_stringtable_t am_stringtab_onoff[] =
+{
+	{ 0,      "Off" },
+	{ 1,      "On" },
+	{ 0,      NULL } // <- marks the end of a string table
+};
 
 menu_item_t am_Channel_Edit[] = 
 {
@@ -51,14 +56,17 @@ menu_item_t am_Channel_Edit[] =
 	{ "TX",             DTYPE_STRING, APPMENU_OPT_NONE,0,
 	selChanE.txFreq.text ,0,0,          NULL,         NULL },
 
-	{ "Color Code",      DTYPE_UNS8, APPMENU_OPT_EDITABLE | APPMENU_OPT_IMM_UPDATE,0,
+	{ "Color Code", DTYPE_UNS8, APPMENU_OPT_EDITABLE | APPMENU_OPT_IMM_UPDATE,0,
 	&selChanE.CC ,0,15,          NULL,         NULL },
-	{ "Timeslot",      DTYPE_UNS8, APPMENU_OPT_EDITABLE | APPMENU_OPT_IMM_UPDATE,0,
+	{ "Timeslot",   DTYPE_UNS8, APPMENU_OPT_EDITABLE | APPMENU_OPT_IMM_UPDATE,0,
 	&selChanE.Slot ,1,2,          NULL,         NULL },
-	{ "TOT",      DTYPE_UNS8, APPMENU_OPT_EDITABLE | APPMENU_OPT_IMM_UPDATE | APPMENU_OPT_FACTOR, 15,
+	{ "TOT",        DTYPE_UNS8, APPMENU_OPT_EDITABLE | APPMENU_OPT_IMM_UPDATE | APPMENU_OPT_FACTOR, 15,
 	&selChanE.TOT ,0,60,          NULL,         NULL },
-	{ "Scan",      DTYPE_WSTRING, APPMENU_OPT_EDITABLE, 0,
+	{ "Scan",       DTYPE_WSTRING, APPMENU_OPT_EDITABLE, 0,
 	scanList.name, 0, CODEPLUG_MAX_SCANLIST-1,   NULL,   am_cbk_Channel_ScanListChange },
+	{ "AutoScan",    DTYPE_UNS8, APPMENU_OPT_EDITABLE | APPMENU_OPT_IMM_UPDATE, 0,
+	&selChanE.AutoScan, 0, 1,   am_stringtab_onoff,   NULL },
+	
 	//{ "GroupList",      DTYPE_UNS8, APPMENU_OPT_NONE,0,
 	//&selChanE.GroupListIndex , 0, 0, NULL, NULL },
 	{ "EncTone",      DTYPE_STRING, APPMENU_OPT_NONE, 0,
@@ -180,6 +188,15 @@ uint8_t getType(channel_t* ch)
 void setType(channel_t* ch, uint8_t type)
 {
 	((uint8_t*)ch)[0] = (((uint8_t*)ch)[1] & (~0x01)) | (type ? 0x01: 0);
+}
+
+uint8_t getAutoScan(channel_t* ch)
+{
+	return ((ch->settings[0] & 0x10) != 0 ? 1 : 0);
+}
+void setAutoScan(channel_t* ch, uint8_t val)
+{
+	ch->settings[0] = (ch->settings[0] & (~0x10)) | (val ? 0x10 : 0);
 }
 
 uint8_t getSlot(channel_t* ch)
@@ -585,7 +602,7 @@ int ParseChannel(channel_t* chan, channel_easy* chanE)
 
 	chanE->ScanListIndex = getScanListIndex(chan);
 	//printf("ScanListIndex: %d\r\n", chanE->ScanListIndex);
-
+	chanE->AutoScan = getAutoScan(chan);
 
 	readFrequency(chan, &chanE->rxFreq, 1);
 	//printf("RX: %s\r\n", chanE->rxFreq.text);
@@ -622,8 +639,10 @@ int SaveChannel(channel_t* chan, channel_easy* chanE)
 	chan->name[15] = '\0';
 
 	//printf("Channel Name: %S\r\n", chanE->name);
-	
+
 	setType(chan, chanE->bIsAnalog);
+	
+	setAutoScan(chan, chanE->AutoScan);
 
 	setTOT(chan, chanE->TOT);
 

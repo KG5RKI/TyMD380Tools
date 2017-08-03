@@ -46,6 +46,8 @@ extern "C" {
 		uint8_t ScanListIndex;
 		uint8_t GroupListIndex;
 
+		uint8_t AutoScan;
+
 		tone_t DecTone;
 		tone_t EncTone;
 
