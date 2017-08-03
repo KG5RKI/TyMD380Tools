@@ -126,7 +126,7 @@ void CheckTalkgroupAfterChannelSwitch(void) // [in] ad_hoc_tg_channel,ad_hoc_tal
         contact.id_m = (ad_hoc_talkgroup>>8) & 0xFF ;
         contact.id_h = (ad_hoc_talkgroup>>16) & 0xFF ;
         contact.type = ad_hoc_call_type; // now the "contact" is a "talkgroup", not a "user"(-ID) !
-        snprintfw( contact.name, 16, "%s %d*",(ad_hoc_call_type==CONTACT_GROUP?"TG":"P"), ad_hoc_talkgroup ); // (trick from PR #708)
+        snprintfw( contact.name, 16, "%s %d*",(ad_hoc_call_type==CONTACT_GROUP || ad_hoc_call_type == CONTACT_GROUP2 ?"TG":"P"), ad_hoc_talkgroup ); // (trick from PR #708)
       }
    }
   else // channel_num != 0,  but *NOT* on the channel for which the "ad-hoc talkgroup" was entered,

@@ -696,12 +696,12 @@ void draw_adhoc_statusline()
 	user_t usr;
 	if (usr_find_by_dmrid(&usr, tgNum) == 0) {
 		//gfx_printf_pos2(x, y, 320, "%s - %d", (ad_hoc_call_type == CONTACT_GROUP ? "TG" : "Priv"), ad_hoc_talkgroup);
-		gfx_printf_pos2(x, y, 120, "%s%s %d", (ad_hoc_tg_channel ? "AdHoc: " : ""), (callType == CONTACT_GROUP ? "TG" : "Priv"), tgNum);
+		gfx_printf_pos2(x, y, 120, "%s%s %d", (ad_hoc_tg_channel ? "AdHoc: " : ""), (callType == CONTACT_GROUP || callType == CONTACT_GROUP2 ? "TG" : "Priv"), tgNum);
 		
 	}
 	else {
 		//gfx_printf_pos2(x, y, 320, "%s - %s", (ad_hoc_call_type == CONTACT_GROUP ? "TG" : "Priv"), usr.callsign);
-		gfx_printf_pos2(x, y, 120, "%s%s %s", (ad_hoc_tg_channel ? "AdHoc: " : ""), (callType == CONTACT_GROUP ? "TG" : "Priv"), usr.callsign);
+		gfx_printf_pos2(x, y, 120, "%s%s %s", (ad_hoc_tg_channel ? "AdHoc: " : ""), (callType == CONTACT_GROUP || callType == CONTACT_GROUP2 ? "TG" : "Priv"), usr.callsign);
 	}
 	gfx_set_fg_color(0);
 	gfx_set_bg_color(0xff000000);

@@ -97,7 +97,9 @@ extern "C" {
 
 	// contact_t.type
 #define CONTACT_GROUP 0xC1
+#define CONTACT_GROUP2 0xE1
 #define CONTACT_USER 0xC2
+#define CONTACT_USER2 0x0A
 
 	// 0xfc000000 @ 0x0805031e    
 	typedef struct {
