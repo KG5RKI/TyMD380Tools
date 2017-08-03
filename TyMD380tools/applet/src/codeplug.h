@@ -28,6 +28,14 @@ extern "C" {
 
 	typedef struct
 	{
+		uint8_t digits[4];
+		char text[16];
+		uint8_t fType;
+		float freq;
+	} tone_t;
+
+	typedef struct
+	{
 		uint8_t bIsAnalog;
 		uint8_t CC;
 		uint8_t Slot;
@@ -37,6 +45,9 @@ extern "C" {
 		uint8_t EmergencyIndex;
 		uint8_t ScanListIndex;
 		uint8_t GroupListIndex;
+
+		tone_t DecTone;
+		tone_t EncTone;
 
 		frequency_t rxFreq;
 		frequency_t txFreq;
@@ -140,6 +151,8 @@ extern "C" {
 		return ((int)contact.id_h << 16) | ((int)contact.id_m << 8) | (int)contact.id_l;
 	}
 #endif
+
+	extern channel_easy current_channel_info_E;
 
 	// from pc = 0x080134dc 
 	// saved @ 0x1edc0 

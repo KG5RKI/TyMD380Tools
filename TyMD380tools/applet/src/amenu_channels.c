@@ -32,8 +32,7 @@ contact_t cont;
 
 #define CHANNEL_LIST_EXTRA_OPTIONS 1
 
-int SaveChannel(channel_t* chan, channel_easy* chanE);
-int ParseChannel(channel_t* chan, channel_easy* chanE);
+
 int am_cbk_Channel_AddToZone(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
 void ChannelList_WriteByIndex(int index, channel_t *tChannel);
 int am_cbk_Channel_CloneToZone(app_menu_t *pMenu, menu_item_t *pItem, int event, int param);
@@ -245,6 +244,53 @@ int readFrequency(channel_t* chan, frequency_t* freq, char fRx)
 	return 0;
 }
 
+int readTone(channel_t* chan, tone_t* tone, char fEnc)
+{
+	tone_t tt;
+	if (*(uint16_t*)&chan->settings[26] == 0xFFFF) {
+		tone->fType = 0;
+		sprintf(tone->text, "None");
+		return 0;
+	}
+	for (int i = 0; i < 4; i++) {
+		if ((i + 1) % 2 != 0) {
+			tt.digits[i] = chan->settings[(fEnc ? 26 : 24) + (i / 2)] & 0xF;
+		}
+		else {
+			tt.digits[i] = (chan->settings[(fEnc ? 26 : 24) + (i / 2)] >> 4) & 0xF;
+		}
+	}
+	for (int i = 0; i < 4; i++)
+	{
+		tone->digits[i] = tt.digits[3 - i];
+	}
+	switch (tone->digits[0]) {
+		case 8:
+			tone->fType = 'N';
+			break;
+		case 12:
+			tone->fType = 'I';
+			break;
+		default:
+			tone->fType = 'C';
+			break;
+	}
+
+	if (tone->fType == 'C')
+		tone->freq = ((float)tone->digits[0] * 100.0f) + ((float)tone->digits[1] * 10.0f) + ((float)tone->digits[2] * 1.0f) + ((float)tone->digits[3] * 0.1f);
+	else
+		tone->freq = 0.0f;
+
+	if (tone->fType != 'C') {
+		sprintf(tone->text, "D%d%d%d%c\0\0", tone->digits[1], tone->digits[2], tone->digits[3], tone->digits[0]);
+	}
+	else {
+		sprintf(tone->text, "%.1f\0\0", tone->freq);
+	}
+
+	return 0;
+}
+
 
 //---------------------------------------------------------------------------
 BOOL ChannelList_ReadNameByIndex(int index,            
@@ -282,8 +328,13 @@ void ChannelList_OnEnter(app_menu_t *pMenu, menu_item_t *pItem)
 	channel_t tChan;
 	scroll_list_control_t *pSL = &pMenu->scroll_list;
 
+	if (!selIndex) {
+		selIndex = channel_num - 1;
+	}
+
 	ScrollList_Init(pSL); // set all struct members to defaults
 	//pSL->current_item = contactIndex; // currently active zone still unknown
+
 	pSL->focused_item = selIndex;
 	//contactIndex = 0;
 	int start = 0;
@@ -527,6 +578,9 @@ int ParseChannel(channel_t* chan, channel_easy* chanE)
 	//printf("RX: %s\r\n", chanE->rxFreq.text);
 	readFrequency(chan, &chanE->txFreq, 0);
 	//printf("TX: %s\r\n", chanE->txFreq.text);
+
+	readTone(chan, &chanE->DecTone, FALSE);
+	readTone(chan, &chanE->EncTone, TRUE);
 }
 
 int SaveChannel(channel_t* chan, channel_easy* chanE)
