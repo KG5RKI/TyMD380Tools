@@ -282,10 +282,15 @@ int readTone(channel_t* chan, tone_t* tone, char fEnc)
 		tone->freq = 0.0f;
 
 	if (tone->fType != 'C') {
-		sprintf(tone->text, "D%d%d%d%c\0\0", tone->digits[1], tone->digits[2], tone->digits[3], tone->digits[0]);
+		sprintf(tone->text, "D%d%d%d%c\0\0", tone->digits[1], tone->digits[2], tone->digits[3], tone->fType);
 	}
 	else {
-		sprintf(tone->text, "%.1f\0\0", tone->freq);
+		if (!tone->digits[0] || tone->digits[0] > 9) {
+			sprintf(tone->text, "%d%d.%d", tone->digits[1], tone->digits[2], tone->digits[3]);
+		}
+		else {
+			sprintf(tone->text, "%d%d%d.%d", tone->digits[0], tone->digits[1], tone->digits[2], tone->digits[3]);
+		}
 	}
 
 	return 0;
@@ -488,8 +493,13 @@ int am_cbk_ChannelList(app_menu_t *pMenu, menu_item_t *pItem, int event, int par
 				//fIsTG = (selContact.type == 0xC1 ? 1 : 0);
 
 				cacheScanList(selChanE.ScanListIndex);
+				if (!selChanE.ContactIndex) {
+					wcscpy(scanList.name, L"N/A");
+				}
+				else {
+					ContactsList_ReadNameByIndex(selChanE.ContactIndex - 1, &cont);
+				}
 				
-				ContactsList_ReadNameByIndex(selChanE.ContactIndex-1, &cont);
 				Menu_EnterSubmenu(pMenu, am_Channel_Edit);
 
 				// The above command switched to the new zone, and probably set
@@ -553,16 +563,10 @@ int ParseChannel(channel_t* chan, channel_easy* chanE)
 
 	chanE->bIsAnalog = getType(chan);
 
-	chanE->CC = getCC(chan);
-
 	chanE->TOT = getTOT(chan);
 	//printf("Color Code: %d\r\n", chanE->CC);
 
-	chanE->Slot = getSlot(chan);
-	//printf("Repeater Slot: %d\r\n", chanE->Slot);
 
-	chanE->ContactIndex = getContactIndex(chan);
-	//printf("ContactIndex: %d\r\n", chanE->ContactIndex);
 
 	chanE->EmergencyIndex = getEmergencyIndex(chan);
 	//printf("EmergencyIndex: %d\r\n", chanE->EmergencyIndex);
@@ -579,8 +583,26 @@ int ParseChannel(channel_t* chan, channel_easy* chanE)
 	readFrequency(chan, &chanE->txFreq, 0);
 	//printf("TX: %s\r\n", chanE->txFreq.text);
 
-	readTone(chan, &chanE->DecTone, FALSE);
-	readTone(chan, &chanE->EncTone, TRUE);
+	if (!chanE->bIsAnalog) {
+		chanE->CC = getCC(chan);
+
+		chanE->Slot = getSlot(chan);
+		//printf("Repeater Slot: %d\r\n", chanE->Slot);
+
+		chanE->ContactIndex = getContactIndex(chan);
+		//printf("ContactIndex: %d\r\n", chanE->ContactIndex);
+	}
+	else {
+
+		chanE->CC = 0;
+		chanE->Slot = 0;
+		chanE->ContactIndex = 0;
+
+		readTone(chan, &chanE->DecTone, FALSE);
+		readTone(chan, &chanE->EncTone, TRUE);
+	}
+
+	
 }
 
 int SaveChannel(channel_t* chan, channel_easy* chanE)
