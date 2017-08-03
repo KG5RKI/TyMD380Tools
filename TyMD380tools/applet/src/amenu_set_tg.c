@@ -140,6 +140,9 @@ void CheckTalkgroupAfterChannelSwitch(void) // [in] ad_hoc_tg_channel,ad_hoc_tal
      // so we can quickly recall it via app-menu in "up-down"-edit mode.
 	 fDrawOncePer = 0;
 
+	 
+	 ParseChannel((channel_t*)&current_channel_info, &current_channel_info_E);
+
 	 wchar_t *cn_override_group_prefix = L"TG--";
 	 //If channel name begins with "TG-" override talkgroup # with ID from name
 

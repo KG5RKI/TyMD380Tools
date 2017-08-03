@@ -27,6 +27,7 @@
 #include "codeplug.h"
 #include "amenu_set_tg.h"
 #include "blacklist.h"
+#include "amenu_channels.h"
 
 
 char eye_paltab[] = {
@@ -690,18 +691,26 @@ void draw_adhoc_statusline()
 	gfx_set_bg_color(0xff8032);
 	gfx_select_font(gfx_font_small);
 
-	//gfx_blockfill(x, y, x+320, y+24);
-	int tgNum = (ad_hoc_tg_channel ? ad_hoc_talkgroup : current_TG());
-	int callType = (ad_hoc_tg_channel ? ad_hoc_call_type : contact.type);
-	user_t usr;
-	if (usr_find_by_dmrid(&usr, tgNum) == 0) {
-		//gfx_printf_pos2(x, y, 320, "%s - %d", (ad_hoc_call_type == CONTACT_GROUP ? "TG" : "Priv"), ad_hoc_talkgroup);
-		gfx_printf_pos2(x, y, 120, "%s%s %d", (ad_hoc_tg_channel ? "AdHoc: " : ""), (callType == CONTACT_GROUP || callType == CONTACT_GROUP2 ? "TG" : "Priv"), tgNum);
-		
-	}
+	BOOL fIsAnalog = current_channel_info_E.bIsAnalog;
+
+	//If current channel is DMR
+	if (!fIsAnalog) {
+		int tgNum = (ad_hoc_tg_channel ? ad_hoc_talkgroup : current_TG());
+		int callType = (ad_hoc_tg_channel ? ad_hoc_call_type : contact.type);
+		user_t usr;
+		if (usr_find_by_dmrid(&usr, tgNum) == 0) {
+			//gfx_printf_pos2(x, y, 320, "%s - %d", (ad_hoc_call_type == CONTACT_GROUP ? "TG" : "Priv"), ad_hoc_talkgroup);
+			gfx_printf_pos2(x, y, 120, "%s%s %d", (ad_hoc_tg_channel ? "AdHoc: " : ""), (callType == CONTACT_GROUP || callType == CONTACT_GROUP2 ? "TG" : "Priv"), tgNum);
+
+		}
+		else {
+			//gfx_printf_pos2(x, y, 320, "%s - %s", (ad_hoc_call_type == CONTACT_GROUP ? "TG" : "Priv"), usr.callsign);
+			gfx_printf_pos2(x, y, 120, "%s%s %s", (ad_hoc_tg_channel ? "AdHoc: " : ""), (callType == CONTACT_GROUP || callType == CONTACT_GROUP2 ? "TG" : "Priv"), usr.callsign);
+		}
+
+	} //If current channel is analog
 	else {
-		//gfx_printf_pos2(x, y, 320, "%s - %s", (ad_hoc_call_type == CONTACT_GROUP ? "TG" : "Priv"), usr.callsign);
-		gfx_printf_pos2(x, y, 120, "%s%s %s", (ad_hoc_tg_channel ? "AdHoc: " : ""), (callType == CONTACT_GROUP || callType == CONTACT_GROUP2 ? "TG" : "Priv"), usr.callsign);
+		gfx_printf_pos2(x, y, 120, "Tone: %s", current_channel_info_E.EncTone.text);
 	}
 	gfx_set_fg_color(0);
 	gfx_set_bg_color(0xff000000);
