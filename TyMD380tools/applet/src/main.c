@@ -108,7 +108,7 @@ void demo_show_animation(void)
 	setupBootAnim();
 	
 	//LCD_DrawCube(0, 0, 0, 0, 0xF05A);
-    for (int i = 0; i<150 ; i += 1) {
+    for (int i = 0; i<140 ; i += 1) {
         //gfx_drawbmp(welcomebmp, 0, i);
 		renderBootAnim();
         sleep(10);
