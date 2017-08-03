@@ -41,7 +41,7 @@ int am_cbk_Channel_ScanListChange(app_menu_t *pMenu, menu_item_t *pItem, int eve
 
 menu_item_t am_Channel_Edit[] = 
 {
-	{ "[-]Name",             DTYPE_WSTRING, APPMENU_OPT_NONE,0,
+	{ "[-]",             DTYPE_WSTRING, APPMENU_OPT_NONE,0,
 	selChanE.name ,0,0,          NULL,         NULL },
 	{ "Cont",             DTYPE_WSTRING, APPMENU_OPT_NONE,0,
 	cont.name ,0,0,          NULL,         NULL },
@@ -59,16 +59,21 @@ menu_item_t am_Channel_Edit[] =
 	&selChanE.TOT ,0,60,          NULL,         NULL },
 	{ "Scan",      DTYPE_WSTRING, APPMENU_OPT_EDITABLE, 0,
 	scanList.name, 0, CODEPLUG_MAX_SCANLIST-1,   NULL,   am_cbk_Channel_ScanListChange },
-	{ "GroupList",      DTYPE_UNS8, APPMENU_OPT_NONE,0,
-	&selChanE.GroupListIndex , 0, 0, NULL, NULL },
+	//{ "GroupList",      DTYPE_UNS8, APPMENU_OPT_NONE,0,
+	//&selChanE.GroupListIndex , 0, 0, NULL, NULL },
+	{ "EncTone",      DTYPE_STRING, APPMENU_OPT_NONE, 0,
+	selChanE.EncTone.text, 0, 0,   NULL,   NULL },
+	{ "DecTone",      DTYPE_STRING, APPMENU_OPT_NONE, 0,
+	selChanE.DecTone.text, 0, 0,   NULL,   NULL },
+	
 
-	{ "Copy To Zone",      DTYPE_NONE, APPMENU_OPT_BACK,0,
+	{ "[1]Copy To Zone",      DTYPE_NONE, APPMENU_OPT_BACK,0,
 	NULL,0,0,                  NULL, am_cbk_Channel_CloneToZone },
 
 	{ "Add to Zone",      DTYPE_NONE, APPMENU_OPT_BACK,0,
 	NULL,0,0,                  NULL, am_cbk_Channel_AddToZone },
 
-	{ "[-]Save",      DTYPE_NONE, APPMENU_OPT_BACK,0,
+	{ "Save",      DTYPE_NONE, APPMENU_OPT_BACK,0,
 	NULL,0,0,                  NULL, am_cbk_Channel_Save },
 
 	{ "Back",       DTYPE_NONE, APPMENU_OPT_BACK,0,
@@ -247,7 +252,7 @@ int readFrequency(channel_t* chan, frequency_t* freq, char fRx)
 int readTone(channel_t* chan, tone_t* tone, char fEnc)
 {
 	tone_t tt;
-	if (*(uint16_t*)&chan->settings[26] == 0xFFFF) {
+	if (*(uint16_t*)&chan->settings[(fEnc ? 26 : 24)] == 0xFFFF) {
 		tone->fType = 0;
 		sprintf(tone->text, "None");
 		return 0;
@@ -334,7 +339,9 @@ void ChannelList_OnEnter(app_menu_t *pMenu, menu_item_t *pItem)
 	scroll_list_control_t *pSL = &pMenu->scroll_list;
 
 	if (!selIndex) {
-		selIndex = channel_num - 1;
+		zone_t curZone;
+		ZoneList_ReadByIndex(ZoneList_GetCurrentIndex(), &curZone);
+		selIndex = curZone.channels[channel_num-1] - 1;
 	}
 
 	ScrollList_Init(pSL); // set all struct members to defaults
@@ -591,6 +598,9 @@ int ParseChannel(channel_t* chan, channel_easy* chanE)
 
 		chanE->ContactIndex = getContactIndex(chan);
 		//printf("ContactIndex: %d\r\n", chanE->ContactIndex);
+
+		sprintf(chanE->DecTone.text, "N/A");
+		sprintf(chanE->EncTone.text, "N/A");
 	}
 	else {
 
@@ -601,8 +611,6 @@ int ParseChannel(channel_t* chan, channel_easy* chanE)
 		readTone(chan, &chanE->DecTone, FALSE);
 		readTone(chan, &chanE->EncTone, TRUE);
 	}
-
-	
 }
 
 int SaveChannel(channel_t* chan, channel_easy* chanE)
@@ -615,17 +623,23 @@ int SaveChannel(channel_t* chan, channel_easy* chanE)
 	
 	setType(chan, chanE->bIsAnalog);
 
-	setCC(chan, chanE->CC);
-	//printf("Color Code: %d\r\n", chanE->CC);
-
 	setTOT(chan, chanE->TOT);
 
-	setSlot(chan, chanE->Slot);
-	//printf("Repeater Slot: %d\r\n", chanE->Slot);
+	if (!chanE->bIsAnalog) {
+		setCC(chan, chanE->CC);
+		//printf("Color Code: %d\r\n", chanE->CC);
 
-	setContactIndex(chan, chanE->ContactIndex);
-	//printf("ContactIndex: %d\r\n", chanE->ContactIndex);
+		setSlot(chan, chanE->Slot);
+		//printf("Repeater Slot: %d\r\n", chanE->Slot);
 
+		setContactIndex(chan, chanE->ContactIndex);
+		//printf("ContactIndex: %d\r\n", chanE->ContactIndex);
+	}
+	else {
+
+	}
+
+	
 	//*getEmergencyIndex(chan) = chanE->EmergencyIndex;
 	//printf("EmergencyIndex: %d\r\n", chanE->EmergencyIndex);
 
