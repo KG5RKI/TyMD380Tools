@@ -147,7 +147,6 @@ int am_cbk_Channel_CloneToZone(app_menu_t *pMenu, menu_item_t *pItem, int event,
 			return AM_RESULT_OK;
 
 		SaveChannel(&selChan, &selChanE);
-
 		ChannelList_WriteByIndex(numChannels, &selChan);
 		
 		overwriteChannel(numChannels +1); // only draw the colour test pattern ONCE...
@@ -187,7 +186,7 @@ uint8_t getType(channel_t* ch)
 }
 void setType(channel_t* ch, uint8_t type)
 {
-	((uint8_t*)ch)[0] = (((uint8_t*)ch)[1] & (~0x01)) | (type ? 0x01: 0);
+	((uint8_t*)ch)[0] = (((uint8_t*)ch)[0] & (~0x01)) | (type ? 0x01: 0);
 }
 
 uint8_t getAutoScan(channel_t* ch)
