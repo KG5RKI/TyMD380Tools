@@ -64,7 +64,7 @@ menu_item_t am_Lastheard_Options[] = // setup menu, nesting level 1 ...
 
   // { "Text__max__13", data_type,  options,opt_value,
   //    pvValue,iMinValue,iMaxValue,           string table, callback }
-	{ "[-]Name:",             DTYPE_STRING, APPMENU_OPT_NONE,0,
+	{ "[-]",             DTYPE_STRING, APPMENU_OPT_NONE,0,
 	selUser.name,0,0,          NULL,         NULL },
 
 	{ "Call:",             DTYPE_STRING, APPMENU_OPT_NONE,0,
