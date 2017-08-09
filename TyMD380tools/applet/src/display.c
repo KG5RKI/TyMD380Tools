@@ -358,7 +358,7 @@ uint32_t rgb16torgb(uint16_t color) {
 #define RX_POPUP_Y_START 22 // 24
 #define RX_POPUP_X_START 4  // 10
 
-void draw_rx_screen(unsigned int bg_color)
+void draw_rx_screen2(unsigned int bg_color)
 {
 	static int dst;
 	int src;

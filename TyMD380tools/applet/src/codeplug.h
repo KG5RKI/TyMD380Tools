@@ -131,9 +131,9 @@ extern "C" {
 									//#warning "Please try to find the equivalent of 'zone_name_2' (@ 0x2001cddc in D13.020) !"
 #endif
 
-#if defined(FW_D13_020) || defined(FW_S13_020)
 	extern contact_t contact;
-#endif
+	extern contact_t contact2;
+
 
 	// from pc = 0x080134dc 
 	// saved @ 0x1edc0 

@@ -12,6 +12,7 @@
 #include "printf.h"
 #include "string.h"
 #include "addl_config.h"
+#include "codeplug.h"
 //#include "display.h"
 #include "console.h"
 #include "netmon.h"
@@ -109,6 +110,10 @@ void green_led(int on) {
 
 void rx_screen_blue_hook(char *bmp, int x, int y)
 {
+
+	if (nm_screen == 9)
+		nm_screen = 0;
+
 	user_t usr;
 
 	int y_index = 22;
@@ -119,16 +124,16 @@ void rx_screen_blue_hook(char *bmp, int x, int y)
 	gfx_set_bg_color(0x00FF00);
 	gfx_set_fg_color(0x000000);
 
-	gfx_printf_pos(2, y_index, "%s - %s", usr.callsign, usr.name);
+	gfx_printf_pos(2, y_index, 128, "ppp %s - %s", usr.callsign, usr.name);
 	y_index += text_height;
-	gfx_printf_pos(2, y_index, "%s, %s", usr.place, usr.state);
+	gfx_printf_pos(2, y_index, 128, "pp %s, %s", usr.place, usr.state);
 	y_index += text_height * 2;
-	gfx_printf_pos(2, y_index, "%s", usr.country);
+	gfx_printf_pos(2, y_index, 128, "p %s", usr.country);
 	y_index += text_height;
 	//gfx_printf_pos(2, y_index, "%s", usr.);
 	//y_index += text_height;
 
-	return;
+	//gfx_drawbmp(bmp, x, y);
 }
 
 void red_led(int on) {
@@ -460,13 +465,14 @@ void gfx_drawtext4_hook(wchar_t *str, int x, int y, int xlen, int ylen)
     
     if( is_netmon_visible() ) {
         // channel name
-        if( x == D_TEXT_CHANNAME_X && y == D_TEXT_CHANNAME_Y ) {
+        /*if( x == D_TEXT_CHANNAME_X && y == D_TEXT_CHANNAME_Y ) {
             return ;
         }
         // zonename
         if( x == D_TEXT_ZONENAME_X && y == D_TEXT_ZONENAME_Y ) {
             return ;
-        }
+        }*/
+		return;
     }
 
 	swapFGBG();
@@ -591,6 +597,8 @@ void draw_statusline_hook(uint32_t r0)
 	draw_statusline(r0);
 }
 
+int adhocTG = 0;
+
 void draw_alt_statusline()
 {
 	int dst;
@@ -618,6 +626,24 @@ void draw_alt_statusline()
 	//gfx_printf_pos(RX_POPUP_X_START, 96, "%s - %s", usr.callsign, usr.name);
 
 	
+	if (adhocTG != 0) {
+		int curTG = (((int)contact.id_h << 16) | ((int)contact.id_m << 8) | (int)contact.id_l);
+		int curTG2 = (((int)contact2.id_h << 16) | ((int)contact2.id_m << 8) | (int)contact2.id_l);
+		if (adhocTG != curTG) {
+			contact.id_l = adhocTG & 0xFF;
+			contact.id_m = (adhocTG >> 8) & 0xFF;
+			contact.id_h = (adhocTG >> 16) & 0xFF;
+			snprintfw(contact.name, 16, "%s %d*", (contact.type == CONTACT_GROUP ? "TG" : "P"), adhocTG);
+		}
+		if (adhocTG != curTG2) {
+			contact2.id_l = adhocTG & 0xFF;
+			contact2.id_m = (adhocTG >> 8) & 0xFF;
+			contact2.id_h = (adhocTG >> 16) & 0xFF;
+			snprintfw(contact2.name, 16, "%s %d*", (contact.type == CONTACT_GROUP ? "TG" : "P"), adhocTG);
+		}
+
+		gfx_printf_pos2(RX_POPUP_X_START, 80, 157, "TG: %d", adhocTG);
+	}
 	
 	if (src == 0) {
 
@@ -656,9 +682,9 @@ void draw_alt_statusline()
 void draw_datetime_row_hook()
 {
 
-	//if (is_netmon_visible()) {
-	//	return;
-	//}
+	if (is_netmon_visible()) {
+		return;
+	}
 	/*if (ad_hoc_tg_channel)
 	{
 		draw_adhoc_statusline();

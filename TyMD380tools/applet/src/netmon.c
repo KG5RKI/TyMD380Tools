@@ -57,10 +57,9 @@ int progress = 0 ;
     extern uint16_t m_cntr2 ;
 //#endif
 
-#if defined(FW_D02_032)
 uint8_t gui_opmode3 = 0xFF ;
 uint16_t m_cntr2 = 0x00;
-#endif
+
     
 // mode2
 // 1 idle
@@ -118,10 +117,9 @@ void print_vce()
 
 void print_smeter()
 {
-#if defined(FW_D13_020) || defined(FW_S13_020)  
-    extern uint8_t smeter_rssi ;
-    con_printf("rssi:%d\n", smeter_rssi );
-#endif
+   // extern uint8_t smeter_rssi ;
+   // con_printf("rssi:%d\n", smeter_rssi );
+
 }
 
 void netmon1_update()
@@ -138,7 +136,7 @@ void netmon1_update()
     
     con_printf("%c|%02d|%2d|%2d|%4d\n", c, gui_opmode1 & 0x7F, gui_opmode2, gui_opmode3, m_cntr2 ); 
     
-#if defined(FW_D13_020) || defined(FW_S13_020)
+	/*
     extern uint8_t channel_num ;
     con_printf("ch:%d ", channel_num ); 
     
@@ -147,7 +145,7 @@ void netmon1_update()
     
     extern wchar_t channel_name[] ;
     con_printf("cn:%S\n",channel_name); 
-#endif   
+
     {
         char *str = "?" ;
         switch( last_radio_event ) {
@@ -189,7 +187,7 @@ void netmon1_update()
     }
     {
         con_printf("re:%02x be:%02x e3:%02x e4:%02x\ne5:%02x ", last_radio_event, last_event2, last_event3, last_event4, last_event5 );
-    }
+    }*/
     print_smeter();
 #if defined(FW_D13_020) || defined(FW_S13_020)
     {
@@ -231,8 +229,9 @@ void printfreq( void *p2 )
 
 void netmon2_update()
 {
+	/*
     con_clrscr();
-#if defined(FW_D13_020) || defined(FW_S13_020)
+
     channel_info_t *ci = &current_channel_info ;
     
     {
@@ -253,12 +252,10 @@ void netmon2_update()
 
         con_printf("cn:%S\n", ci->name ); // assume zero terminated.
     }
-#else
-    con_puts("D13 has more\n");
-#endif    
+
     print_hdr();
     print_vce();
-    
+    */
 //    {
 //        extern uint32_t kb_handler_count ;
 //        extern uint32_t f4225_count ; 
@@ -275,7 +272,6 @@ void netmon3_update()
 
 void netmon4_update()
 {
-#if defined(FW_D13_020) || defined(FW_S13_020)
     lastheard_draw_poll();
 
     int src;
@@ -310,41 +306,27 @@ void netmon4_update()
             rx_new = 1;                         // set status to new for netmon5
             ch_new = 1;                         // set status to new for netmon6
             print_time_hook(log);
-			LHList_AddEntry(src, dst);
-            if( usr_find_by_dmrid(&usr, src) == 0 ) {
-				if (usr_find_by_dmrid(&usr2, dst) == 0) {
-					lastheard_printf("=%d->%d %c\n", src, dst, mode);
-				}
-				else {
-					lastheard_printf("=%d->%s %c\n", src, usr2.callsign, mode);
-				}
-                
-            } else {
-				if (usr_find_by_dmrid(&usr2, dst) == 0) {
-					lastheard_printf("=%s->%s %c\n", usr.callsign, usr2.callsign, mode);
-				}
-				else {
-					lastheard_printf("=%s->%d %c\n", usr.callsign, dst, mode);
-				}
-                
-            }
-			
+			//LHList_AddEntry(src, dst);
+			if (usr_find_by_dmrid(&usr, src) == 0) {
+				lastheard_printf("=%d->%d %c\n", src, rst_dst, mode);
+
+			}
+			else {
+				lastheard_printf("=%s->%d %c\n", usr.callsign, rst_dst, mode);
+			}
         }
        // if ( global_addl_config.userscsv > 1 && (talkerAlias.displayed != 1 && talkerAlias.length > 0) )
-        {
+        /*{
             talkerAlias.displayed = 1;
             lastheard_printf("TA: %s\n",talkerAlias.text);
-        }
+        }*/
     }
-#else
-    lastheard_printf("No lastheard available\n");    
-#endif 
+
 
 }
 
 void netmon5_update()
 {
-#if defined(FW_D13_020) || defined(FW_S13_020)
     slog_draw_poll();
     
     int src;
@@ -370,61 +352,62 @@ void netmon5_update()
     src = rst_src;
     user_t usr;
 
-    if( ( src != 0 ) && ( rx_new == 1 ) ) {
+	if ((src != 0) && (rx_new == 1)) {
 
-        for (int i = 0; i < 20; i++)
-           {
-              curr_channel[i] = channel_name[i];
-                if (channel_name[i] == '\0')
-                break;
-           }
+		for (int i = 0; i < 20; i++)
+		{
+			curr_channel[i] = channel_name[i];
+			if (channel_name[i] == '\0')
+				break;
+		}
 
-        if ( (wcscmp(sh_last_channel, curr_channel) != 0)  || (sl_cnt >= 9) ) { // compare channel_name with last_channel from latest rx
+		if ((wcscmp(sh_last_channel, curr_channel) != 0) || (sl_cnt >= 9)) { // compare channel_name with last_channel from latest rx
 
-                if (sl_cnt >= 9 ) {
-                        slog_printf(">>:%S #%d <<< \n", curr_channel, cp_cnt);  // show page # on new log pages
-                        sl_cnt = 0;                                             // reset sl_cnt at end of screen
-                        cp_cnt++;                                               // increment lh page count
-                } else {
-                        slog_printf("cn:%S ---------------\n", curr_channel);   // show divider line when channel changes       
-                }
-                wcscpy(sh_last_channel, curr_channel);
-                sl_cnt++;
-        }
+			if (sl_cnt >= 9) {
+				slog_printf(">>:%S #%d <<< \n", curr_channel, cp_cnt);  // show page # on new log pages
+				sl_cnt = 0;                                             // reset sl_cnt at end of screen
+				cp_cnt++;                                               // increment lh page count
+			}
+			else {
+				slog_printf("cn:%S ---------------\n", curr_channel);   // show divider line when channel changes       
+			}
+			wcscpy(sh_last_channel, curr_channel);
+			sl_cnt++;
+		}
 
-        print_time_hook(slog);
+		print_time_hook(slog);
 
-        // loookup source ID in user database to show callsign instead of ID
-        if( usr_find_by_dmrid(&usr, src) == 0 ) {
-                // lookup destination ID in user database for status requests etc.
-                if( usr_find_by_dmrid(&usr, rst_dst) != 0 ) {
-                        slog_printf("=%d->%s %c\n", src, usr.callsign, mode);
-                } else  {
-                        slog_printf("=%d->%d %c\n", src, rst_dst, mode);
-                }
-        } else {
-            slog_printf("=%s->", usr.callsign);
-                if( usr_find_by_dmrid(&usr, rst_dst) != 0 ) {
-                        slog_printf("%s %c\n", usr.callsign, mode);
-                } else  {
-                        slog_printf("%d %c\n", rst_dst, mode);
-                }
-        }
-        rx_new = 0 ; // call handled, wait until new voice call status received
-        ch_new = 1 ; // status for netmon6
-        sl_cnt++;
-     }
-    }
-#else
-    slog_printf("No lastheard available\n");    
-#endif 
+		// loookup source ID in user database to show callsign instead of ID
+		if (usr_find_by_dmrid(&usr, src) == 0) {
+			// lookup destination ID in user database for status requests etc.
+			if (usr_find_by_dmrid(&usr, rst_dst) != 0) {
+				slog_printf("=%d->%s %c\n", src, usr.callsign, mode);
+			}
+			else {
+				slog_printf("=%d->%d %c\n", src, rst_dst, mode);
+			}
+		}
+		else {
+			slog_printf("=%s->", usr.callsign);
+			if (usr_find_by_dmrid(&usr, rst_dst) != 0) {
+				slog_printf("%s %c\n", usr.callsign, mode);
+			}
+			else {
+				slog_printf("%d %c\n", rst_dst, mode);
+			}
+		}
+		rx_new = 0; // call handled, wait until new voice call status received
+		ch_new = 1; // status for netmon6
+		sl_cnt++;
+	}
+	}
+
 
 }
 
 
 void netmon6_update()
 {
-#if defined(FW_D13_020) || defined(FW_S13_020)
     clog_draw_poll();
     
     extern wchar_t channel_name[20] ;           // read current channel name from external  
@@ -454,9 +437,7 @@ void netmon6_update()
           }
         ch_new = 0 ;                            // call handled, wait until new voice call status received
      }
-#else
-    clog_printf("No channellog available\n");    
-#endif 
+
 }
 
 void netmon_update()
@@ -497,3 +478,82 @@ void netmon_update()
     }
 }
 
+
+extern void f_4315_hook()
+{
+
+	netmon_update();
+	con_redraw();
+
+	if (is_netmon_visible()) {
+		return;
+	}
+	F_4315(); // Seems to be Tytera's own "painter" for update_scr_17.
+			  // Calls stuff like gfx_set_fg_color(), gfx_blockfill(),
+			  // and various flavours of gfx_drawtext(), etc...
+}
+
+
+extern void rx_screen_blue_hook(char *bmp, int x, int y);
+
+static char fCntAGC = 0;
+void f_4225_hook()
+{
+
+	static int old = -1;
+	int new = gui_opmode1 & 0x7F;
+	if (old != new) {
+		if (gui_opmode2 == OPM2_MENU) {
+			// menu is showing.
+			if (new == SCR_MODE_IDLE || new == SCR_MODE_RX_VOICE || new == SCR_MODE_RX_TERMINATOR) {
+				// new mode tries to deviate from menu to popup.
+				
+				// reset.
+				gui_opmode1 = SCR_MODE_MENU;
+			}
+		}
+		else {
+			old = new;
+		}
+	}
+
+	//if (global_addl_config.micbargraph > 0) 
+	{
+		if (!is_netmon_visible()) {
+			//draw_micbargraph();
+			//rx_screen_blue_hook(NULL, 0, 0);
+		}
+	}
+	fCntAGC++;
+
+	/*if (global_addl_config.mic_gain > 0 && fCntAGC == 30) {
+		if (global_addl_config.mic_gain == 1) {
+			c5000_spi0_writereg(0x0F, 0xD8);
+		}
+		else if (global_addl_config.mic_gain == 2) {
+			c5000_spi0_writereg(0x0F, 0xE8);
+		}
+	}
+	if (fCntAGC == 200)
+		fCntAGC = 0;*/
+
+	netmon_update();
+
+	f_4225(); 
+
+	if (is_netmon_visible()) {
+
+		// steer back to idle screen, because that's the most intercepted.
+		if (gui_opmode2 == OPM2_VOICE) {
+			gui_opmode2 = OPM2_IDLE;
+		}
+	}
+}
+
+void f_1444_hook() 
+{
+	if (is_netmon_visible()) {
+		return;
+	}
+	f_1444();
+}

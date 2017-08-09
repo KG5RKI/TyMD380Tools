@@ -174,7 +174,6 @@ void dumpraw_mbc(uint8_t *pkt)
 //    dump_data(data);
 //}
 
-#ifdef FW_D13_020
 void dmr_CSBK_handler_hook(uint8_t *pkt)
 {
 //    PRINTRET();
@@ -184,11 +183,31 @@ void dmr_CSBK_handler_hook(uint8_t *pkt)
 
     dmr_CSBK_handler(pkt);
 }
-#else
-#warning please consider hooking this handler.
-#endif
 
 
+void *dmr_call_end_hook(uint8_t *pkt)
+{
+	/* This hook handles the dmr_contact_check() function, calling
+	back to the original function where appropriate.
+
+	pkt points to something like this:
+
+	/--dst-\ /--src-\
+	08 2a 00 00 00 00 00 63 30 05 54 7c 2c 36
+
+	In a clean, simplex call this only occurs once, but on a
+	real-world link, you'll find it called multiple times at the end
+	of the packet.
+	*/
+
+	{
+		lc_t *data = (void*)(pkt + 2);
+		rst_term_with_lc(data);
+	}
+
+	//Forward to the original function.
+	return dmr_call_end(pkt);
+}
 
 void *dmr_call_start_hook(uint8_t *pkt)
 {
@@ -296,4 +315,36 @@ void dmr_apply_privsquelch_hook(OS_EVENT *event, char *mode)
 #endif
 }
 
+void *dmr_handle_data_hook(char *pkt, int len)
+{
+	//    PRINTRET();
+	//    PRINTHEX(pkt,len);
+	//    PRINT("\n");
+
+#ifdef CONFIG_DMR
+	/* This hook handles the dmr_contact_check() function, calling
+	back to the original function where appropriate.
+
+	Packes are up to twelve bytes, but they are always preceeded by
+	two bytes of C5000 overhead.
+	*/
+
+	//    //Turn on the red LED to know that we're here.
+	//    red_led(1);
+
+	//    printf("Data:       ");
+	//    printhex(pkt, len + 2);
+	//    printf("\n");
+
+	{
+		data_blk_t *data = (void*)(pkt + 2);
+		rst_data_block(data, len);
+	}
+
+	//Forward to the original function.
+	return dmr_handle_data(pkt, len);
+#else
+	return 0xdeadbeef;
+#endif
+}
 

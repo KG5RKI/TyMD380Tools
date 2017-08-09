@@ -223,7 +223,7 @@ static void con_draw1()
 
 void con_redraw()
 {
-    if( !is_netmon_visible() || nm_screen==9) {
+    if( !is_netmon_visible()) {
         return ;
     }
     

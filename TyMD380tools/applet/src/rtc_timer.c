@@ -101,37 +101,7 @@ extern void f_4315_hook()
 // 0x2001e895 != 32
 // 0x2001e895 == 64 -> rx_screen_blue_hook
 
-void rx_screen_blue_hook(char *bmp, int x, int y)
-{
-	if(nm_screen==9)
-		nm_screen=0;
-    //netmon_update();
 
-#if( CONFIG_MORSE_OUTPUT ) 
-    narrate(); // continue "telling a story" in Morse code
-#endif
-
-#  if( CONFIG_APP_MENU ) 
-    if( Menu_DrawIfVisible(AM_CALLER_RX_SCREEN_BLUE_HOOK) )  
-     { return; // the menu covers the entire screen, so don't draw anything else
-     }
-#  endif // CONFIG_APP_MENU ?
-
-#ifdef CONFIG_GRAPHICS
-    if( global_addl_config.userscsv > 0 && !is_menu_visible() ) {
-   if( global_addl_config.userscsv == 2) {
-           draw_rx_screen(0xff8032);      // ta
-   } else {
-           draw_rx_screen(0xff8032);
-   }
-    } else {
-		swapFGBG();
-
-        gfx_drawbmp(bmp, x, y);
-    }
-#endif //CONFIG_GRAPHICS
-
-}
 
 void rx_screen_gray_hook(void *bmp, int x, int y)
 {
