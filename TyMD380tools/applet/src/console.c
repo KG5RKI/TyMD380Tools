@@ -172,7 +172,7 @@ static void con_draw1()
 	//    }
 	//#endif
 	
-	if (global_addl_config.alt_text) {
+	/*if (global_addl_config.alt_text) {
 		Menu_GetColours(SEL_FLAG_NONE, &fg_color, &bg_color);
 		bg_color = rgb16torgb(bg_color);
 		fg_color = rgb16torgb(fg_color);
@@ -180,7 +180,7 @@ static void con_draw1()
 	else {
 		bg_color = bgcolor;
 		fg_color = fgcolor;
-	}
+	}*/
 	gfx_set_bg_color(bg_color);
 	gfx_set_fg_color(fg_color);
     

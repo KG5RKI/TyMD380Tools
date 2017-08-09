@@ -90,50 +90,12 @@ extern void gfx_blockfill(int x_from, int y_from, int x_to, int y_to);
 extern void gfx_drawtext7(const char *str, int x, int y); // firmware
 
 												   // the intention is a string _without_ .. if it is too long.
-												   // and that it only fills background when a char or space is printed.
-void gfx_printf_pos(int x, int y, const char *fmt, ...)
-{
 
-	char buf[50];
 
-	va_list va;
-	va_start(va, fmt);
 
-	//swapFGBG();
 
-	va_snprintf(buf, 50, fmt, va);
-	gfx_drawtext7(buf, x, y);
-	//gfx_clear3(0);
 
-	va_end(va);
-
-}
-
-#define text_height 16
-
-void rx_screen_blue_hook(char *bmp, int x, int y)
-{
-	user_t usr;
-
-	int y_index = 22;
-
-	usr_find_by_dmrid(&usr, rst_src);
-	gfx_set_fg_color(0x00FF00);
-	gfx_blockfill(0, 16, 159, 127);
-	gfx_set_bg_color(0x00FF00);
-	gfx_set_fg_color(0x000000);
-
-	gfx_printf_pos(2, y_index, "%s - %s", usr.callsign, usr.name);
-	y_index += text_height;
-	gfx_printf_pos(2, y_index, "%s, %s", usr.place, usr.state);
-	y_index += text_height*2;
-	gfx_printf_pos(2, y_index, "%s", usr.country);
-	y_index += text_height;
-	//gfx_printf_pos(2, y_index, "%s", usr.);
-	//y_index += text_height;
-
-	return;
-}
+const char* watermark = "KC7JOE Leaked this file. Shame on him";
 
 /* Our RESET handler is called instead of the official one, so this
    main() method comes before the official one.  Our global variables

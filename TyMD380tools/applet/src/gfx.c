@@ -12,20 +12,23 @@
 #include "printf.h"
 #include "string.h"
 #include "addl_config.h"
-#include "display.h"
+//#include "display.h"
 #include "console.h"
 #include "netmon.h"
 #include "debug.h"
+#include "usersdb.h"
 #include "lastheard.h" // reduce number of warnings - use function prototypes
-#include "app_menu.h" // optional 'application' menu, activated by red BACK-button
+//#include "app_menu.h" // optional 'application' menu, activated by red BACK-button
           // When visible, some gfx-calls must be disabled via our hooks
           // to prevent interference from Tytera's "gfx" (similar as for Netmon)
+#include "radiostate.h"
 
 // Needed for LED functions.  Cut dependency.
 #include "stm32f4_discovery.h"
 #include "stm32f4xx_conf.h" // again, added because ST didn't put it here ?
 
 
+#define text_height 16
 uint8_t GFX_backlight_on=0; // DL4YHF 2017-01-07 : 0="off" (low intensity), 1="on" (high intensity)
                             //   (note: GFX_backlight_on is useless as long as no-one calls lcd_background_led() .
                             //    As long as that's the case, the 'dimmed backlight switcher' 
@@ -34,23 +37,23 @@ uint8_t GFX_backlight_on=0; // DL4YHF 2017-01-07 : 0="off" (low intensity), 1="o
 //! Draws text at an address by calling back to the MD380 function.
 
 void swapFGBG() {
-	uint16_t fg_color = 0, bg_color = 0;
+	/*uint16_t fg_color = 0, bg_color = 0;
 	if (global_addl_config.alt_text) {
 		Menu_GetColours(SEL_FLAG_NONE, &fg_color, &bg_color);
 		bg_color = rgb16torgb(bg_color);
 		fg_color = rgb16torgb(fg_color);
 		gfx_set_bg_color(bg_color);
 		gfx_set_fg_color(fg_color);
-	}
+	}*/
 }
 void swapBG() {
-	uint16_t fg_color = 0, bg_color = 0;
+	/*uint16_t fg_color = 0, bg_color = 0;
 	if (global_addl_config.alt_text) {
 		Menu_GetColours(SEL_FLAG_NONE, &fg_color, &bg_color);
 		bg_color = rgb16torgb(bg_color);
 		fg_color = rgb16torgb(fg_color);
 		gfx_set_bg_color(bg_color);
-	}
+	}*/
 }
 
 void drawtext(wchar_t *text, int x, int y)
@@ -58,7 +61,7 @@ void drawtext(wchar_t *text, int x, int y)
     //#ifdef CONFIG_GRAPHICS
 	
 	swapFGBG();
-    gfx_drawtext(text, 0, 0, x, y, 15); //strlen(text));
+	gfx_drawtext(text, 0, 0, x, y, 15); //strlen(text));
     //#endif
 }
 
@@ -74,7 +77,7 @@ void drawascii(char *ascii, int x, int y)
 	swapFGBG();
     //#ifdef CONFIG_GRAPHICS
     //Draw the wide string, not the original.
-    gfx_drawtext(wide, 0, 0, x, y, 15); //strlen(text));
+	gfx_drawtext(wide, 0, 0, x, y, 15); //strlen(text));
     //#endif
 }
 
@@ -102,6 +105,31 @@ void green_led(int on) {
   }
 }
 
+
+
+void rx_screen_blue_hook(char *bmp, int x, int y)
+{
+	user_t usr;
+
+	int y_index = 22;
+
+	usr_find_by_dmrid(&usr, rst_src);
+	gfx_set_fg_color(0x00FF00);
+	gfx_blockfill(0, 16, 159, 127);
+	gfx_set_bg_color(0x00FF00);
+	gfx_set_fg_color(0x000000);
+
+	gfx_printf_pos(2, y_index, "%s - %s", usr.callsign, usr.name);
+	y_index += text_height;
+	gfx_printf_pos(2, y_index, "%s, %s", usr.place, usr.state);
+	y_index += text_height * 2;
+	gfx_printf_pos(2, y_index, "%s", usr.country);
+	y_index += text_height;
+	//gfx_printf_pos(2, y_index, "%s", usr.);
+	//y_index += text_height;
+
+	return;
+}
 
 void red_led(int on) {
   /* The RED LED is supposed to be on pin A0 by the schematic, but in
@@ -154,29 +182,29 @@ void print_date_hook(void)
 { // copy from the md380 code
 
 # if (CONFIG_APP_MENU)
-   if( Menu_IsVisible() ) // 'app menu' visible ? Don't allow Tytera to print into the framebuffer !
-    { return; 
-    }
+   //if( Menu_IsVisible() ) // 'app menu' visible ? Don't allow Tytera to print into the framebuffer !
+   // { return; 
+   // }
 # endif
     if( is_netmon_visible() ) {
         return;
     }
 
-	if (global_addl_config.alt_text) {
+	/*if (global_addl_config.alt_text) {
 		uint16_t fg_color = 0, bg_color = 0;
 		Menu_GetColours(SEL_FLAG_NONE, &fg_color, &bg_color);
 		bg_color = rgb16torgb(bg_color);
 		fg_color = rgb16torgb(fg_color);
 		gfx_set_bg_color(bg_color);
 		gfx_set_fg_color(fg_color);
-	}
+	}*/
 
 #ifdef CONFIG_GRAPHICS
     wchar_t wide[40];
     RTC_DateTypeDef RTC_DateStruct;
     md380_RTC_GetDate(RTC_Format_BCD, &RTC_DateStruct);
 
-    switch (global_addl_config.datef) {
+    switch (0) {
         default:
             // fallthrough
         case 0:
@@ -297,9 +325,9 @@ void print_time_hook(const char log) // ex: void print_time_hook(void), 'log' us
 void print_ant_sym_hook(char *bmp, int x, int y)
 {
 # if (CONFIG_APP_MENU)
-    if( Menu_IsVisible())  // If the 'app menu' is visible,
-     { return; // then don't allow Tytera's "gfx" to spoil the framebuffer
-     }
+   // if( Menu_IsVisible())  // If the 'app menu' is visible,
+   //  { return; // then don't allow Tytera's "gfx" to spoil the framebuffer
+   //  }
 # endif
 
     if( is_netmon_visible() ) {
@@ -310,7 +338,7 @@ void print_ant_sym_hook(char *bmp, int x, int y)
 
 #ifdef CONFIG_GRAPHICS
     gfx_drawbmp(bmp, x, y);
-    draw_eye_opt();
+    //draw_eye_opt();
 #endif
 }
 
@@ -334,9 +362,9 @@ void gfx_blockfill_hook(int x_from, int y_from, int x_to, int y_to)
 //    PRINT( "bf: %d %d %d %d\n", x_from, y_from, x_to, y_to );
     
 # if (CONFIG_APP_MENU)
-   if( Menu_IsVisible() )  // If the 'app menu' is visible,
-    { return; // then don't allow Tytera's "gfx" to spoil the framebuffer
-    }
+  // if( Menu_IsVisible() )  // If the 'app menu' is visible,
+  //  { return; // then don't allow Tytera's "gfx" to spoil the framebuffer
+  //  }
 # endif
 
 
@@ -357,9 +385,9 @@ void gfx_blockfill_hook(int x_from, int y_from, int x_to, int y_to)
     if( y_from == 0 && x_from == 61 ) {
         // if we have stat var for detecting first draw....
         // we could clear by blockfill only once.
-        if( global_addl_config.promtg ) {
-            draw_eye_opt();
-        }
+        //if( global_addl_config.promtg ) {
+        //    draw_eye_opt();
+        //}
     }
 }
 
@@ -369,9 +397,9 @@ void gfx_drawbmp_hook( void *bmp, int x, int y )
 //    PRINT( "db: %d %d\n", x, y );
     
 # if (CONFIG_APP_MENU)
-   if( Menu_IsVisible() )  // If the 'app menu' is visible,
-    { return; // don't allow Tytera's "gfx" to spoil the framebuffer
-    }
+  // if( Menu_IsVisible() )  // If the 'app menu' is visible,
+  //  { return; // don't allow Tytera's "gfx" to spoil the framebuffer
+  //  }
 # endif
 
     swapFGBG();
@@ -386,8 +414,9 @@ void gfx_drawbmp_hook( void *bmp, int x, int y )
     }
     gfx_drawbmp( bmp, x, y );
     // redraw promiscous mode eye icon overlapped by antenna icon
-    if(  ( global_addl_config.promtg ) && ( y == 0 )) {
-        draw_eye_opt();
+    //if(  ( global_addl_config.promtg ) && ( y == 0 )) 
+	{
+        //draw_eye_opt();
     }
 }
 
@@ -395,9 +424,9 @@ void gfx_drawbmp_hook( void *bmp, int x, int y )
 void gfx_drawtext2_hook(wchar_t *str, int x, int y, int xlen)
 {
 # if (CONFIG_APP_MENU)
-   if( Menu_IsVisible() )  // If the 'app menu' is visible,
-    { return; // don't allow Tytera's "gfx" to spoil the framebuffer
-    }
+  // if( Menu_IsVisible() )  // If the 'app menu' is visible,
+  //  { return; // don't allow Tytera's "gfx" to spoil the framebuffer
+  //  }
 # endif
 
 
@@ -423,9 +452,9 @@ void gfx_drawtext4_hook(wchar_t *str, int x, int y, int xlen, int ylen)
     //printf("dt4: %d %d %d %d %S (%x)\n", x, y, xlen, ylen, str, str);
 
 # if (CONFIG_APP_MENU)
-   if( Menu_IsVisible())  // If the 'app menu' is visible,
-    { return; // then don't allow Tytera's "gfx" to spoil the framebuffer
-    }
+  // if( Menu_IsVisible())  // If the 'app menu' is visible,
+  //  { return; // then don't allow Tytera's "gfx" to spoil the framebuffer
+  //  }
 # endif
 
     
@@ -442,11 +471,8 @@ void gfx_drawtext4_hook(wchar_t *str, int x, int y, int xlen, int ylen)
 
 	swapFGBG();
     
-#if defined(FW_D13_020) || defined(FW_S13_020)
     gfx_drawtext4(str,x,y,xlen,ylen);
-#else
-#warning should find symbol gfx_drawtext4        
-#endif    
+
 }
 
 extern void gfx_drawchar_pos( int r0, int r1, int r2 );
@@ -455,10 +481,10 @@ void gfx_drawchar_pos_hook( int r0, int r1, int r2 )
 {
 
 # if (CONFIG_APP_MENU)
-   if( Menu_IsVisible())  // If the 'app menu' is visible,
-    { return; // don't allow Tytera's "gfx" to spoil the framebuffer
+  // if( Menu_IsVisible())  // If the 'app menu' is visible,
+  //  { return; // don't allow Tytera's "gfx" to spoil the framebuffer
       // (must get rid of all this crazy hooking one fine day)
-    }
+  //  }
 # endif
 
     if( is_netmon_visible() ) {
@@ -467,21 +493,11 @@ void gfx_drawchar_pos_hook( int r0, int r1, int r2 )
 
 	swapFGBG();
 
-#if defined(FW_D13_020) || defined(FW_S13_020)
     gfx_drawchar_pos(r0,r1,r2);
-#else
-#warning should find symbol gfx_drawchar_pos        
-#endif    
+
 }
 
-uint32_t gfx_get_fg_color(void)
-{
-#if defined(FW_D02_032)
-    return 0x0000ff; // Default fg color
-#else
-    return gfx_info.fg_color;
-#endif
-}
+
 
 // the intention is a string _without_ .. if it is too long.
 // and that it only fills background when a char or space is printed.
@@ -495,41 +511,24 @@ void gfx_puts_pos(int x, int y, const char *str)
 
 // the intention is a string _without_ .. if it is too long.
 // and that it only fills background when a char or space is printed.
+// and that it only fills background when a char or space is printed.
 void gfx_printf_pos(int x, int y, const char *fmt, ...)
 {
-#if defined(FW_D13_020) || defined(FW_S13_020)
-    char buf[MAX_SCR_STR_LEN];
-    
-    va_list va;
-    va_start(va, fmt);
 
-	swapFGBG();
-    
-    va_snprintf(buf, MAX_SCR_STR_LEN, fmt, va );
-    gfx_drawtext7(buf,x,y);
-    gfx_clear3( 0 );
-    
-    va_end(va);        
-#else
-    wchar_t buf[MAX_SCR_STR_LEN];
-    
-    va_list va;
-    va_start(va, fmt);
-    
-    va_snprintfw(buf, MAX_SCR_STR_LEN, fmt, va );
-    
-#if 0
-    // still only displays 19 chars.
-    gfx_drawtext6( buf, x, y, 21);
-    gfx_clear3( 0 );
-#else
-    gfx_drawtext2(buf, x, y, 0);
-#endif    
-    
-    va_end(va);        
-#endif    
+	char buf[50];
+
+	va_list va;
+	va_start(va, fmt);
+
+	//swapFGBG();
+
+	va_snprintf(buf, 50, fmt, va);
+	gfx_drawtext7(buf, x, y);
+	//gfx_clear3(0);
+
+	va_end(va);
+
 }
-
 /*
 unsigned int rgb(double hue) {
 int h = int(hue * 256 * 6);

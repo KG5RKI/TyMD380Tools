@@ -31,7 +31,7 @@ extern uint8_t rx_voice ;
 
 inline int is_netmon_enabled()
 {
-    return global_addl_config.netmon != 0 ;
+    return 1 ;
 }
 
 inline int is_netmon_visible()
@@ -45,7 +45,7 @@ inline int is_netmon_visible()
 
 inline int is_statusline_visible()
 {    
-    return global_addl_config.datef == 5 ;
+    return 1 ;
 }
 
 #ifdef __cplusplus

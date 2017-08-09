@@ -200,9 +200,125 @@ if __name__ == '__main__':
 	
     #merger.hookbl(0x080D8A20, sapplet.getadr("usb_upld_hook"), 0x080D94BC)  # Old handler adr.
 	
+    # keyboard
+    merger.hookbl(0x0806CE92, sapplet.getadr("kb_handler_hook"));
+	
+    merger.hookbl(0x0800E4B8, sapplet.getadr("print_date_hook"), 0)
+    merger.hookbl(0x08029844, sapplet.getadr("draw_statusline_hook"))
+	
+    draw_datetime_row_list = [
+        0x08028A2C,
+        0x08028FE4,
+        0x0802904A,
+        0x08029142,
+        0x080291A6,
+        0x080291F8,
+        0x0802925E,
+        0x0803AFF0,
+        0x0803B828,
+    ]
+    for adr in draw_datetime_row_list:
+        merger.hookbl(adr, sapplet.getadr("draw_datetime_row_hook"))
+	
     dmr_call_start_hook_list = [0x804C3DC, 0x0804BE34, 0x804BE0C, 0x804BDA6]
     for adr in dmr_call_start_hook_list:
         merger.hookbl(adr, sapplet.getadr("dmr_call_start_hook"))
+		
+    gfxblockfill = [
+        0x0800CAA6,
+        0x0800CAB2,
+        0x0800CABE,
+        0x0800CACA,
+        0x0800CADE,
+        0x0800CAEA,
+        0x0800CAF6,
+        0x0800CB02,
+        0x0800CB0E,
+        0x0800CB28,
+        0x0800CB4E,
+        0x0800CB5A,
+        0x0800CB6E,
+        0x0800CC4E,
+        0x0800CC5A,
+        0x0800CC66,
+        0x0800CC78,
+        0x0800CC96,
+        0x0800CCA2,
+        0x0800CCB6,
+        0x0800CD4C,
+        0x0800CD58,
+        0x0800CD64,
+        0x0800CDDC,
+        0x0800CDE8,
+        0x0800CDF4,
+        0x0800CE00,
+        0x0800CE14,
+        0x0800CE20,
+        0x0800CE34,
+        0x0800CE40,
+        0x0800CE54,
+        0x0800CECA,
+        0x0800D258,
+        0x0800D28A,
+        0x0800D450,
+        0x0800D45C,
+        0x0800D4C0,
+        0x0800D5EC,
+        0x0800D5F8,
+        0x0800D604,
+        0x0800D610,
+        0x0800D722,
+        0x0800D72E,
+        0x0800D73A,
+        0x0800D746,
+        0x0800D7FA,
+        0x0800D87A,
+        0x0800D886,
+        0x0800D892,
+        0x0800D89E,
+        0x0800DB3A,
+        0x0800DC82,
+        0x0800DC9C,
+        0x0800DCA8,
+        0x0800DCF8,
+        0x0800DD04,
+        0x0800DD10,
+        0x0800DFF2,
+        0x0800E27E,
+        0x0800E292,
+        0x0800E29E,
+        0x0800E2AA,
+        0x0800E2B6,
+        0x0800E558,
+        0x0800E5CE,
+        0x0800E5DC,
+        0x0800E5E8,
+        0x0800E5F4,
+        0x0800E608,
+        0x0800E6E2,
+        0x0800E74C,
+        0x0800E774,
+        0x0800E90C,
+        0x0800E920,
+        0x0800E92C,
+        0x0800E938,
+        0x0800E944,
+        0x0800ECBE,
+        0x0800ECCC,
+        0x0800EE84,
+        0x0800EF9C,
+        0x0800F074,
+        0x0800F0DE,
+        0x0800F0EC,
+        0x0800F1E4,
+        0x0800F2CE,
+        0x0800F3C6,
+        0x0800F702,
+        0x0800F71C,
+        0x0800F75E
+    ]
+    for adr in gfxblockfill:
+        merger.hookbl(adr, sapplet.getadr("gfx_blockfill_hook"))
     
     print("Merging %s into %s at %08x" % (
         sys.argv[2],

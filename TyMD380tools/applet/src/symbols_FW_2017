@@ -6,6 +6,8 @@ gfx_drawchar_pos                         = 0x08029BA5 ;
 gfx_blockfill                            = 0x080249FD ;
 gfx_drawtext7                            = 0x0802E035 ;
 
+gfx_select_font                          = 0x08029AD0 ;
+
 md380_spiflash_read                      = 0x080439CB ;
 
 md380_spiflash_write                      = 0x08043AB3 ;
@@ -48,3 +50,38 @@ md380_packet                             = 0x2001BD20 ;
 md380_usbstring                          = 0x2001E554 ;
 
 dmr_call_start                           = 0x0804C52B ;
+dmr_before_squelch                       = 0x0804CADD ;
+dmr_call_end                             = 0x0804D2E1 ;
+dmr_CSBK_handler                         = 0x0804D845 ;
+dmr_handle_data                          = 0x08050D83 ;
+
+gfx_drawtext2                            = 0x0800E2C7 ;
+gfx_drawtext4                            = 0x08024FEB ;
+
+kb_keypressed                            = 0x2001FB64 ;
+kb_row_col_pressed                       = 0x2001FCFE ;
+kb_keycode                               = 0x2001FE30 ;
+kb_handler                               = 0x0806E709 ;
+
+gui_opmode3                              = 0x2001FE4F ;
+
+gui_opmode2                              = 0x2001FDFC ;
+gui_opmode1                              = 0x2001FDFE ;
+gui_opmode1_prev                         = 0x2001FDFD ;
+
+
+m_cntr2                                  = 0x2001FCC8 ;
+gfx_font_small                           = 0x080EB018 ;
+gfx_font_norm                            = 0x080EB058 ;
+
+
+gfx_drawtext                             = 0x0800E31D ;
+gfx_drawbmp                              = 0x0802DAB9;
+
+md380_itow                               = 0x0801BE1D ;
+
+md380_RTC_GetDate                        = 0x0803717B ;
+md380_RTC_GetTime                        = 0x08037047 ;
+
+draw_datetime_row                        = 0x0800E3E9 ;
+

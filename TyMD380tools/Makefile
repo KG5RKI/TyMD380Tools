@@ -59,7 +59,7 @@ flash_original_D03: original_D03
 	./md380-dfu upgrade firmware/bin/D003.020.bin
 
 flash: image_D13
-	./md380-dfu upgrade applet/experiment.bin
+	./flasha.exe write applet/experiment.bin
 
 flash_D02: image_D02
 	./md380-dfu upgrade applet/experiment.bin
@@ -68,7 +68,7 @@ flash_D13: image_D13
 	./md380-dfu upgrade applet/experiment.bin
 
 flash_S13: image_S13
-	./md380-dfu upgrade applet/experiment.bin
+	./flasha.exe write applet/experiment.bin
 	
 flash_FW_2017: image_2017
 	./md380-dfu upgrade applet/experiment.bin

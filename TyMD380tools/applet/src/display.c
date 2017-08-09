@@ -55,12 +55,10 @@ const gfx_bitmap bmp_eye = {12, 12, 6, 4, eye_pix, &eye_pal, 0};
 
 void draw_eye_opt()
 {
-#if defined(FW_D13_020) || defined(FW_S13_020)
     // draw promiscous mode eye symbol 
     if( global_addl_config.promtg == 1 ) {
         gfx_drawbmp((char *) &bmp_eye, D_ICON_EYE_X, D_ICON_EYE_Y);
     }
-#endif
 }
 
 // Takes a positive(!) integer amplitude and computes 200*log10(amp),

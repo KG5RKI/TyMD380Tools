@@ -156,12 +156,8 @@ void* gfx_select_font(void *p);
 void gfx_drawtext2_hook(wchar_t *str, int x, int y, int xlen);
 
 
-#if defined(FW_D13_020) || defined(FW_S13_020)
 void gfx_drawtext7(const char *str, int x, int y); // firmware
-#else
-#define gfx_drawtext7(p1,p2,p3) /* nop */
-# define _WARN_ONCE_ // ex: #warning TODO: please consider finding symbol (ONE such warning is enough)
-#endif    
+
 
 #if defined(FW_D13_020) 
 void gfx_drawtext10(wchar_t *str, int x1, int y1, int x2, int y2); // firmware
