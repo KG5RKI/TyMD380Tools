@@ -203,8 +203,8 @@ if __name__ == '__main__':
     # keyboard
     merger.hookbl(0x0806CE92, sapplet.getadr("kb_handler_hook"));
 	
-    merger.hookbl(0x0800E4B8, sapplet.getadr("print_date_hook"), 0)
-    merger.hookbl(0x08029844, sapplet.getadr("draw_statusline_hook"))
+    #merger.hookbl(0x0800E4B8, sapplet.getadr("print_date_hook"), 0)
+   # merger.hookbl(0x08029844, sapplet.getadr("draw_statusline_hook"))
 	
     draw_datetime_row_list = [
         0x08028A2C,

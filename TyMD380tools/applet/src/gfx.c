@@ -524,7 +524,7 @@ void gfx_printf_pos(int x, int y, const char *fmt, ...)
 
 	va_snprintf(buf, 50, fmt, va);
 	gfx_drawtext7(buf, x, y);
-	//gfx_clear3(0);
+	gfx_clear3(0);
 
 	va_end(va);
 
@@ -554,34 +554,120 @@ unsigned int color = rgb(fValue / 500.0f);
 // and that it fills all background
 void gfx_printf_pos2(int x, int y, int xlen, const char *fmt, ...)
 {
-#if defined(FW_D13_020) || defined(FW_S13_020)
-    char buf[MAX_SCR_STR_LEN];
+    char buf[50];
     
     va_list va;
     va_start(va, fmt);
 
-	swapFGBG();
+	//swapFGBG();
     
-    va_snprintf(buf, MAX_SCR_STR_LEN, fmt, va );
+    va_snprintf(buf, 50, fmt, va );
     gfx_drawtext7(buf,x,y);
     gfx_clear3( xlen );
     
     va_end(va);        
-#else
-    wchar_t buf[MAX_SCR_STR_LEN];
     
-    va_list va;
-    va_start(va, fmt);
-
-    va_snprintfw(buf, MAX_SCR_STR_LEN, fmt, va );
-#if 0
-    // still only displays 19 chars.
-    gfx_drawtext6( buf, x, y, 21);
-    gfx_clear3( xlen );
-#else
-    gfx_drawtext2(buf,x,y,xlen);
-#endif    
-    
-    va_end(va);        
-#endif    
 }
+
+void draw_statusline_hook(uint32_t r0)
+{
+
+# if (CONFIG_APP_MENU)
+	// If the screen is occupied by the optional 'red button menu', 
+	// update or even redraw it completely:
+
+	// NOTE: draw_statusline_hook() isn't called when the squelch
+	//       is 'open' in FM, i.e. when the channel is BUSY .
+	// Of course we don't want to be tyrannized by the radio like that.
+	// It's THE OPERATOR'S decision what to do and when to invoke the menu,
+	// not the radio's. 
+	// Fixed by also calling Menu_DrawIfVisible() from other places .
+# endif // CONFIG_APP_MENU ?
+
+	/*if (is_netmon_visible()) {
+		con_redraw();
+		return;
+	}*/
+	draw_statusline(r0);
+}
+
+void draw_alt_statusline()
+{
+	int dst;
+	int src;
+	int grp;
+	int fFound = 0;
+
+	gfx_set_fg_color(0);
+	gfx_set_bg_color(0xff8032);
+	gfx_select_font(gfx_font_small);
+
+	char mode = ' ';
+	if (rst_voice_active) {
+		if (rst_mycall) {
+			mode = '*'; // on my tg            
+		}
+		else {
+			mode = '!'; // on other tg
+		}
+	}
+
+	user_t usr, usr2;
+	src = rst_src;
+
+	//gfx_printf_pos(RX_POPUP_X_START, 96, "%s - %s", usr.callsign, usr.name);
+
+	
+	
+	if (src == 0) {
+
+		//gfx_printf_pos2(RX_POPUP_X_START, 96, 157, "lh:");
+		gfx_printf_pos2(RX_POPUP_X_START, 96, 157, "lh:");
+	}
+	else {
+												// 2017-02-18 otherwise show lastheard in status line
+
+			if (usr_find_by_dmrid(&usr, src) == 0) {
+				if (usr_find_by_dmrid(&usr2, rst_dst) == 0) {
+					gfx_printf_pos2(RX_POPUP_X_START, 96, 157, "lh:%d->%d %c", src, rst_dst, mode);
+				}
+				else {
+					gfx_printf_pos2(RX_POPUP_X_START, 96, 157, "lh:%d->%s %c", src, usr2.callsign, mode);
+				}
+			}
+			else {
+
+				if (usr_find_by_dmrid(&usr2, rst_dst) == 0) {
+					gfx_printf_pos2(RX_POPUP_X_START, 96, 157, "lh:%s->%d %c", usr.callsign, rst_dst, mode);
+				}
+				else {
+					gfx_printf_pos2(RX_POPUP_X_START, 96, 157, "lh:%s->%s %c", usr.callsign, usr2.callsign, mode);
+				}
+			}
+		
+	}
+
+	/*gfx_set_fg_color(0);
+	gfx_set_bg_color(0xff000000);
+	gfx_select_font(gfx_font_norm);*/
+}
+
+
+void draw_datetime_row_hook()
+{
+
+	//if (is_netmon_visible()) {
+	//	return;
+	//}
+	/*if (ad_hoc_tg_channel)
+	{
+		draw_adhoc_statusline();
+	}*/
+	//if (is_statusline_visible()) 
+	{
+		draw_alt_statusline();
+		//return;
+	}
+	//draw_datetime_row();
+}
+

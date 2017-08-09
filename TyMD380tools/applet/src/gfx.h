@@ -7,6 +7,10 @@
 #define MAX_Y 127    
     
 
+#define RX_POPUP_Y_START 22 // 24
+#define RX_POPUP_X_START 4  // 10
+
+
 #define GFX_FONT_SMALL_HEIGHT 12 
 #define GFX_FONT_NORML_HEIGHT 16
 

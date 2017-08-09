@@ -84,4 +84,8 @@ md380_RTC_GetDate                        = 0x0803717B ;
 md380_RTC_GetTime                        = 0x08037047 ;
 
 draw_datetime_row                        = 0x0800E3E9 ;
+draw_statusline                          = 0x08047225 ;
+
+gfx_clear3                               = 0x08024F79 ;
+
 
